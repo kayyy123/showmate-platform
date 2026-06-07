@@ -1,0 +1,63 @@
+<template>
+  <div class="bg-surface-container-low p-4 rounded-2xl border border-outline flex flex-col md:flex-row gap-4 hover:border-accent transition-colors group">
+    <!-- Image -->
+    <div class="w-full md:w-32 h-32 shrink-0 overflow-hidden rounded-xl">
+      <img :src="product.image" :alt="product.name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+    </div>
+
+    <!-- Content -->
+    <div class="flex-1 flex flex-col justify-between">
+      <div>
+        <div class="flex justify-between items-start">
+          <h3 class="text-lg font-bold">{{ product.name }}</h3>
+          <span v-if="product.tag" class="text-[10px] px-2 py-0.5 rounded border border-accent text-accent font-bold uppercase">
+            {{ product.tag }}
+          </span>
+        </div>
+        <p class="text-sm text-on-surface-variant mt-1 line-clamp-2">{{ product.description }}</p>
+        <p class="text-accent font-bold mt-2 text-lg">{{ formatPrice(product.price) }}</p>
+      </div>
+
+      <!-- Action Button -->
+      <button 
+        @click="handleAction"
+        class="mt-4 w-full bg-accent text-on-accent py-3 rounded-lg font-bold flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all focus:ring-4 focus:ring-accent/30"
+        :aria-label="buttonLabel"
+      >
+        <span class="material-icons text-lg">{{ product.type === 'service' ? 'chat' : 'shopping_cart' }}</span>
+        {{ buttonLabel }}
+      </button>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { computed } from 'vue';
+
+const props = defineProps({
+  product: Object
+});
+
+const emit = defineEmits(['purchase', 'inquiry']);
+
+const buttonLabel = computed(() => {
+  return props.product.pricing_type === 'fixed' ? 'Beli Sekarang' : 'Tanya Harga via WA';
+});
+
+const formatPrice = (price) => {
+  if (typeof price === 'string') return price;
+  return new Intl.NumberFormat('id-ID', { 
+    style: 'currency', 
+    currency: 'IDR',
+    maximumFractionDigits: 0 
+  }).format(price);
+};
+
+const handleAction = () => {
+  if (props.product.pricing_type === 'fixed') {
+    emit('purchase', props.product);
+  } else {
+    emit('inquiry', props.product);
+  }
+};
+</script>

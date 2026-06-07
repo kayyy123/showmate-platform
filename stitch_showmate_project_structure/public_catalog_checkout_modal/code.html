@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            background-color: #121414;
+            color: #e2e2e2;
+            font-family: 'Inter', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #002244;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #ffd700;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#1f477b",
+                        "secondary-fixed": "#d5e3ff",
+                        "on-primary-fixed-variant": "#544600",
+                        "surface-container-low": "#1a1c1c",
+                        "on-primary": "#3a3000",
+                        "surface-variant": "#333535",
+                        "soft-blue": "#E0F3F7",
+                        "primary-fixed-dim": "#e9c400",
+                        "on-surface": "#e2e2e2",
+                        "primary-fixed": "#ffe16d",
+                        "surface-deep": "#002244",
+                        "surface-container-highest": "#333535",
+                        "on-tertiary-container": "#006a70",
+                        "inverse-surface": "#e2e2e2",
+                        "on-primary-container": "#705e00",
+                        "secondary": "#a7c8ff",
+                        "tertiary-fixed": "#79f5ff",
+                        "outline": "#999077",
+                        "tertiary": "#defcff",
+                        "on-error-container": "#ffdad6",
+                        "primary": "#fff6df",
+                        "on-error": "#690005",
+                        "on-secondary-fixed": "#001b3c",
+                        "surface-tint": "#e9c400",
+                        "on-tertiary-fixed-variant": "#004f54",
+                        "inverse-primary": "#705d00",
+                        "primary-container": "#ffd700",
+                        "outline-variant": "#4d4732",
+                        "inverse-on-surface": "#2f3131",
+                        "on-tertiary": "#00363a",
+                        "error-container": "#93000a",
+                        "success-green": "#2AB57D",
+                        "on-secondary-fixed-variant": "#1f477b",
+                        "background": "#121414",
+                        "surface-bright": "#37393a",
+                        "ui-gray": "#404040",
+                        "tertiary-container": "#00f1ff",
+                        "on-tertiary-fixed": "#002022",
+                        "on-background": "#e2e2e2",
+                        "surface-container-lowest": "#0c0f0f",
+                        "surface-container-high": "#282a2b",
+                        "surface": "#121414",
+                        "on-secondary": "#003061",
+                        "tertiary-fixed-dim": "#00dbe8",
+                        "secondary-fixed-dim": "#a7c8ff",
+                        "on-secondary-container": "#93b6f1",
+                        "on-surface-variant": "#d0c6ab",
+                        "surface-dim": "#121414",
+                        "on-primary-fixed": "#221b00",
+                        "surface-container": "#1e2020",
+                        "error": "#ffb4ab"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "base": "4px",
+                        "container-padding": "1.25rem",
+                        "stack-gap": "1rem",
+                        "card-gap": "0.75rem",
+                        "touch-target-min": "44px"
+                    },
+                    "fontFamily": {
+                        "cta": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "cta": ["16px", {"lineHeight": "1", "fontWeight": "700"}],
+                        "label-lg": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "display-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["20px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                        "headline-lg": ["24px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen flex justify-center items-start">
+<!-- Global Layout Shell -->
+<div class="w-full max-w-[480px] min-h-screen bg-surface relative flex flex-col shadow-2xl overflow-hidden">
+<!-- TopAppBar (From JSON) -->
+<header class="fixed top-0 left-0 w-full z-40 flex justify-between items-center px-container-padding h-touch-target-min bg-background dark:bg-background border-b border-white/10 max-w-[480px] left-1/2 -translate-x-1/2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container" data-icon="storefront">storefront</span>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary-container">ShowMate</h1>
+</div>
+<div class="flex items-center">
+<button class="material-symbols-outlined text-on-surface-variant hover:opacity-80 active:scale-95 transition-transform" data-icon="contrast">contrast</button>
+</div>
+</header>
+<!-- Main Content (Catalog Background) -->
+<main class="mt-14 mb-16 p-container-padding flex-1 overflow-y-auto custom-scrollbar">
+<div class="mb-stack-gap">
+<div class="flex items-center gap-2 mb-4">
+<span class="px-3 py-1 border border-white/20 rounded-full text-label-lg font-label-lg uppercase">All Items</span>
+<span class="px-3 py-1 border border-white/20 rounded-full text-label-lg font-label-lg uppercase opacity-50">New</span>
+</div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile mb-4">Featured Products</h2>
+</div>
+<!-- Catalog Grid -->
+<div class="grid grid-cols-1 gap-card-gap">
+<!-- Product Card 1 -->
+<div class="flex bg-surface-deep border border-white/10 p-2 items-center gap-4 cursor-pointer hover:border-primary-container transition-colors group">
+<div class="w-24 h-24 bg-surface-variant shrink-0 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A premium red running shoe professionally staged on a minimalist dark blue surface with dramatic side lighting. The background is a clean, monochromatic deep indigo, emphasizing the vibrant texture and industrial design of the sneaker. The overall atmosphere is high-utility, modern, and high-contrast, fitting a professional MSME catalog aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHOWCnngjrLWORI9A97n6hI9NCM0KOeel-eqC6s7uGD1NSm2E5jW91wv_e4BllXS650eshDByxBAkkh63vR9MwmcYj7QnylkwInJnAv6O-p5fA-JamnbpyQFBqmpqCGEzz5vO0M4ZYUmbfydfOVF0b6ljdJCitToZMlK9dmPIRhaFRLAl1zWketHuRQVEjoPZWK2bbZAG9kRZVD5iLnafW97haAsxN4ZQU8HR6TwqaBhPByB7WSpsHUMwTtpQCOntWGSD4uneUIMM"/>
+</div>
+<div class="flex-1">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">SpeedMaster Pro</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Rp 1.250.000</p>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="flex bg-surface-deep border border-white/10 p-2 items-center gap-4">
+<div class="w-24 h-24 bg-surface-variant shrink-0 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A sleek, minimalist digital wristwatch with a matte black strap and a high-contrast white watch face. The watch is positioned against a solid dark navy background with subtle hard shadows that define its industrial edges. The lighting is crisp and clear, designed for an outdoor or high-glare legibility environment for a professional MSME tool." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBd7OZ_hhkZ-OZrEsbLPFu2pAt6-FaqkXE6rVKCRbotU5HRVOoaJPKKMOJFuKGQ188drTOx1wv0dUCrmvjuV9C3Pj2eSs_HV4HeOR4tzJYUKa9WJVcS4VTkJWMMa-_7eiK_JLxJYSwxo5-ouFyQGtXhN6ZERxh0rwhOFyGEKAZLBlEZtKOF7yI8sU0AGcV-WGJ3YD5NNt_gBFXlTvqNirATrDGxeqf1QedGPFeYQRyx2InDDBBbT71eCDzYzMucRu6sfFxfS732_eo"/>
+</div>
+<div class="flex-1">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Urban Chrono</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Rp 890.000</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Modal Overlay -->
+<div class="fixed inset-0 z-[60] flex items-center justify-center p-container-padding max-w-[480px] mx-auto" id="checkout-modal">
+<!-- Backdrop -->
+<div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="toggleModal(false)"></div>
+<!-- Modal Content -->
+<div class="relative w-full bg-surface-deep border-2 border-primary-container shadow-2xl flex flex-col max-h-[921px]">
+<!-- Modal Header -->
+<div class="flex justify-between items-center p-4 border-b border-white/10 bg-surface-container-low">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary-container">Checkout</h2>
+<button aria-label="Close modal" class="h-10 w-10 flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors focus:ring-2 focus:ring-primary-container outline-none" onclick="toggleModal(false)">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<!-- Scrollable Form Area -->
+<div class="p-container-padding overflow-y-auto custom-scrollbar">
+<!-- Product Summary -->
+<div class="bg-background p-4 border border-white/5 mb-stack-gap flex items-center gap-4">
+<div class="w-16 h-16 bg-surface-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Detailed close-up of a red premium running shoe with intricate mesh texture. Set against a high-contrast dark navy background with professional studio lighting that highlights every stitch. The visual style is industrial, modern, and focused on clarity and quality for a professional transaction interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6vwGIYzrRxwEMy1pNNY4YrKl0dO9AVlQSrASA6p77AoITXdQmPQVAj8sLW7C6vFIiAW6R18gaeKUWOkf4I8ufbj7JpHkmSC7GEHFh6Cfe2zp9Vzl4p9kJyfJaQdN-0tgvKHaPZvEnz8jQFbIXLx_q6Mu2NHDhj3nAwHrzwsc4hPiyt_IvvU6rv-nb_gva0WYy96hQUXJdUhFe-zoM3ndshiYHg9tHNRtl5srGg3RQWsMqveL7sV0brofqbicv-04Fwd0ctNZ7n5E"/>
+</div>
+<div>
+<p class="font-label-lg text-label-lg text-primary-container uppercase">Selected Product</p>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile">SpeedMaster Pro</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Rp 1.250.000</p>
+</div>
+</div>
+<!-- Checkout Form -->
+<form class="space-y-4" id="checkout-form">
+<div>
+<label class="block font-label-lg text-label-lg text-on-surface-variant mb-2">Nama Lengkap</label>
+<input class="w-full h-touch-target-min bg-background border border-white/20 px-4 focus:border-primary-container focus:ring-0 outline-none text-on-surface font-body-md" placeholder="Masukkan nama Anda" type="text"/>
+</div>
+<div>
+<label class="block font-label-lg text-label-lg text-on-surface-variant mb-2">Nomor WhatsApp</label>
+<input class="w-full h-touch-target-min bg-background border border-white/20 px-4 focus:border-primary-container focus:ring-0 outline-none text-on-surface font-body-md" placeholder="0812xxxxxx" type="tel"/>
+</div>
+<div>
+<label class="block font-label-lg text-label-lg text-on-surface-variant mb-2">Alamat Pengiriman</label>
+<textarea class="w-full bg-background border border-white/20 p-4 focus:border-primary-container focus:ring-0 outline-none text-on-surface font-body-md resize-none" placeholder="Masukkan alamat lengkap" rows="3"></textarea>
+</div>
+</form>
+</div>
+<!-- Footer Action -->
+<div class="p-container-padding border-t border-white/10 bg-surface-container-low">
+<button class="w-full h-touch-target-min bg-primary-container text-black font-cta text-cta flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.98] transition-all focus:ring-offset-2 focus:ring-2 focus:ring-primary-container outline-none" form="checkout-form" type="submit">
+<span class="material-symbols-outlined" data-icon="shopping_cart_checkout">shopping_cart_checkout</span>
+                        Konfirmasi Pembelian
+                    </button>
+<p class="text-center text-body-sm font-body-sm text-on-surface-variant mt-3 opacity-60">
+                        Pesanan akan dikonfirmasi via WhatsApp
+                    </p>
+</div>
+</div>
+</div>
+<!-- BottomNavBar (From JSON) -->
+<nav class="fixed bottom-0 left-0 w-full z-40 bg-surface-container-lowest dark:bg-surface-container-lowest flex justify-around items-center h-16 max-w-[480px] left-1/2 -translate-x-1/2 border-t border-white/10">
+<a class="flex flex-col items-center justify-center text-primary-container border-t-2 border-primary-container h-full px-4 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="font-label-lg text-label-lg">Catalog</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant h-full px-4 hover:bg-surface-container-high active:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="add_box">add_box</span>
+<span class="font-label-lg text-label-lg">Manage</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant h-full px-4 hover:bg-surface-container-high active:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="equalizer">equalizer</span>
+<span class="font-label-lg text-label-lg">Stats</span>
+</a>
+</nav>
+</div>
+<script>
+        function toggleModal(show) {
+            const modal = document.getElementById('checkout-modal');
+            if (show) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        // Initially show for the prompt requirement, but allow users to toggle
+        // toggleModal(true); 
+
+        // Handle form submission
+        document.getElementById('checkout-form').onsubmit = (e) => {
+            e.preventDefault();
+            alert('Pesanan dikonfirmasi! Anda akan diarahkan ke WhatsApp.');
+            toggleModal(false);
+        };
+    </script>
+</body></html>

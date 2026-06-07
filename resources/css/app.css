@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --color-surface: 18 20 20;
+        --color-surface-container: 30 32 32;
+        --color-surface-container-low: 26 28 28;
+        --color-surface-container-high: 40 42 43;
+        --color-accent: 255 215 0;
+        --color-on-accent: 18 20 20;
+        --color-on-surface: 226 226 226;
+        --color-on-surface-variant: 196 196 196;
+        --color-outline: 51 53 53;
+        --color-surface-deep: 0 34 68;
+    }
+    :root[data-theme="light"] {
+        --color-surface: 255 255 255;
+        --color-surface-container: 245 245 245;
+        --color-surface-container-low: 250 250 250;
+        --color-surface-container-high: 238 238 238;
+        --color-accent: 255 215 0;
+        --color-on-accent: 18 20 20;
+        --color-on-surface: 29 29 29;
+        --color-on-surface-variant: 85 85 85;
+        --color-outline: 221 221 221;
+        --color-surface-deep: 240 244 255;
+    }
+}
+
+@layer utilities {
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+}

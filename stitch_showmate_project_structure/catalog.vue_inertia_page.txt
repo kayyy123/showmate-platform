@@ -1,0 +1,66 @@
+<template>
+  <div class="min-h-screen bg-surface dark:bg-surface text-on-surface dark:text-on-surface font-sans">
+    <!-- Top Nav -->
+    <TopAppBar />
+
+    <main class="pt-20 pb-24 px-4 max-w-4xl mx-auto">
+      <!-- Profile Header -->
+      <section class="text-center mb-8">
+        <div class="relative inline-block mb-4">
+          <div class="w-24 h-24 rounded-full border-4 border-accent p-1">
+            <img :src="storeLogo" alt="Store Logo" class="w-full h-full rounded-full object-cover">
+          </div>
+        </div>
+        <h1 class="text-3xl font-bold font-header">{{ storeName }}</h1>
+        <p class="mt-2 text-on-surface-variant max-w-lg mx-auto">{{ storeDescription }}</p>
+      </section>
+
+      <!-- Category Filter -->
+      <nav class="flex gap-2 overflow-x-auto pb-4 mb-8 no-scrollbar" aria-label="Product Categories">
+        <button 
+          v-for="cat in categories" 
+          :key="cat"
+          @click="activeCategory = cat"
+          class="px-4 py-2 rounded-full border transition-all shrink-0 focus:outline-none focus:ring-2 focus:ring-accent"
+          :class="activeCategory === cat ? 'bg-accent text-on-accent border-accent' : 'bg-surface-container border-outline'"
+        >
+          {{ cat }}
+        </button>
+      </nav>
+
+      <!-- Product List -->
+      <div class="grid gap-4">
+        <ProductLinkCard 
+          v-for="product in filteredProducts" 
+          :key="product.id" 
+          :product="product" 
+        />
+      </div>
+    </main>
+
+    <!-- Bottom Nav (Mobile) / Accessibility & Theme -->
+    <BottomNavBar />
+  </div>
+</template>
+
+<script setup>
+import { ref, computed } from 'vue';
+import TopAppBar from '@/Components/Shared/TopAppBar.vue';
+import BottomNavBar from '@/Components/Shared/BottomNavBar.vue';
+import ProductLinkCard from '@/Components/ProductLinkCard.vue';
+
+const props = defineProps({
+  storeName: String,
+  storeDescription: String,
+  storeLogo: String,
+  products: Array,
+  categories: Array
+});
+
+const activeCategory = ref('All Collection');
+
+const filteredProducts = computed(() => {
+  if (activeCategory.value === 'All Collection') return props.products;
+  return props.products.filter(p => p.category === activeCategory.value);
+});
+</script>

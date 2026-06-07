@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ShowMate | Digital Catalog</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121414; /* Fallback */
+        }
+        .focus-ring:focus-visible {
+            outline: 3px solid #FFD700;
+            outline-offset: 3px;
+        }
+        /* Custom scrollbar for high-contrast feel */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0c0f0f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ffd700;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-fixed": "#ffe16d",
+                      "secondary-container": "#1f477b",
+                      "secondary-fixed-dim": "#a7c8ff",
+                      "on-secondary-fixed-variant": "#1f477b",
+                      "on-error": "#690005",
+                      "on-surface": "#e2e2e2",
+                      "primary-container": "#ffd700",
+                      "on-background": "#e2e2e2",
+                      "on-primary": "#3a3000",
+                      "ui-gray": "#404040",
+                      "success-green": "#2AB57D",
+                      "on-error-container": "#ffdad6",
+                      "surface-tint": "#e9c400",
+                      "surface-container-highest": "#333535",
+                      "on-tertiary-fixed": "#002022",
+                      "on-secondary-fixed": "#001b3c",
+                      "error-container": "#93000a",
+                      "on-tertiary": "#00363a",
+                      "on-tertiary-fixed-variant": "#004f54",
+                      "secondary-fixed": "#d5e3ff",
+                      "outline-variant": "#4d4732",
+                      "on-primary-fixed": "#221b00",
+                      "surface-container-lowest": "#0c0f0f",
+                      "surface-dim": "#121414",
+                      "secondary": "#a7c8ff",
+                      "surface-container-high": "#282a2b",
+                      "on-primary-container": "#705e00",
+                      "background": "#121414",
+                      "soft-blue": "#E0F3F7",
+                      "inverse-surface": "#e2e2e2",
+                      "surface-container": "#1e2020",
+                      "surface-bright": "#37393a",
+                      "surface-container-low": "#1a1c1c",
+                      "primary": "#fff6df",
+                      "tertiary": "#defcff",
+                      "surface-deep": "#002244",
+                      "tertiary-fixed": "#79f5ff",
+                      "inverse-primary": "#705d00",
+                      "on-secondary-container": "#93b6f1",
+                      "on-secondary": "#003061",
+                      "primary-fixed-dim": "#e9c400",
+                      "surface-variant": "#333535",
+                      "outline": "#999077",
+                      "on-tertiary-container": "#006a70",
+                      "surface": "#121414",
+                      "inverse-on-surface": "#2f3131",
+                      "on-surface-variant": "#d0c6ab",
+                      "on-primary-fixed-variant": "#544600",
+                      "tertiary-fixed-dim": "#00dbe8",
+                      "error": "#ffb4ab",
+                      "tertiary-container": "#00f1ff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "card-gap": "0.75rem",
+                      "base": "4px",
+                      "stack-gap": "1rem",
+                      "touch-target-min": "44px",
+                      "container-padding": "1.25rem"
+              },
+              "fontFamily": {
+                      "body-sm": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "label-lg": ["Inter"],
+                      "cta": ["Inter"],
+                      "body-md": ["Inter"]
+              },
+              "fontSize": {
+                      "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                      "headline-lg": ["24px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                      "display-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-lg-mobile": ["20px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                      "label-lg": ["14px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "cta": ["16px", {"lineHeight": "1", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top AppBar (from JSON guidance) -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-padding h-touch-target-min bg-background border-b border-white/10">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container" data-icon="storefront">storefront</span>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary-container">ShowMate</h1>
+</div>
+<button aria-label="Toggle contrast and accessibility" class="w-touch-target-min h-touch-target-min flex items-center justify-center hover:opacity-80 active:scale-95 transition-transform text-on-surface-variant focus-ring" id="accessibilityToggle">
+<span class="material-symbols-outlined" data-icon="contrast">contrast</span>
+</button>
+</header>
+<!-- Main Content Canvas (Capped at 480px) -->
+<main class="max-w-[480px] mx-auto pt-20 pb-32 px-container-padding min-h-screen flex flex-col gap-8">
+<!-- CatalogHeader.vue -->
+<section class="flex flex-col items-center text-center pt-4">
+<div class="w-24 h-24 rounded-full border-2 border-primary-container p-1 bg-surface-deep overflow-hidden mb-4">
+<img alt="ShowMate Logo" class="w-full h-full object-cover rounded-full" data-alt="A professional circular brand logo for a business named ShowMate. The design features a bold, yellow abstract monogram set against a deep navy blue background. The aesthetic is clean and industrially modern, reflecting a premium service for small and medium enterprises. The lighting is crisp and clear, emphasizing sharp lines and high contrast." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAS6ZFyLpiyrGcLToRl6-i1qPTJXZKrYxdqcBRA75ouOr_YdEruvTJNU4OXDt9LgnpNjV0wLaY2Bxzw94Bv241pD1cZJF1vkbNjzstZ9kfGoiCK4ORHr_Q27bqINsYu03y0ESG1R23GsWJ-bbrb2DMyiq3ismrpZ4T-qgcY2CBA9UVpUX_jbGxJMAyjJZmSfyb29bqESTuIdrgPCsMmPXZQzmhKkizM58-ig9-bU2-wrYShGjlvUbjfauzm2_PfM8kDiHj0si6Zryc"/>
+</div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2">ShowMate Boutique</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-[300px]">Premium artisanal products curated for the modern professional. Experience industrious quality in every item.</p>
+</section>
+<!-- Product Category Chips -->
+<div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+<span class="px-4 py-2 border border-white/20 rounded-full font-label-lg text-label-lg whitespace-nowrap text-on-surface">All Products</span>
+<span class="px-4 py-2 border border-white/10 rounded-full font-label-lg text-label-lg whitespace-nowrap text-on-surface-variant">Beverages</span>
+<span class="px-4 py-2 border border-white/10 rounded-full font-label-lg text-label-lg whitespace-nowrap text-on-surface-variant">Pastries</span>
+<span class="px-4 py-2 border border-white/10 rounded-full font-label-lg text-label-lg whitespace-nowrap text-on-surface-variant">Merchandise</span>
+</div>
+<!-- Product Stack (ProductLink.vue) -->
+<div class="flex flex-col gap-card-gap">
+<!-- Card 1 -->
+<div class="bg-surface-deep border border-white/10 p-3 rounded-lg flex flex-col gap-3 group transition-all active:scale-[0.98] focus-within:border-primary-container focus-within:border-2" tabindex="0">
+<div class="flex gap-4 items-center">
+<img alt="Artisanal Coffee" class="w-20 h-20 object-cover rounded bg-surface-container shadow-inner" data-alt="A high-contrast, professional product shot of artisanal coffee in a sleek, dark ceramic cup. Steam rises gently from the dark liquid, highlighted by sharp side-lighting against a deep navy blue studio background. The overall mood is moody and industrious, emphasizing the rich texture and premium quality of the beverage." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnOro7NQS02nrQdPUnGJhd2ami3c_7los0rEgGW8pur5lMtQLD1cMFbb2oj4kzUh6Z964Ur_WW6uiAwD6wnd7MjKDEQ-tvtD7iddVbSjbhTbTkDoyXFrKWW-eg1KpfegFzMZozS7VB3rKNPuA5drfS9t21W5W11KBYUzAEox168ElmpM8npzElXwur8Tbmt2jFeNzXjUaYf3599LatAusr_Swou9l4cwTsI-GuG-Q1bknK4K6aditvr06-NB9SMDLE6oFjhZ7uDSc"/>
+<div class="flex-1">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Artisanal Coffee</h3>
+<p class="text-primary-container font-label-lg text-label-lg mt-1">Rp 35.000</p>
+</div>
+</div>
+<button aria-label="Pesan Artisanal Coffee via WhatsApp" class="w-full h-touch-target-min bg-primary-container text-on-primary font-cta text-cta rounded flex items-center justify-center gap-2 hover:brightness-110 active:scale-95 transition-all focus-ring">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+                    Pesan via WA
+                </button>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-deep border border-white/10 p-3 rounded-lg flex flex-col gap-3 group transition-all active:scale-[0.98] focus-within:border-primary-container focus-within:border-2" tabindex="0">
+<div class="flex gap-4 items-center">
+<img alt="Golden Croissant" class="w-20 h-20 object-cover rounded bg-surface-container shadow-inner" data-alt="A close-up shot of a golden-brown, flaky croissant on a dark slate plate. The crust is perfectly crispy with visible layers, illuminated by bright, clean light that creates high contrast against the deep shadow background. The aesthetic is modern and focuses on the craftsmanship of the pastry." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD26gky1rDeiVjHYljnpYfyK5uoEUKzzBO_8HKs93JWtpzxTOfNycO9dW0krJa9sxBjYefwfWfZilNEk4g2wGHLmsB9E1rsabnWgLzFUzn4eNBwMA2oGu4J_DaLC2I95xZ8iHCa_ZQF-dqHabFdrMGEnGv255UKvhDS1oaOPPX71IQkJ4PgnrN4Xukb13rNAvljvo_dSMmR3WTylHzrSdIT-PQbg8E28RvFW7bdn4pthSrz2BjwzCnyT17aLC3lgaJR9ZNP_0WkLw8"/>
+<div class="flex-1">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Golden Croissant</h3>
+<p class="text-primary-container font-label-lg text-label-lg mt-1">Rp 22.000</p>
+</div>
+</div>
+<button aria-label="Pesan Golden Croissant via WhatsApp" class="w-full h-touch-target-min bg-primary-container text-on-primary font-cta text-cta rounded flex items-center justify-center gap-2 hover:brightness-110 active:scale-95 transition-all focus-ring">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+                    Pesan via WA
+                </button>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-deep border border-white/10 p-3 rounded-lg flex flex-col gap-3 group transition-all active:scale-[0.98] focus-within:border-primary-container focus-within:border-2" tabindex="0">
+<div class="flex gap-4 items-center">
+<img alt="ShowMate Tote Bag" class="w-20 h-20 object-cover rounded bg-surface-container shadow-inner" data-alt="A minimalist canvas tote bag with a bold yellow 'ShowMate' typographic logo. The bag is positioned in a modern, brightly lit environment with sharp shadows, emphasizing the durable weave of the fabric. The background is a consistent deep navy blue, maintaining the brand's industrious and professional high-contrast identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBPxDe-hVTjZ9MR9KHK3i3TV_9U_VcpNX6qGWZLsMd0QMKLeF1NbJEo57Eod7e1Ry8gFgEVTSjIZy0-z_j6WKCa0RJwum9ajz0ss2blbvTiFSIwDXhujbpXaq7mzCAehKrSFKHa5O5BFaie1ZZY1mmwStGxVlcNpAL4oEvBL48JJ1qt_mvzVRlP3MoaQNHQBrjP-KO5av-4tpRwLOc93pL8bZWUtQYmPtVDfEBufzTJa0r7Sovv0EsSOBgpLHLRGBrVdWnLJ5oUYg"/>
+<div class="flex-1">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Canvas Tote Bag</h3>
+<p class="text-primary-container font-label-lg text-label-lg mt-1">Rp 85.000</p>
+</div>
+</div>
+<button aria-label="Pesan Canvas Tote Bag via WhatsApp" class="w-full h-touch-target-min bg-primary-container text-on-primary font-cta text-cta rounded flex items-center justify-center gap-2 hover:brightness-110 active:scale-95 transition-all focus-ring">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+                    Pesan via WA
+                </button>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-deep border border-white/10 p-3 rounded-lg flex flex-col gap-3 group transition-all active:scale-[0.98] focus-within:border-primary-container focus-within:border-2" tabindex="0">
+<div class="flex gap-4 items-center">
+<img alt="Insulated Bottle" class="w-20 h-20 object-cover rounded bg-surface-container shadow-inner" data-alt="A sleek black reusable water bottle with a matte finish, reflecting soft highlights. The bottle stands vertically on a dark surface with a clean, high-contrast glow outlining its silhouette against a deep blue background. The look is professional, utilitarian, and high-quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBz1bjww_Bfjds0Ah4CKPYOJeAl2bCIwVbahl9AKzsNXZ11TkEanAg1UvdccQA3RhHvBxWif9k-oXm9YDHeEBcUpBxrXgXbUyMNQOWU12bFiWcL1n8t-CLC4ULiemD4Rp_5F98EYpi6Tvz_tqfbeoepMS6rKV_Mpqtrm6tnkPDS4jkruAbYRcsOGAWyu__dYqFuiAkD6CoJxd2k4qaiMyXYyRsUr6fjYYSt-3DwCGjSuLsb0Qdy2PMFP-WAGStUyNpd-_aIhqRd_Bo"/>
+<div class="flex-1">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Insulated Bottle</h3>
+<p class="text-primary-container font-label-lg text-label-lg mt-1">Rp 120.000</p>
+</div>
+</div>
+<button aria-label="Pesan Insulated Bottle via WhatsApp" class="w-full h-touch-target-min bg-primary-container text-on-primary font-cta text-cta rounded flex items-center justify-center gap-2 hover:brightness-110 active:scale-95 transition-all focus-ring">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+                    Pesan via WA
+                </button>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Shell (from JSON) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 max-w-[480px] left-1/2 -translate-x-1/2 bg-surface-container-lowest border-t border-white/10">
+<a aria-label="Catalog Tab" class="flex flex-col items-center justify-center text-primary-container border-t-2 border-primary-container h-full px-4" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="font-label-lg text-label-lg">Catalog</span>
+</a>
+<a aria-label="Manage Tab" class="flex flex-col items-center justify-center text-on-surface-variant h-full px-4 hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="add_box">add_box</span>
+<span class="font-label-lg text-label-lg">Manage</span>
+</a>
+<a aria-label="Stats Tab" class="flex flex-col items-center justify-center text-on-surface-variant h-full px-4 hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="equalizer">equalizer</span>
+<span class="font-label-lg text-label-lg">Stats</span>
+</a>
+</nav>
+<!-- Floating Action Button (ActionCTA.vue) -->
+<button aria-label="Share Catalog" class="fixed bottom-20 right-4 w-14 h-14 bg-primary-container text-on-primary rounded-full shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition-transform z-40 focus-ring md:right-[calc(50%-220px)]">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+</button>
+<script>
+        // Simple Interaction logic
+        document.getElementById('accessibilityToggle').addEventListener('click', function() {
+            // High contrast toggle simulation
+            const root = document.documentElement;
+            const isHighContrast = root.classList.contains('high-contrast');
+            
+            if (isHighContrast) {
+                root.classList.remove('high-contrast');
+                this.querySelector('span').style.fontVariationSettings = "'FILL' 0";
+            } else {
+                root.classList.add('high-contrast');
+                this.querySelector('span').style.fontVariationSettings = "'FILL' 1";
+            }
+        });
+
+        // Horizontal scroll with wheel for category chips
+        const scrollContainer = document.querySelector('.overflow-x-auto');
+        scrollContainer.addEventListener('wheel', (evt) => {
+            evt.preventDefault();
+            scrollContainer.scrollLeft += evt.deltaY;
+        });
+    </script>
+</body></html>

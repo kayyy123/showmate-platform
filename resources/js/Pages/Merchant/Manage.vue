@@ -1,0 +1,169 @@
+<script setup>
+import { ref, watch } from 'vue';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
+import AppHeader from '@/Components/AppHeader.vue';
+import BottomNavBar from '@/Components/Shared/BottomNavBar.vue';
+
+const page = usePage();
+const catalogUrl = `/catalog/${page.props.auth.user.slug}`;
+
+const toast = ref(null);
+let toastTimer = null;
+
+function showToast(message) {
+    toast.value = message;
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.value = null; }, 2500);
+}
+
+function destroyProduct(product) {
+    if (confirm(`Hapus produk "${product.name}"?`)) {
+        router.delete(route('products.destroy', product.id));
+    }
+}
+
+function toggleVisibility(product) {
+    router.post(route('products.toggle-visibility', product.id), {}, {
+        preserveState: true,
+        preserveScroll: true,
+        onSuccess: () => {
+            const msg = page.props.flash?.success;
+            if (msg) showToast(msg);
+        },
+    });
+}
+
+watch(() => page.props.flash?.success, (msg) => {
+    if (msg) showToast(msg);
+});
+
+const props = defineProps({
+    products: Array,
+});
+</script>
+
+<template>
+    <Head title="Kelola Produk" />
+
+    <div class="min-h-screen bg-surface text-on-surface">
+        <AppHeader headline="Kelola Produk" />
+
+        <main class="pt-20 pb-24 px-4 max-w-[420px] mx-auto">
+            <div class="flex mb-4">
+                <Link
+                    :href="route('products.create')"
+                    class="w-full bg-accent text-on-accent py-3 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent/30"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Tambah Produk
+                </Link>
+            </div>
+
+            <!-- Toast -->
+            <Teleport to="body">
+                <Transition
+                    enter-active-class="transition-all duration-300"
+                    enter-from-class="opacity-0 translate-y-4"
+                    enter-to-class="opacity-100 translate-y-0"
+                    leave-active-class="transition-all duration-200"
+                    leave-from-class="opacity-100 translate-y-0"
+                    leave-to-class="opacity-0 translate-y-4"
+                >
+                    <div
+                        v-if="toast"
+                        role="status"
+                        aria-live="polite"
+                        class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl bg-surface-container-high border border-outline text-on-surface font-medium text-sm shadow-xl"
+                    >
+                        {{ toast }}
+                    </div>
+                </Transition>
+            </Teleport>
+
+            <section>
+                <h3 class="font-header text-lg text-on-surface mb-4">Produk</h3>
+
+                <div v-if="products.length === 0" class="text-center py-12 text-on-surface-variant">
+                    <svg class="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                    <p class="font-medium">Belum ada produk</p>
+                    <p class="text-sm mt-1">Mulai dengan menambahkan produk pertama Anda.</p>
+                </div>
+
+                <div v-else class="grid gap-3">
+                    <div
+                        v-for="product in products"
+                        :key="product.id"
+                        class="bg-surface-container-low p-3 rounded-xl border border-outline flex gap-3 hover:border-accent transition-colors group"
+                    >
+                        <div class="w-16 h-16 shrink-0 overflow-hidden rounded-lg">
+                            <img
+                                v-if="product.image_url"
+                                :src="product.image_url"
+                                :alt="product.alt_text || product.name"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                            <div
+                                v-else
+                                class="w-full h-full bg-surface-container-high flex items-center justify-center"
+                            >
+                                <svg class="w-5 h-5 text-on-surface-variant" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-start justify-between gap-1">
+                                <h4 class="text-sm font-bold text-on-surface truncate">{{ product.name }}</h4>
+                                <span
+                                    v-if="product.tag"
+                                    class="text-[10px] px-1.5 py-0.5 rounded border border-accent text-accent font-bold uppercase shrink-0 leading-none"
+                                >
+                                    {{ product.tag }}
+                                </span>
+                            </div>
+                            <p v-if="product.category" class="text-xs text-on-surface-variant mt-0.5">{{ product.category }}</p>
+                            <p class="text-accent font-bold text-sm mt-0.5">Rp {{ Number(product.price).toLocaleString('id-ID') }}</p>
+                            <span
+                                class="inline-block mt-1 text-[10px] px-1.5 py-0.5 font-bold uppercase rounded border leading-none"
+                                :class="product.is_active ? 'border-accent text-accent' : 'border-on-surface-variant text-on-surface-variant'"
+                            >
+                                {{ product.is_active ? 'Aktif' : 'Nonaktif' }}
+                            </span>
+
+                            <div class="flex items-center gap-1.5 mt-1.5">
+                                <button
+                                    @click="toggleVisibility(product)"
+                                    class="text-[10px] px-2 py-1 rounded-lg border font-medium transition-colors"
+                                    :class="product.is_active ? 'border-outline text-on-surface-variant hover:bg-surface-container' : 'border-accent text-accent hover:brightness-110'"
+                                >
+                                    {{ product.is_active ? 'Sembunyikan' : 'Tampilkan' }}
+                                </button>
+                                <Link
+                                    :href="route('products.edit', product.id)"
+                                    class="text-[10px] px-2 py-1 rounded-lg border border-outline text-on-surface-variant font-medium hover:bg-surface-container transition-colors"
+                                >
+                                    Edit
+                                </Link>
+                                <button
+                                    @click="destroyProduct(product)"
+                                    class="text-[10px] px-2 py-1 rounded-lg border border-red-400/30 text-red-400 font-medium hover:bg-red-400/10 transition-colors"
+                                >
+                                    Hapus
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <BottomNavBar active="manage" :catalogUrl="catalogUrl" />
+    </div>
+</template>

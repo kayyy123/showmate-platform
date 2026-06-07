@@ -1,0 +1,249 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>ShowMate | Digital Catalog</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;500;600;700&amp;family=Anton&amp;family=Work+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .focus-ring:focus-visible {
+            outline: 3px solid #fcd400; /* Canary Yellow from secondary-container/secondary */
+            outline-offset: 3px;
+        }
+        /* Custom scrollbar for high-contrast feel */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #fcd400;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#1a1c1c",
+                        "outline-variant": "#c3c6d1",
+                        "secondary-fixed-dim": "#e9c400",
+                        "on-secondary-fixed": "#221b00",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#43474f",
+                        "surface-container": "#eeeeee",
+                        "primary-container": "#003366",
+                        "surface-tint": "#3a5f94",
+                        "on-tertiary-container": "#ff6d59",
+                        "on-surface": "#1a1c1c",
+                        "on-primary-fixed-variant": "#1f477b",
+                        "tertiary-fixed-dim": "#ffb4a8",
+                        "secondary-container": "#fcd400",
+                        "surface-container-low": "#f3f3f4",
+                        "tertiary-container": "#6e0000",
+                        "surface-container-high": "#e8e8e8",
+                        "inverse-surface": "#2f3131",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#799dd6",
+                        "error-container": "#ffdad6",
+                        "secondary": "#705d00",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#460000",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#d5e3ff",
+                        "surface": "#f9f9f9",
+                        "primary-fixed-dim": "#a7c8ff",
+                        "surface-dim": "#dadada",
+                        "inverse-on-surface": "#f0f1f1",
+                        "primary": "#001e40",
+                        "outline": "#737780",
+                        "inverse-primary": "#a7c8ff",
+                        "on-tertiary-fixed-variant": "#930100",
+                        "on-primary-fixed": "#001b3c",
+                        "on-tertiary-fixed": "#410000",
+                        "on-secondary-fixed-variant": "#544600",
+                        "tertiary-fixed": "#ffdad4",
+                        "on-tertiary": "#ffffff",
+                        "surface-variant": "#e2e2e2",
+                        "on-secondary-container": "#6e5c00",
+                        "background": "#f9f9f9",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed": "#ffe16d",
+                        "surface-bright": "#f9f9f9",
+                        "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "margin-desktop": "40px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "container-max-width": "1280px",
+                        "touch-target": "44px"
+                    },
+                    "fontFamily": {
+                        "label-bold": ["Archivo Narrow"],
+                        "label-sm": ["Archivo Narrow"],
+                        "headline-md": ["Anton"],
+                        "body-lg": ["Work Sans"],
+                        "body-md": ["Work Sans"],
+                        "headline-lg": ["Anton"],
+                        "headline-lg-mobile": ["Anton"]
+                    },
+                    "fontSize": {
+                        "label-bold": ["14px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                        "headline-md": ["32px", {"lineHeight": "1.2", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "0.02em", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["32px", {"lineHeight": "1.1", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background dark:bg-[#121414] text-on-background dark:text-[#e2e2e2] min-h-screen selection:bg-secondary-container selection:text-on-secondary-container transition-colors duration-200">
+<!-- Top AppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile h-[56px] bg-surface-container-lowest dark:bg-[#0c0f0f] border-b border-outline-variant/20">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary dark:text-secondary-fixed" data-icon="storefront">storefront</span>
+<h1 class="font-headline-lg-mobile text-[20px] font-bold text-primary dark:text-[#ffd700]">ShowMate</h1>
+</div>
+<div class="flex items-center">
+<!-- Theme Toggle Button -->
+<button aria-label="Toggle dark/light mode" class="w-touch-target h-touch-target flex items-center justify-center hover:bg-surface-container-high dark:hover:bg-surface-container-highest rounded-full transition-colors focus-ring" id="themeToggle">
+<span class="material-symbols-outlined text-on-surface-variant dark:text-[#e2e2e2]" id="themeIcon">dark_mode</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas (Capped at 480px) -->
+<main class="max-w-[480px] mx-auto pt-20 pb-32 px-margin-mobile flex flex-col gap-8">
+<!-- CatalogHeader.vue -->
+<section class="flex flex-col items-center text-center pt-4">
+<div class="w-24 h-24 rounded-full border-2 border-secondary-container dark:border-[#ffd700] p-1 bg-surface-container-low dark:bg-[#002244] overflow-hidden mb-4">
+<img alt="ShowMate Logo" class="w-full h-full object-cover rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAS6ZFyLpiyrGcLToRl6-i1qPTJXZKrYxdqcBRA75ouOr_YdEruvTJNU4OXDt9LgnpNjV0wLaY2Bxzw94Bv241pD1cZJF1vkbNjzstZ9kfGoiCK4ORHr_Q27bqINsYu03y0ESG1R23GsWJ-bbrb2DMyiq3ismrpZ4T-qgcY2CBA9UVpUX_jbGxJMAyjJZmSfyb29bqESTuIdrgPCsMmPXZQzmhKkizM58-ig9-bU2-wrYShGjlvUbjfauzm2_PfM8kDiHj0si6Zryc">
+</div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface dark:text-[#e2e2e2] mb-2">ShowMate Boutique</h2>
+<p class="font-body-md text-body-md text-on-surface-variant dark:text-[#d0c6ab] max-w-[300px]">Premium artisanal products curated for the modern professional.</p>
+</section>
+<!-- Product Category Chips -->
+<div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+<span class="px-4 py-2 bg-primary dark:bg-[#ffd700] text-on-primary dark:text-[#221b00] rounded-full font-label-bold text-label-bold whitespace-nowrap">All Products</span>
+<span class="px-4 py-2 border border-outline-variant dark:border-white/20 rounded-full font-label-bold text-label-bold whitespace-nowrap text-on-surface-variant dark:text-[#e2e2e2]">Beverages</span>
+<span class="px-4 py-2 border border-outline-variant dark:border-white/20 rounded-full font-label-bold text-label-bold whitespace-nowrap text-on-surface-variant dark:text-[#e2e2e2]">Pastries</span>
+<span class="px-4 py-2 border border-outline-variant dark:border-white/20 rounded-full font-label-bold text-label-bold whitespace-nowrap text-on-surface-variant dark:text-[#e2e2e2]">Merchandise</span>
+</div>
+<!-- Product Stack -->
+<div class="flex flex-col gap-4">
+<!-- Card 1 -->
+<div class="bg-surface-container dark:bg-[#002244] border border-outline-variant/30 dark:border-white/10 p-3 rounded-lg flex flex-col gap-3 group transition-all focus-within:ring-2 focus-within:ring-secondary-container dark:focus-within:ring-[#ffd700]" tabindex="0">
+<div class="flex gap-4 items-center">
+<img alt="Artisanal Coffee" class="w-20 h-20 object-cover rounded bg-surface-container-low dark:bg-[#1a1c1c] shadow-inner" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnOro7NQS02nrQdPUnGJhd2ami3c_7los0rEgGW8pur5lMtQLD1cMFbb2oj4kzUh6Z964Ur_WW6uiAwD6wnd7MjKDEQ-tvtD7iddVbSjbhTbTkDoyXFrKWW-eg1KpfegFzMZozS7VB3rKNPuA5drfS9t21W5W11KBYUzAEox168ElmpM8npzElXwur8Tbmt2jFeNzXjUaYf3599LatAusr_Swou9l4cwTsI-GuG-Q1bknK4K6aditvr06-NB9SMDLE6oFjhZ7uDSc">
+<div class="flex-1">
+<h3 class="font-headline-lg-mobile text-[1.25rem] text-on-surface dark:text-[#e2e2e2]">Artisanal Coffee</h3>
+<p class="text-secondary dark:text-[#ffd700] font-label-bold text-label-bold mt-1">Rp 35.000</p>
+</div>
+</div>
+<button aria-label="Pesan Artisanal Coffee via WhatsApp" class="w-full h-touch-target bg-secondary-container dark:bg-[#ffd700] text-on-secondary-container dark:text-[#3a3000] font-label-bold text-label-bold rounded flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all focus-ring">
+<span class="material-symbols-outlined text-[20px]" data-icon="chat">chat</span>
+                Pesan via WA
+            </button>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container dark:bg-[#002244] border border-outline-variant/30 dark:border-white/10 p-3 rounded-lg flex flex-col gap-3 group transition-all focus-within:ring-2 focus-within:ring-secondary-container dark:focus-within:ring-[#ffd700]" tabindex="0">
+<div class="flex gap-4 items-center">
+<img alt="Golden Croissant" class="w-20 h-20 object-cover rounded bg-surface-container-low dark:bg-[#1a1c1c] shadow-inner" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD26gky1rDeiVjHYljnpYfyK5uoEUKzzBO_8HKs93JWtpzxTOfNycO9dW0krJa9sxBjYefwfWfZilNEk4g2wGHLmsB9E1rsabnWgLzFUzn4eNBwMA2oGu4J_DaLC2I95xZ8iHCa_ZQF-dqHabFdrMGEnGv255UKvhDS1oaOPPX71IQkJ4PgnrN4Xukb13rNAvljvo_dSMmR3WTylHzrSdIT-PQbg8E28RvFW7bdn4pthSrz2BjwzCnyT17aLC3lgaJR9ZNP_0WkLw8">
+<div class="flex-1">
+<h3 class="font-headline-lg-mobile text-[1.25rem] text-on-surface dark:text-[#e2e2e2]">Golden Croissant</h3>
+<p class="text-secondary dark:text-[#ffd700] font-label-bold text-label-bold mt-1">Rp 22.000</p>
+</div>
+</div>
+<button aria-label="Pesan Golden Croissant via WhatsApp" class="w-full h-touch-target bg-secondary-container dark:bg-[#ffd700] text-on-secondary-container dark:text-[#3a3000] font-label-bold text-label-bold rounded flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all focus-ring">
+<span class="material-symbols-outlined text-[20px]" data-icon="chat">chat</span>
+                Pesan via WA
+            </button>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 max-w-[480px] left-1/2 -translate-x-1/2 bg-surface-container-lowest dark:bg-[#0c0f0f] border-t border-outline-variant/20 transition-colors">
+<a aria-label="Catalog Tab" class="flex flex-col items-center justify-center text-primary dark:text-[#ffd700] h-full px-4 border-t-2 border-primary dark:border-[#ffd700]" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="font-label-sm text-label-sm">Catalog</span>
+</a>
+<a aria-label="Manage Tab" class="flex flex-col items-center justify-center text-on-surface-variant dark:text-[#d0c6ab] h-full px-4 hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="add_box">add_box</span>
+<span class="font-label-sm text-label-sm">Manage</span>
+</a>
+<a aria-label="Stats Tab" class="flex flex-col items-center justify-center text-on-surface-variant dark:text-[#d0c6ab] h-full px-4 hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="equalizer">equalizer</span>
+<span class="font-label-sm text-label-sm">Stats</span>
+</a>
+<button aria-label="Toggle Theme" class="flex flex-col items-center justify-center text-on-surface-variant dark:text-[#d0c6ab] h-full px-4 hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-colors focus-ring" id="navThemeToggle">
+<span class="material-symbols-outlined" data-icon="contrast">contrast</span>
+<span class="font-label-sm text-label-sm">Theme</span>
+</button></nav>
+<!-- Floating Action Button -->
+<button aria-label="Share Catalog" class="fixed bottom-20 right-4 w-14 h-14 bg-primary dark:bg-[#ffd700] text-on-primary dark:text-[#3a3000] rounded-full shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition-transform z-40 focus-ring md:right-[calc(50%-220px)]">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+</button>
+<script>
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const html = document.documentElement;
+
+    // Initialize based on current class
+    function updateThemeIcon() {
+        if (html.classList.contains('dark')) {
+            themeIcon.textContent = 'light_mode';
+        } else {
+            themeIcon.textContent = 'dark_mode';
+        }
+    }
+
+    themeToggle.addEventListener('click', () => {
+        html.classList.toggle('dark');
+        updateThemeIcon();
+        
+        // Optional: Local storage persistence
+        localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    // Check preference on load
+    if (localStorage.getItem('theme') === 'light') {
+        html.classList.remove('dark');
+    }
+    updateThemeIcon();
+
+    // Horizontal scroll with wheel for category chips
+    const scrollContainer = document.querySelector('.overflow-x-auto');
+    if(scrollContainer) {
+        scrollContainer.addEventListener('wheel', (evt) => {
+            evt.preventDefault();
+            scrollContainer.scrollLeft += evt.deltaY;
+        });
+    }
+</script>
+
+
+</body></html>

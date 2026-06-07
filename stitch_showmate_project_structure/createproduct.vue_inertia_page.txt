@@ -1,0 +1,90 @@
+<template>
+  <div class="min-h-screen bg-surface dark:bg-surface text-on-surface">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-surface/80 backdrop-blur px-4 h-16 flex items-center justify-between border-b border-outline">
+      <Link href="/dashboard" class="material-icons text-on-surface">arrow_back</Link>
+      <h1 class="font-bold text-lg">Add New Product</h1>
+      <div class="w-6"></div>
+    </header>
+
+    <main class="pt-20 pb-32 px-4 max-w-2xl mx-auto">
+      <!-- Progress Bar -->
+      <div class="flex gap-2 mb-8">
+        <div v-for="i in 3" :key="i" class="h-1 flex-1 rounded-full" :class="step >= i ? 'bg-accent' : 'bg-surface-container-high'"></div>
+      </div>
+
+      <form @submit.prevent="submit">
+        <!-- Step 1: Basic Info -->
+        <div v-if="step === 1" class="space-y-6 animate-in fade-in slide-in-from-right-4">
+          <h2 class="text-2xl font-bold">Product Details</h2>
+          
+          <div class="space-y-2">
+            <label class="text-sm font-bold text-on-surface-variant uppercase">Product Name</label>
+            <input 
+              v-model="form.name" 
+              type="text" 
+              placeholder="e.g. Handmade Leather Tote"
+              class="w-full bg-surface-container px-4 py-4 rounded-xl border border-outline focus:ring-2 focus:ring-accent outline-none"
+            >
+          </div>
+
+          <div class="space-y-2">
+            <label class="text-sm font-bold text-on-surface-variant uppercase">Item Type</label>
+            <div class="grid grid-cols-2 gap-4">
+              <button 
+                type="button"
+                @click="form.type = 'physical'"
+                class="p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all"
+                :class="form.type === 'physical' ? 'border-accent bg-accent/5' : 'border-outline'"
+              >
+                <span class="material-icons">inventory_2</span>
+                <span class="font-bold">Physical</span>
+              </button>
+              <button 
+                type="button"
+                @click="form.type = 'service'"
+                class="p-4 rounded-xl border-2 flex flex-col items-center gap-2 transition-all"
+                :class="form.type === 'service' ? 'border-accent bg-accent/5' : 'border-outline'"
+              >
+                <span class="material-icons">design_services</span>
+                <span class="font-bold">Service</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Further steps would be implemented similarly -->
+        <div v-if="step === 1" class="fixed bottom-0 left-0 w-full p-4 bg-surface/80 backdrop-blur border-t border-outline">
+          <button 
+            type="button"
+            @click="step++"
+            :disabled="!form.name"
+            class="w-full bg-accent text-on-accent py-4 rounded-2xl font-bold disabled:opacity-50 disabled:grayscale transition-all active:scale-[0.98]"
+          >
+            NEXT STEP
+          </button>
+        </div>
+      </form>
+    </main>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+import { Link, useForm } from '@inertiajs/vue3';
+
+const step = ref(1);
+
+const form = useForm({
+  name: '',
+  type: 'physical',
+  price: 0,
+  pricing_type: 'fixed',
+  description: '',
+  image: null
+});
+
+const submit = () => {
+  form.post('/products');
+};
+</script>

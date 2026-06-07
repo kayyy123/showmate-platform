@@ -1,0 +1,15 @@
+resources/js/
+├── Components/
+│   ├── AccessibilityControls.vue
+│   ├── ActionCTA.vue
+│   ├── CatalogHeader.vue
+│   ├── ProductLink.vue
+│   └── Shared/
+│       ├── BottomNavBar.vue
+│       └── TopAppBar.vue
+├── Layouts/
+│   └── AuthenticatedLayout.vue
+└── Pages/
+    ├── Catalog.vue
+    └── Products/
+        └── Create.vue

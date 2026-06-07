@@ -1,0 +1,93 @@
+<template>
+  <div class="min-h-screen bg-surface dark:bg-surface text-on-surface dark:text-on-surface">
+    <TopAppBar headline="Catalog Management" />
+
+    <main class="pt-20 pb-24 px-4 max-w-5xl mx-auto">
+      <!-- Store URL Card -->
+      <div class="bg-surface-container p-6 rounded-2xl mb-8 border border-outline">
+        <h2 class="text-sm font-bold uppercase tracking-wider text-on-surface-variant mb-4">Store Front URL</h2>
+        <div class="flex gap-2">
+          <input 
+            type="text" 
+            readonly 
+            :value="storeUrl" 
+            class="flex-1 bg-surface-container-low px-4 py-3 rounded-lg border border-outline text-on-surface focus:outline-none focus:ring-2 focus:ring-accent"
+          >
+          <button @click="copyUrl" class="bg-accent text-on-accent px-6 py-3 rounded-lg font-bold flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all">
+            <span class="material-icons text-sm">content_copy</span>
+            COPY
+          </button>
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <Link href="/products/create" class="w-full bg-accent text-on-accent py-4 rounded-2xl font-bold text-center flex items-center justify-center gap-2 mb-8 hover:opacity-90 active:scale-95 transition-all focus:ring-4 focus:ring-accent/50">
+        <span class="material-icons">add</span>
+        ADD NEW ITEM
+      </Link>
+
+      <!-- Stats Summary -->
+      <div class="grid grid-cols-2 gap-4 mb-8">
+        <div class="bg-surface-container p-6 rounded-2xl border border-outline">
+          <p class="text-xs text-on-surface-variant uppercase font-bold">Total Views</p>
+          <p class="text-3xl font-bold text-accent">{{ stats.views }}</p>
+        </div>
+        <div class="bg-surface-container p-6 rounded-2xl border border-outline">
+          <p class="text-xs text-on-surface-variant uppercase font-bold">Total Sales</p>
+          <p class="text-3xl font-bold text-accent">{{ stats.sales }}</p>
+        </div>
+      </div>
+
+      <!-- Product Management List -->
+      <section>
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="font-bold text-xl">Live Products ({{ products.length }})</h3>
+          <button class="material-icons text-on-surface-variant">filter_list</button>
+        </div>
+
+        <div class="space-y-4">
+          <div v-for="product in products" :key="product.id" class="bg-surface-container-low p-4 rounded-xl border border-outline flex items-center gap-4">
+            <img :src="product.image" class="w-16 h-16 rounded-lg object-cover" :alt="product.name">
+            <div class="flex-1">
+              <h4 class="font-bold">{{ product.name }}</h4>
+              <p class="text-accent font-bold">{{ formatCurrency(product.price) }}</p>
+              <div class="flex gap-4 mt-2">
+                <button class="text-xs flex items-center gap-1 text-on-surface-variant">
+                  <span class="material-icons text-sm">{{ product.visible ? 'visibility' : 'visibility_off' }}</span>
+                  {{ product.visible ? 'VISIBLE' : 'HIDDEN' }}
+                </button>
+                <Link :href="`/products/${product.id}/edit`" class="text-xs flex items-center gap-1 text-on-surface-variant hover:text-accent">
+                  <span class="material-icons text-sm">edit</span>
+                  EDIT
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <BottomNavBar active="Manage" />
+  </div>
+</template>
+
+<script setup>
+import { Link } from '@inertiajs/vue3';
+import TopAppBar from '@/Components/Shared/TopAppBar.vue';
+import BottomNavBar from '@/Components/Shared/BottomNavBar.vue';
+
+const props = defineProps({
+  storeUrl: String,
+  stats: Object,
+  products: Array
+});
+
+const copyUrl = () => {
+  navigator.clipboard.writeText(props.storeUrl);
+  // Add toast notification logic here
+};
+
+const formatCurrency = (value) => {
+  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(value);
+};
+</script>

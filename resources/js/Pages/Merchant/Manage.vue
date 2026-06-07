@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import AppHeader from '@/Components/AppHeader.vue';
 import BottomNavBar from '@/Components/Shared/BottomNavBar.vue';
@@ -7,8 +7,19 @@ import BottomNavBar from '@/Components/Shared/BottomNavBar.vue';
 const page = usePage();
 const catalogUrl = `/catalog/${page.props.auth.user.slug}`;
 
+const searchQuery = ref('');
 const toast = ref(null);
 let toastTimer = null;
+
+const filteredProducts = computed(() => {
+    const q = searchQuery.value.toLowerCase().trim();
+    if (!q) return props.products;
+    return props.products.filter(p =>
+        (p.name && p.name.toLowerCase().includes(q)) ||
+        (p.category && p.category.toLowerCase().includes(q)) ||
+        (p.tag && p.tag.toLowerCase().includes(q))
+    );
+});
 
 function showToast(message) {
     toast.value = message;
@@ -61,6 +72,17 @@ const props = defineProps({
                 </Link>
             </div>
 
+            <!-- Search -->
+            <div class="mb-4">
+                <input
+                    v-model="searchQuery"
+                    type="text"
+                    placeholder="Cari produk berdasarkan nama, kategori, atau tag..."
+                    aria-label="Cari produk"
+                    class="w-full py-2.5 px-4 rounded-xl border border-outline bg-surface text-on-surface placeholder-on-surface-variant text-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent/30 focus-visible:border-accent transition-all"
+                />
+            </div>
+
             <!-- Toast -->
             <Teleport to="body">
                 <Transition
@@ -94,9 +116,17 @@ const props = defineProps({
                     <p class="text-sm mt-1">Mulai dengan menambahkan produk pertama Anda.</p>
                 </div>
 
+                <div v-else-if="filteredProducts.length === 0" class="text-center py-12 text-on-surface-variant">
+                    <svg class="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <p class="font-medium">Produk tidak ditemukan</p>
+                </div>
+
                 <div v-else class="grid gap-3">
                     <div
-                        v-for="product in products"
+                        v-for="product in filteredProducts"
                         :key="product.id"
                         class="bg-surface-container-low p-3 rounded-xl border border-outline flex gap-3 hover:border-accent transition-colors group"
                     >

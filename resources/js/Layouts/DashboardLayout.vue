@@ -13,6 +13,11 @@ const props = defineProps({
 
 const page = usePage();
 const user = computed(() => page.props.auth.user);
+const storeName = computed(() => user.value?.store_name || 'Toko Saya');
+const storeInitial = computed(() => {
+    const name = user.value?.store_name || user.value?.name || '';
+    return name.charAt(0).toUpperCase() || 'T';
+});
 const { isDark, toggleTheme } = useTheme();
 const { fontSize, highContrast, increaseFont, decreaseFont, toggleHighContrast } = useAccessibility();
 
@@ -114,7 +119,16 @@ function closeSidebar() {
                         {{ item.label }}
                     </Link>
                 </nav>
-                <div class="p-3 border-t border-outline">
+                <div class="p-3 border-t border-outline space-y-2">
+                    <div class="flex items-center gap-3 px-3 py-2">
+                        <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm">
+                            {{ storeInitial }}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-on-surface truncate">{{ storeName }}</p>
+                            <p class="text-xs text-on-surface-variant truncate">{{ user?.email || '' }}</p>
+                        </div>
+                    </div>
                     <button
                         @click="logout"
                         class="flex items-center gap-3 px-3 py-2.5 w-full rounded-xl text-sm font-medium text-red-400 hover:bg-surface-container transition-colors"
@@ -162,15 +176,15 @@ function closeSidebar() {
                 </nav>
                 <div class="p-3 border-t border-outline">
                     <div class="flex items-center gap-3 px-3 py-2">
-                    <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm">
-                        {{ user?.name?.charAt(0)?.toUpperCase() || 'U' }}
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-on-surface truncate">{{ user?.name || 'User' }}</p>
-                        <p class="text-xs text-on-surface-variant truncate">{{ user?.email || '' }}</p>
+                        <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm">
+                            {{ storeInitial }}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-on-surface truncate">{{ storeName }}</p>
+                            <p class="text-xs text-on-surface-variant truncate">{{ user?.email || '' }}</p>
+                        </div>
                     </div>
                 </div>
-            </div>
         </aside>
 
         <!-- Main area -->
@@ -207,7 +221,7 @@ function closeSidebar() {
                             @click="profileMenuOpen = !profileMenuOpen"
                             class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm hover:brightness-110 transition-all"
                         >
-                            {{ user?.name?.charAt(0)?.toUpperCase() || 'U' }}
+                            {{ storeInitial }}
                         </button>
                         <div v-if="profileMenuOpen" class="fixed inset-0 z-40" @click="profileMenuOpen = false" />
                         <Transition
@@ -318,10 +332,10 @@ function closeSidebar() {
                             class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-surface-container transition-colors"
                         >
                             <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm">
-                                {{ user?.name?.charAt(0)?.toUpperCase() || 'U' }}
+                                {{ storeInitial }}
                             </div>
                             <div class="text-left hidden lg:block">
-                                <p class="text-sm font-medium text-on-surface leading-tight">{{ user?.name || 'User' }}</p>
+                                <p class="text-sm font-medium text-on-surface leading-tight">{{ storeName }}</p>
                                 <p class="text-xs text-on-surface-variant leading-tight">{{ user?.email || '' }}</p>
                             </div>
                         </button>

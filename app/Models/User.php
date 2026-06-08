@@ -22,6 +22,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'role',
         'password',
         'slug',
         'store_name',
@@ -82,5 +83,15 @@ class User extends Authenticatable
     public function checkouts(): HasMany
     {
         return $this->hasMany(Checkout::class);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isMerchant(): bool
+    {
+        return $this->role === 'merchant';
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StoreProfileController;
+use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\LinkController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +28,11 @@ Route::redirect('/', '/login');
 
 Route::get('/catalog/{slug}', [CatalogController::class, 'show'])->name('catalog.show');
 Route::post('/catalog/{user}/checkout', [CheckoutController::class, 'store'])->name('catalog.checkout');
+
+Route::middleware('guest')->group(function () {
+    Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle'])->name('auth.google');
+    Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
+});
 
 Route::permanentRedirect('/dashboard', '/merchant/manage')
     ->name('dashboard');

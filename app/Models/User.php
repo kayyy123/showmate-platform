@@ -32,6 +32,8 @@ class User extends Authenticatable
         'shopee_url',
         'tokopedia_url',
         'store_logo',
+        'google_id',
+        'avatar',
     ];
 
     protected static function booted()

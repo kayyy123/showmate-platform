@@ -1,4 +1,5 @@
 <script setup>
+import GoogleIcon from '@/Components/GoogleIcon.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -56,6 +57,25 @@ const submit = () => {
                 <!-- Heading -->
                 <h1 class="text-2xl font-bold text-on-surface">Buat akun baru</h1>
                 <p class="text-sm text-on-surface-variant mt-1 mb-8">Bergabunglah dengan EtalaseKu dan kembangkan bisnis Anda</p>
+
+                <!-- Google button -->
+                <a
+                    :href="route('auth.google')"
+                    class="w-full flex items-center justify-center gap-3 px-4 py-2.5 border border-outline rounded-lg text-sm font-medium text-on-surface bg-surface hover:bg-surface-container transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                >
+                    <GoogleIcon class="w-5 h-5 shrink-0" />
+                    Daftar dengan Google
+                </a>
+
+                <!-- Divider -->
+                <div class="relative my-6">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-outline" />
+                    </div>
+                    <div class="relative flex justify-center text-xs uppercase">
+                        <span class="bg-surface px-2 text-on-surface-variant">atau</span>
+                    </div>
+                </div>
 
                 <!-- Form -->
                 <form @submit.prevent="submit" class="space-y-5">

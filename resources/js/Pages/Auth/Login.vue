@@ -1,5 +1,6 @@
 <script setup>
 import Checkbox from '@/Components/Checkbox.vue';
+import GoogleIcon from '@/Components/GoogleIcon.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -49,6 +50,25 @@ const submit = () => {
                 <!-- Status -->
                 <div v-if="status" class="mb-4 text-sm font-medium text-emerald-600 dark:text-emerald-400" role="status">
                     {{ status }}
+                </div>
+
+                <!-- Google button -->
+                <a
+                    :href="route('auth.google')"
+                    class="w-full flex items-center justify-center gap-3 px-4 py-2.5 border border-outline rounded-lg text-sm font-medium text-on-surface bg-surface hover:bg-surface-container transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                >
+                    <GoogleIcon class="w-5 h-5 shrink-0" />
+                    Masuk dengan Google
+                </a>
+
+                <!-- Divider -->
+                <div class="relative my-6">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-outline" />
+                    </div>
+                    <div class="relative flex justify-center text-xs uppercase">
+                        <span class="bg-surface px-2 text-on-surface-variant">atau</span>
+                    </div>
                 </div>
 
                 <!-- Form -->

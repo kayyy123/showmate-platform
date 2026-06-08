@@ -1,6 +1,5 @@
 <script setup>
 import Checkbox from '@/Components/Checkbox.vue';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -30,80 +29,110 @@ const submit = () => {
 </script>
 
 <template>
-    <GuestLayout>
-        <Head title="Masuk" />
+    <Head title="Masuk" />
 
-        <div class="text-center mb-6">
-            <h1 class="text-2xl font-bold text-gray-900">UMKN</h1>
-            <p class="text-sm text-gray-500 mt-1">Buat dan bagikan katalog tokomu dengan mudah</p>
-        </div>
-
-        <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
-            {{ status }}
-        </div>
-
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
-
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autofocus
-                    autocomplete="username"
+    <div class="min-h-screen flex flex-col md:flex-row bg-surface">
+        <!-- Left panel (form) -->
+        <div class="flex-1 flex items-center justify-center px-6 py-10 md:py-0">
+            <div class="w-full max-w-sm">
+                <!-- Logo -->
+                <img
+                    src="/images/logo-etalaseku.png"
+                    alt="EtalaseKu"
+                    class="h-10 w-auto mb-8"
                 />
 
-                <InputError class="mt-2" :message="form.errors.email" />
+                <!-- Heading -->
+                <h1 class="text-2xl font-bold text-on-surface">Selamat datang kembali!</h1>
+                <p class="text-sm text-on-surface-variant mt-1 mb-8">Masuk ke akun EtalaseKu Anda</p>
+
+                <!-- Status -->
+                <div v-if="status" class="mb-4 text-sm font-medium text-emerald-600 dark:text-emerald-400" role="status">
+                    {{ status }}
+                </div>
+
+                <!-- Form -->
+                <form @submit.prevent="submit" class="space-y-5">
+                    <div>
+                        <InputLabel for="email" value="Email" />
+                        <TextInput
+                            id="email"
+                            type="email"
+                            class="mt-1.5 block w-full"
+                            v-model="form.email"
+                            required
+                            autofocus
+                            autocomplete="username"
+                        />
+                        <InputError class="mt-2" :message="form.errors.email" />
+                    </div>
+
+                    <div>
+                        <InputLabel for="password" value="Kata Sandi" />
+                        <TextInput
+                            id="password"
+                            type="password"
+                            class="mt-1.5 block w-full"
+                            v-model="form.password"
+                            required
+                            autocomplete="current-password"
+                        />
+                        <InputError class="mt-2" :message="form.errors.password" />
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center gap-2 cursor-pointer select-none">
+                            <Checkbox name="remember" v-model:checked="form.remember" />
+                            <span class="text-sm text-on-surface">Ingat saya</span>
+                        </label>
+                        <Link
+                            v-if="canResetPassword"
+                            :href="route('password.request')"
+                            class="text-sm font-medium text-primary hover:text-primary/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-md"
+                        >
+                            Lupa kata sandi?
+                        </Link>
+                    </div>
+
+                    <PrimaryButton
+                        class="w-full justify-center"
+                        :class="{ 'opacity-50': form.processing }"
+                        :disabled="form.processing"
+                    >
+                        {{ form.processing ? 'Memproses...' : 'Masuk' }}
+                    </PrimaryButton>
+
+                    <p class="text-center text-sm text-on-surface-variant">
+                        Belum punya akun?
+                        <Link
+                            :href="route('register')"
+                            class="font-semibold text-primary hover:text-primary/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-md"
+                        >
+                            Daftar
+                        </Link>
+                    </p>
+                </form>
             </div>
-
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="current-password"
-                />
-
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="block mt-4">
-                <label class="flex items-center">
-                    <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ms-2 text-sm text-gray-600">Remember me</span>
-                </label>
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <Link
-                    v-if="canResetPassword"
-                    :href="route('password.request')"
-                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                    Forgot your password?
-                </Link>
-
-                <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Log in
-                </PrimaryButton>
-            </div>
-        </form>
-
-        <div class="mt-6 pt-6 border-t border-gray-200 text-center">
-            <p class="text-sm text-gray-600 mb-3">Belum punya toko?</p>
-            <Link
-                :href="route('register')"
-                class="inline-flex items-center px-6 py-2.5 bg-accent text-on-accent rounded-lg font-bold text-sm hover:brightness-110 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent/30"
-            >
-                Buat Toko Gratis
-            </Link>
         </div>
-    </GuestLayout>
+
+        <!-- Right panel (poster) -->
+        <div class="hidden md:block md:w-1/2 lg:w-1/2 xl:w-1/2 sticky top-0 h-screen">
+            <img
+                src="/images/login.png"
+                alt="Ilustrasi login EtalaseKu"
+                class="w-full h-full object-cover"
+            />
+            <div class="absolute inset-0 bg-gradient-to-l from-transparent via-transparent to-surface/10" />
+        </div>
+
+        <!-- Mobile poster (top) -->
+        <div class="md:hidden relative w-full h-48 shrink-0">
+            <img
+                src="/images/login.png"
+                alt="Ilustrasi login EtalaseKu"
+                class="w-full h-full object-cover"
+            />
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent to-surface" />
+        </div>
+    </div>
 </template>

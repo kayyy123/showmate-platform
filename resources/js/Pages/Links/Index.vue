@@ -171,17 +171,6 @@ function formatUrlDisplay(url) {
 
         <div class="space-y-6 max-w-3xl">
 
-            <!-- Flash message -->
-            <div
-                v-if="$page.props.flash?.success"
-                class="rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-4 py-3 text-sm font-medium flex items-center gap-2"
-            >
-                <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                {{ $page.props.flash.success }}
-            </div>
-
             <!-- Action bar -->
             <div class="flex items-center justify-between gap-4">
                 <div>

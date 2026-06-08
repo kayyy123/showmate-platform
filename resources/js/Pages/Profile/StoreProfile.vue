@@ -90,10 +90,6 @@ function submit() {
 
         <div class="space-y-6 max-w-3xl">
 
-            <div aria-live="polite" aria-atomic="true" class="sr-only">
-                {{ form.recentlySuccessful ? 'Profil berhasil disimpan' : '' }}
-            </div>
-
             <!-- Banner Preview -->
             <section aria-labelledby="banner-preview-heading">
                 <h2 id="banner-preview-heading" class="sr-only">Pratinjau Banner</h2>

@@ -86,6 +86,6 @@ class SocialiteController extends Controller
             'redirect' => RouteServiceProvider::HOME,
         ]);
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        return redirect()->intended(RouteServiceProvider::HOME)->with('success', 'Berhasil masuk dengan Google!');
     }
 }

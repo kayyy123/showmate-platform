@@ -1,11 +1,9 @@
 <script setup>
-import { ref, watch, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 const page = usePage();
-const toast = ref(null);
-let toastTimer = null;
 
 const searchQuery = ref('');
 
@@ -30,12 +28,6 @@ const filteredProducts = computed(() => {
     );
 });
 
-function showToast(message) {
-    toast.value = message;
-    if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => { toast.value = null; }, 2500);
-}
-
 function destroyProduct(product) {
     if (confirm(`Hapus produk "${product.name}"?`)) {
         router.delete(route('products.destroy', product.id));
@@ -46,16 +38,8 @@ function toggleVisibility(product) {
     router.post(route('products.toggle-visibility', product.id), {}, {
         preserveState: true,
         preserveScroll: true,
-        onSuccess: () => {
-            const msg = page.props.flash?.success;
-            if (msg) showToast(msg);
-        },
     });
 }
-
-watch(() => page.props.flash?.success, (msg) => {
-    if (msg) showToast(msg);
-});
 </script>
 
 <template>
@@ -129,27 +113,6 @@ watch(() => page.props.flash?.success, (msg) => {
                 class="flex-1 py-3 px-4 rounded-xl border border-outline bg-surface text-on-surface placeholder-on-surface-variant text-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 focus-visible:border-primary transition-all"
             />
         </div>
-
-        <!-- Toast -->
-        <Teleport to="body">
-            <Transition
-                enter-active-class="transition-all duration-300"
-                enter-from-class="opacity-0 translate-y-4"
-                enter-to-class="opacity-100 translate-y-0"
-                leave-active-class="transition-all duration-200"
-                leave-from-class="opacity-100 translate-y-0"
-                leave-to-class="opacity-0 translate-y-4"
-            >
-                <div
-                    v-if="toast"
-                    role="status"
-                    aria-live="polite"
-                    class="fixed bottom-24 md:bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl bg-surface-container-high border border-outline text-on-surface font-medium text-sm shadow-xl"
-                >
-                    {{ toast }}
-                </div>
-            </Transition>
-        </Teleport>
 
         <!-- Product List -->
         <section>

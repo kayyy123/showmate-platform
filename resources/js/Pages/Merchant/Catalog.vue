@@ -13,8 +13,6 @@ const fullCatalogUrl = window.location.origin + catalogUrl;
 
 const searchQuery = ref('');
 const filterStatus = ref('all');
-const toast = ref(null);
-let toastTimer = null;
 
 const filteredProducts = computed(() => {
     let items = props.products;
@@ -37,15 +35,8 @@ const filteredProducts = computed(() => {
 const activeCount = computed(() => props.products.filter(p => p.is_active).length);
 const inactiveCount = computed(() => props.products.filter(p => !p.is_active).length);
 
-function showToast(message) {
-    toast.value = message;
-    if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => { toast.value = null; }, 2500);
-}
-
 function copyLink() {
     navigator.clipboard.writeText(fullCatalogUrl);
-    showToast('Link katalog berhasil disalin');
 }
 
 function shareCatalog() {
@@ -65,10 +56,6 @@ function toggleVisibility(product) {
     router.post(route('products.toggle-visibility', product.id), {}, {
         preserveState: true,
         preserveScroll: true,
-        onSuccess: () => {
-            const msg = page.props.flash?.success;
-            if (msg) showToast(msg);
-        },
     });
 }
 
@@ -76,7 +63,6 @@ function destroyProduct(product) {
     if (confirm(`Hapus produk "${product.name}"?`)) {
         router.delete(route('products.destroy', product.id), {
             preserveScroll: true,
-            onSuccess: () => showToast('Produk berhasil dihapus'),
         });
     }
 }
@@ -93,27 +79,6 @@ function formatPrice(price) {
         <template #header>Katalog Saya</template>
 
         <div class="space-y-6 max-w-4xl">
-
-            <!-- Flash / Toast -->
-            <Teleport to="body">
-                <Transition
-                    enter-active-class="transition-all duration-300"
-                    enter-from-class="opacity-0 translate-y-4"
-                    enter-to-class="opacity-100 translate-y-0"
-                    leave-active-class="transition-all duration-200"
-                    leave-from-class="opacity-100 translate-y-0"
-                    leave-to-class="opacity-0 translate-y-4"
-                >
-                    <div
-                        v-if="toast"
-                        role="status"
-                        aria-live="polite"
-                        class="fixed bottom-24 md:bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl bg-surface-container-high border border-outline text-on-surface font-medium text-sm shadow-xl"
-                    >
-                        {{ toast }}
-                    </div>
-                </Transition>
-            </Teleport>
 
             <!-- Catalog Link Card -->
             <div class="rounded-2xl border border-primary/30 bg-primary/5 p-5">

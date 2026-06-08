@@ -30,7 +30,7 @@ const submit = () => {
             <img
                 src="/images/logo-etalaseku-seller.png"
                 alt="EtalaseKu"
-                class="h-8 w-auto"
+                class="h-10 w-auto"
             />
             <a
                 href="/"

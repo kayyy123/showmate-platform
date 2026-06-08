@@ -35,11 +35,12 @@ const submit = () => {
     <div class="min-h-screen bg-[#0a0a0b] flex flex-col">
         <!-- Header -->
         <header class="flex items-center justify-between px-6 lg:px-12 py-4 shrink-0">
-            <img
-                src="/images/logo-etalaseku-seller.png"
-                alt="EtalaseKu"
-                class="h-10 w-auto"
-            />
+            <a
+                href="/"
+                class="text-3xl lg:text-4xl font-extrabold tracking-tight hover:opacity-90 transition-opacity"
+            >
+                <span class="text-white">Etalase</span><span class="text-[#FFD700]">Ku</span>
+            </a>
             <a
                 href="/"
                 class="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/50 rounded-md px-2 py-1"

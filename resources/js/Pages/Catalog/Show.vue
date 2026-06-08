@@ -93,16 +93,6 @@ function submitCheckout() {
     });
 }
 
-function getIcon(icon) {
-    if (icon === 'whatsapp') return 'whatsapp';
-    if (icon === 'instagram') return 'instagram';
-    if (icon === 'tiktok') return 'tiktok';
-    if (icon === 'shopee') return 'shopee';
-    if (icon === 'tokopedia') return 'tokopedia';
-    if (icon === 'youtube') return 'youtube';
-    if (icon === 'facebook') return 'facebook';
-    return 'globe';
-}
 </script>
 
 <template>

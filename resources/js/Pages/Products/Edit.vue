@@ -240,8 +240,8 @@ function formatPriceInput(e) {
                             />
                         </div>
                         <p v-if="form.errors.image" class="mt-2 text-sm text-red-400" role="alert">{{ form.errors.image }}</p>
-                        <p v-if="props.product.image_url && !previewUrl.startsWith('data:')" class="mt-2 text-xs text-on-surface-variant flex items-center gap-1">
-                            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <p v-if="props.product.image_url && !previewUrl?.startsWith('data:')" class="mt-2 text-xs text-on-surface-variant flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                             Upload gambar baru untuk mengganti gambar saat ini
@@ -255,7 +255,7 @@ function formatPriceInput(e) {
                     class="rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 px-4 py-3 text-sm font-medium flex items-center gap-2"
                     role="status"
                 >
-                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     Produk berhasil diperbarui!

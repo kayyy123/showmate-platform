@@ -1,313 +1,590 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3'
 
 defineProps({
-    canLogin: {
-        type: Boolean,
+    canLogin: Boolean,
+    canRegister: Boolean,
+})
+
+const features = [
+    {
+        title: 'Katalog Produk',
+        description: 'Tampilkan semua produk UMKM dalam satu halaman katalog digital yang rapi, lengkap dengan gambar, harga, dan deskripsi.',
+        icon: 'catalog',
     },
-    canRegister: {
-        type: Boolean,
+    {
+        title: 'Tautan Bisnis',
+        description: 'Kumpulkan semua link penting seperti WhatsApp, Instagram, TikTok, dan marketplace dalam satu tempat yang mudah diakses.',
+        icon: 'links',
     },
-    laravelVersion: {
-        type: String,
-        required: true,
+    {
+        title: 'Profil Toko',
+        description: 'Buat profil toko profesional dengan logo, deskripsi, dan informasi kontak yang mewakili brand UMKM Anda.',
+        icon: 'store',
     },
-    phpVersion: {
-        type: String,
-        required: true,
+    {
+        title: 'Statistik Kunjungan',
+        description: 'Pantau berapa banyak pengunjung yang melihat katalog dan melakukan interaksi dengan tautan bisnis Anda.',
+        icon: 'stats',
     },
-});
+    {
+        title: 'Aksesibilitas',
+        description: 'Halaman publik yang ramah untuk semua pengguna dengan dukungan keyboard navigasi, kontras tinggi, dan screen reader.',
+        icon: 'accessibility',
+    },
+    {
+        title: 'Checkout WhatsApp',
+        description: 'Pelanggan dapat langsung memesan produk melalui tombol checkout yang terhubung langsung ke WhatsApp bisnis Anda.',
+        icon: 'checkout',
+    },
+]
+
+const plans = [
+    {
+        name: 'Gratis',
+        price: 'Rp 0',
+        period: 'selamanya',
+        description: 'Coba semua fitur dasar tanpa biaya. Mulai kembangkan toko digital UMKM Anda sekarang.',
+        features: [
+            'Katalog produk hingga 10 item',
+            'Tautan bisnis tidak terbatas',
+            'Profil toko',
+            'Statistik kunjungan',
+            'Aksesibilitas dasar',
+            'Tema warna',
+        ],
+        cta: 'Mulai Gratis',
+        href: 'register',
+        highlighted: false,
+    },
+    {
+        name: 'Pro',
+        price: 'Rp 49.000',
+        period: '/bulan',
+        description: 'Fitur lengkap untuk UMKM yang ingin berkembang lebih jauh dengan katalog tanpa batas.',
+        features: [
+            'Katalog produk tidak terbatas',
+            'Tautan bisnis tidak terbatas',
+            'Profil toko premium',
+            'Statistik lengkap',
+            'Aksesibilitas penuh',
+            'Tema kustom',
+            'Prioritas dukungan',
+            'Hapus branding EtalaseKu',
+        ],
+        cta: 'Langganan Pro',
+        href: 'register',
+        highlighted: true,
+    },
+]
+
+const trustBadges = [
+    'Gratis selamanya untuk UMKM',
+    'Ribuan UMKM telah bergabung',
+    'Aksesibilitas untuk semua',
+]
 </script>
 
 <template>
-    <Head title="Welcome" />
+    <Head title="EtalaseKu - Satu Link Untuk Semua Produk UMKM" />
 
-    <div
-        class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white"
-    >
-        <div v-if="canLogin" class="sm:fixed sm:top-0 sm:right-0 p-6 text-end">
-            <Link
-                v-if="$page.props.auth.user"
-                :href="route('dashboard')"
-                class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                >Dashboard</Link
+    <div class="min-h-screen bg-[#0a0a0b] text-white overflow-x-hidden">
+        <!-- ==================== NAVBAR ==================== -->
+        <nav
+            class="fixed top-3 md:top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-24px)] md:w-auto md:min-w-[640px] lg:min-w-[768px] max-w-4xl"
+            role="navigation"
+            aria-label="Navigasi utama"
+        >
+            <div
+                class="flex items-center justify-between px-4 md:px-6 py-2.5 md:py-3 rounded-full bg-zinc-900/80 backdrop-blur-xl border border-zinc-800/60 shadow-lg shadow-black/20"
             >
-
-            <template v-else>
+                <!-- Brand -->
                 <Link
-                    :href="route('login')"
-                    class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                    >Log in</Link
+                    href="/"
+                    class="text-xl md:text-2xl font-extrabold tracking-tight shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/50 rounded-lg px-1"
+                    aria-label="EtalaseKu beranda"
                 >
+                    <span class="text-white">Etalase</span><span class="text-[#FFD700]">Ku</span>
+                </Link>
 
-                <Link
-                    v-if="canRegister"
-                    :href="route('register')"
-                    class="ms-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                    >Register</Link
-                >
-            </template>
-        </div>
+                <!-- Center nav (desktop) -->
+                <div class="hidden md:flex items-center gap-1">
+                    <a
+                        href="#fitur"
+                        class="px-4 py-1.5 text-sm text-zinc-300 hover:text-white transition-colors rounded-full hover:bg-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/50"
+                    >
+                        Fitur
+                    </a>
+                    <a
+                        href="#harga"
+                        class="px-4 py-1.5 text-sm text-zinc-300 hover:text-white transition-colors rounded-full hover:bg-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/50"
+                    >
+                        Harga
+                    </a>
+                </div>
 
-        <div class="max-w-7xl mx-auto p-6 lg:p-8">
-            <div class="flex justify-center">
-                <svg
-                    viewBox="0 0 62 65"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-16 w-auto bg-gray-100 dark:bg-gray-900"
-                >
-                    <path
-                        d="M61.8548 14.6253C61.8778 14.7102 61.8895 14.7978 61.8897 14.8858V28.5615C61.8898 28.737 61.8434 28.9095 61.7554 29.0614C61.6675 29.2132 61.5409 29.3392 61.3887 29.4265L49.9104 36.0351V49.1337C49.9104 49.4902 49.7209 49.8192 49.4118 49.9987L25.4519 63.7916C25.3971 63.8227 25.3372 63.8427 25.2774 63.8639C25.255 63.8714 25.2338 63.8851 25.2101 63.8913C25.0426 63.9354 24.8666 63.9354 24.6991 63.8913C24.6716 63.8838 24.6467 63.8689 24.6205 63.8589C24.5657 63.8389 24.5084 63.8215 24.456 63.7916L0.501061 49.9987C0.348882 49.9113 0.222437 49.7853 0.134469 49.6334C0.0465019 49.4816 0.000120578 49.3092 0 49.1337L0 8.10652C0 8.01678 0.0124642 7.92953 0.0348998 7.84477C0.0423783 7.8161 0.0598282 7.78993 0.0697995 7.76126C0.0884958 7.70891 0.105946 7.65531 0.133367 7.6067C0.152063 7.5743 0.179485 7.54812 0.20192 7.51821C0.230588 7.47832 0.256763 7.43719 0.290416 7.40229C0.319084 7.37362 0.356476 7.35243 0.388883 7.32751C0.425029 7.29759 0.457436 7.26518 0.498568 7.2415L12.4779 0.345059C12.6296 0.257786 12.8015 0.211853 12.9765 0.211853C13.1515 0.211853 13.3234 0.257786 13.475 0.345059L25.4531 7.2415H25.4556C25.4955 7.26643 25.5292 7.29759 25.5653 7.32626C25.5977 7.35119 25.6339 7.37362 25.6625 7.40104C25.6974 7.43719 25.7224 7.47832 25.7523 7.51821C25.7735 7.54812 25.8021 7.5743 25.8196 7.6067C25.8483 7.65656 25.8645 7.70891 25.8844 7.76126C25.8944 7.78993 25.9118 7.8161 25.9193 7.84602C25.9423 7.93096 25.954 8.01853 25.9542 8.10652V33.7317L35.9355 27.9844V14.8846C35.9355 14.7973 35.948 14.7088 35.9704 14.6253C35.9792 14.5954 35.9954 14.5692 36.0053 14.5405C36.0253 14.4882 36.0427 14.4346 36.0702 14.386C36.0888 14.3536 36.1163 14.3274 36.1375 14.2975C36.1674 14.2576 36.1923 14.2165 36.2272 14.1816C36.2559 14.1529 36.292 14.1317 36.3244 14.1068C36.3618 14.0769 36.3942 14.0445 36.4341 14.0208L48.4147 7.12434C48.5663 7.03694 48.7383 6.99094 48.9133 6.99094C49.0883 6.99094 49.2602 7.03694 49.4118 7.12434L61.3899 14.0208C61.4323 14.0457 61.4647 14.0769 61.5021 14.1055C61.5333 14.1305 61.5694 14.1529 61.5981 14.1803C61.633 14.2165 61.6579 14.2576 61.6878 14.2975C61.7103 14.3274 61.7377 14.3536 61.7551 14.386C61.7838 14.4346 61.8 14.4882 61.8199 14.5405C61.8312 14.5692 61.8474 14.5954 61.8548 14.6253ZM59.893 27.9844V16.6121L55.7013 19.0252L49.9104 22.3593V33.7317L59.8942 27.9844H59.893ZM47.9149 48.5566V37.1768L42.2187 40.4299L25.953 49.7133V61.2003L47.9149 48.5566ZM1.99677 9.83281V48.5566L23.9562 61.199V49.7145L12.4841 43.2219L12.4804 43.2194L12.4754 43.2169C12.4368 43.1945 12.4044 43.1621 12.3682 43.1347C12.3371 43.1097 12.3009 43.0898 12.2735 43.0624L12.271 43.0586C12.2386 43.0275 12.2162 42.9888 12.1887 42.9539C12.1638 42.9203 12.1339 42.8916 12.114 42.8567L12.1127 42.853C12.0903 42.8156 12.0766 42.7707 12.0604 42.7283C12.0442 42.6909 12.023 42.656 12.013 42.6161C12.0005 42.5688 11.998 42.5177 11.9931 42.4691C11.9881 42.4317 11.9781 42.3943 11.9781 42.3569V15.5801L6.18848 12.2446L1.99677 9.83281ZM12.9777 2.36177L2.99764 8.10652L12.9752 13.8513L22.9541 8.10527L12.9752 2.36177H12.9777ZM18.1678 38.2138L23.9574 34.8809V9.83281L19.7657 12.2459L13.9749 15.5801V40.6281L18.1678 38.2138ZM48.9133 9.14105L38.9344 14.8858L48.9133 20.6305L58.8909 14.8846L48.9133 9.14105ZM47.9149 22.3593L42.124 19.0252L37.9323 16.6121V27.9844L43.7219 31.3174L47.9149 33.7317V22.3593ZM24.9533 47.987L39.59 39.631L46.9065 35.4555L36.9352 29.7145L25.4544 36.3242L14.9907 42.3482L24.9533 47.987Z"
-                        fill="#FF2D20"
-                    />
-                </svg>
+                <!-- Right actions -->
+                <div class="flex items-center gap-2 md:gap-3">
+                    <Link
+                        :href="route('login')"
+                        class="px-3 md:px-5 py-1.5 md:py-2 text-sm font-medium text-zinc-300 hover:text-white transition-colors rounded-full hover:bg-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/50"
+                    >
+                        Login
+                    </Link>
+                    <Link
+                        :href="route('register')"
+                        class="px-3 md:px-5 py-1.5 md:py-2 text-sm font-semibold text-black bg-[#FFD700] hover:bg-yellow-300 transition-all rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/50"
+                    >
+                        Sign Up
+                    </Link>
+                </div>
+            </div>
+        </nav>
+
+        <!-- ==================== HERO ==================== -->
+        <section
+            class="relative min-h-screen flex flex-col items-center justify-center px-6 pt-24 md:pt-28 pb-16 md:pb-20 text-center"
+            aria-labelledby="hero-title"
+        >
+            <!-- Background gradient -->
+            <div class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+                <div
+                    class="absolute -top-40 -left-40 w-80 h-80 md:w-[500px] md:h-[500px] rounded-full bg-purple-600/10 blur-[120px]"
+                />
+                <div
+                    class="absolute -bottom-40 -right-40 w-80 h-80 md:w-[500px] md:h-[500px] rounded-full bg-yellow-500/10 blur-[120px]"
+                />
             </div>
 
-            <div class="mt-16">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-                    <a
-                        href="https://laravel.com/docs"
-                        class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500"
+            <!-- Trust badge -->
+            <div
+                class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-zinc-700/60 bg-zinc-900/50 text-xs md:text-sm text-zinc-400 mb-8 md:mb-10"
+            >
+                <span class="w-2 h-2 rounded-full bg-emerald-400" aria-hidden="true" />
+                Platform katalog digital inklusif untuk UMKM Indonesia
+            </div>
+
+            <!-- Main heading -->
+            <h1
+                id="hero-title"
+                class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-tight max-w-4xl mx-auto tracking-tight"
+            >
+                Satu Link Untuk Semua
+                <br class="hidden sm:block" />
+                <span class="text-[#FFD700]">Produk UMKM</span>
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="mt-5 md:mt-6 text-sm md:text-base lg:text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+                EtalaseKu membantu UMKM membuat katalog digital, mengelola tautan bisnis, dan menjangkau pelanggan dengan halaman yang ramah aksesibilitas.
+            </p>
+
+            <!-- CTA -->
+            <div class="mt-8 md:mt-10 flex flex-col sm:flex-row items-center gap-4">
+                <Link
+                    :href="route('register')"
+                    class="inline-flex items-center gap-2 px-8 md:px-10 py-3.5 md:py-4 text-base md:text-lg font-bold text-black bg-[#FFD700] hover:bg-yellow-300 hover:scale-[1.02] active:scale-[0.98] transition-all rounded-full shadow-lg shadow-yellow-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/50"
+                >
+                    Mulai Gratis Sekarang
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                </Link>
+            </div>
+
+            <!-- Trust badges -->
+            <div class="mt-10 md:mt-14 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs md:text-sm text-zinc-500">
+                <span v-for="badge in trustBadges" :key="badge" class="inline-flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    {{ badge }}
+                </span>
+            </div>
+        </section>
+
+        <!-- ==================== FEATURES ==================== -->
+        <section
+            id="fitur"
+            class="relative px-6 py-20 md:py-28"
+            aria-labelledby="fitur-title"
+        >
+            <div class="max-w-6xl mx-auto">
+                <!-- Section heading -->
+                <div class="text-center max-w-2xl mx-auto mb-12 md:mb-16">
+                    <h2
+                        id="fitur-title"
+                        class="text-2xl md:text-4xl lg:text-5xl font-extrabold tracking-tight"
                     >
-                        <div>
-                            <div
-                                class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke-width="1.5"
-                                    class="w-7 h-7 stroke-red-500"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
-                                    />
-                                </svg>
-                            </div>
+                        Sederhana tapi <span class="text-[#FFD700]">Powerful</span>
+                    </h2>
+                    <p class="mt-4 text-sm md:text-base text-zinc-400 leading-relaxed">
+                        Semua yang dibutuhkan UMKM untuk tampil profesional ada di satu halaman.
+                    </p>
+                </div>
 
-                            <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Documentation</h2>
-
-                            <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                Laravel has wonderful documentation covering every aspect of the framework. Whether you
-                                are a newcomer or have prior experience with Laravel, we recommend reading our
-                                documentation from beginning to end.
-                            </p>
-                        </div>
-
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.5"
-                            class="self-center shrink-0 stroke-red-500 w-6 h-6 mx-6"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
-                            />
-                        </svg>
-                    </a>
-
-                    <a
-                        href="https://laracasts.com"
-                        class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500"
-                    >
-                        <div>
-                            <div
-                                class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke-width="1.5"
-                                    class="w-7 h-7 stroke-red-500"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"
-                                    />
-                                </svg>
-                            </div>
-
-                            <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Laracasts</h2>
-
-                            <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                Laracasts offers thousands of video tutorials on Laravel, PHP, and JavaScript
-                                development. Check them out, see for yourself, and massively level up your development
-                                skills in the process.
-                            </p>
-                        </div>
-
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.5"
-                            class="self-center shrink-0 stroke-red-500 w-6 h-6 mx-6"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
-                            />
-                        </svg>
-                    </a>
-
-                    <a
-                        href="https://laravel-news.com"
-                        class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500"
-                    >
-                        <div>
-                            <div
-                                class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke-width="1.5"
-                                    class="w-7 h-7 stroke-red-500"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z"
-                                    />
-                                </svg>
-                            </div>
-
-                            <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Laravel News</h2>
-
-                            <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                Laravel News is a community driven portal and newsletter aggregating all of the latest
-                                and most important news in the Laravel ecosystem, including new package releases and
-                                tutorials.
-                            </p>
-                        </div>
-
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke-width="1.5"
-                            class="self-center shrink-0 stroke-red-500 w-6 h-6 mx-6"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
-                            />
-                        </svg>
-                    </a>
-
+                <!-- Feature grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                     <div
-                        class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500"
+                        v-for="feature in features"
+                        :key="feature.title"
+                        class="group relative p-5 md:p-6 rounded-2xl bg-zinc-900/50 border border-zinc-800/60 hover:border-zinc-700/60 transition-all duration-300 hover:-translate-y-1"
                     >
-                        <div>
-                            <div
-                                class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke-width="1.5"
-                                    class="w-7 h-7 stroke-red-500"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        d="M6.115 5.19l.319 1.913A6 6 0 008.11 10.36L9.75 12l-.387.775c-.217.433-.132.956.21 1.298l1.348 1.348c.21.21.329.497.329.795v1.089c0 .426.24.815.622 1.006l.153.076c.433.217.956.132 1.298-.21l.723-.723a8.7 8.7 0 002.288-4.042 1.087 1.087 0 00-.358-1.099l-1.33-1.108c-.251-.21-.582-.299-.905-.245l-1.17.195a1.125 1.125 0 01-.98-.314l-.295-.295a1.125 1.125 0 010-1.591l.13-.132a1.125 1.125 0 011.3-.21l.603.302a.809.809 0 001.086-1.086L14.25 7.5l1.256-.837a4.5 4.5 0 001.528-1.732l.146-.292M6.115 5.19A9 9 0 1017.18 4.64M6.115 5.19A8.965 8.965 0 0112 3c1.929 0 3.716.607 5.18 1.64"
-                                    />
-                                </svg>
+                        <!-- Icon -->
+                        <div
+                            class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-zinc-800 flex items-center justify-center mb-4 group-hover:bg-[#FFD700]/10 transition-colors duration-300"
+                            aria-hidden="true"
+                        >
+                            <!-- Katalog -->
+                            <svg v-if="feature.icon === 'catalog'" class="w-5 h-5 md:w-6 md:h-6 text-[#FFD700]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+                            </svg>
+                            <!-- Links -->
+                            <svg v-else-if="feature.icon === 'links'" class="w-5 h-5 md:w-6 md:h-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+                            </svg>
+                            <!-- Store -->
+                            <svg v-else-if="feature.icon === 'store'" class="w-5 h-5 md:w-6 md:h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z" />
+                            </svg>
+                            <!-- Stats -->
+                            <svg v-else-if="feature.icon === 'stats'" class="w-5 h-5 md:w-6 md:h-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+                            </svg>
+                            <!-- Accessibility -->
+                            <svg v-else-if="feature.icon === 'accessibility'" class="w-5 h-5 md:w-6 md:h-6 text-pink-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <!-- Checkout -->
+                            <svg v-else-if="feature.icon === 'checkout'" class="w-5 h-5 md:w-6 md:h-6 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 3.75v4.5m0-4.5h-4.5m4.5 0l-6 6m3 12c-8.284 0-15-6.716-15-15V4.5A2.25 2.25 0 014.5 2.25h1.372c.516 0 .966.351 1.09.852l1.106 4.423c.11.44-.054.902-.417 1.173l-1.293.97a1.062 1.062 0 00-.276 1.455l1.106 1.722c.691 1.077 1.74 2.002 2.97 2.564l1.72.92a1.071 1.071 0 001.208-.212l.973-.974c.27-.27.664-.378 1.047-.272l4.282 1.07c.502.126.856.575.856 1.09v1.371a2.25 2.25 0 01-2.25 2.25h-1.5z" />
+                            </svg>
+                        </div>
+
+                        <h3 class="text-base md:text-lg font-semibold mb-2">
+                            {{ feature.title }}
+                        </h3>
+                        <p class="text-sm md:text-base text-zinc-400 leading-relaxed">
+                            {{ feature.description }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== VISUAL DEMO ==================== -->
+        <section
+            class="relative px-6 py-20 md:py-28"
+            aria-labelledby="demo-title"
+        >
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center max-w-2xl mx-auto mb-12 md:mb-16">
+                    <h2
+                        id="demo-title"
+                        class="text-2xl md:text-4xl lg:text-5xl font-extrabold tracking-tight"
+                    >
+                        Lihat Bagaimana <span class="text-[#FFD700]">Tampilannya</span>
+                    </h2>
+                    <p class="mt-4 text-sm md:text-base text-zinc-400 leading-relaxed">
+                        Setiap UMKM mendapatkan halaman publik yang profesional, lengkap dengan katalog produk, tautan bisnis, dan aksesibilitas.
+                    </p>
+                </div>
+
+                <!-- Mockup card -->
+                <div class="max-w-md mx-auto">
+                    <div class="rounded-2xl bg-zinc-900 border border-zinc-800 overflow-hidden shadow-xl shadow-black/30">
+                        <!-- Banner -->
+                        <div class="h-24 md:h-28 bg-gradient-to-r from-purple-600/80 to-pink-600/80 flex items-end p-4 md:p-5">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-sm md:text-base">
+                                    TK
+                                </div>
+                                <div>
+                                    <p class="text-white font-semibold text-sm md:text-base">Toko Kue Bu Ani</p>
+                                    <p class="text-white/70 text-xs">Kue Tradisional & Modern</p>
+                                </div>
                             </div>
+                        </div>
 
-                            <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Vibrant Ecosystem</h2>
+                        <!-- Links -->
+                        <div class="px-4 md:px-5 py-4 space-y-2.5">
+                            <div class="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-zinc-800/50 border border-zinc-700/50">
+                                <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                                </svg>
+                                <span class="text-sm text-zinc-300">+62 812-9174-3817</span>
+                            </div>
+                            <div class="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-zinc-800/50 border border-zinc-700/50">
+                                <svg class="w-4 h-4 text-pink-400 shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.11 2.525c.636-.247 1.363-.416 2.427-.465C8.88 2.013 9.235 2 11.985 2h.33zm-.016 5.18a4.82 4.82 0 100 9.64 4.82 4.82 0 000-9.64zm0 1.6a3.22 3.22 0 110 6.44 3.22 3.22 0 010-6.44z" />
+                                </svg>
+                                <span class="text-sm text-zinc-300">@tokokuebuani</span>
+                            </div>
+                            <div class="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-zinc-800/50 border border-zinc-700/50">
+                                <svg class="w-4 h-4 text-blue-400 shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M12 2C6.49 2 2 6.49 2 12s4.49 10 10 10 10-4.49 10-10S17.51 2 12 2zm3.14 6.07c.31 0 .56.25.56.56v3.1a.56.56 0 11-1.12 0v-2.03l-3.17 3.17a.56.56 0 11-.8-.79l3.17-3.17h-2.03a.56.56 0 110-1.12h3.1c.04 0 .07.01.1.02.02 0 .05.02.07.03.03.01.06.03.09.06.02.02.04.04.06.06.03.03.05.06.07.1.01.02.03.05.04.07.02.04.02.08.02.12z" />
+                                </svg>
+                                <span class="text-sm text-zinc-300">Toko Kue Bu Ani</span>
+                            </div>
+                        </div>
 
-                            <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                Laravel's robust library of first-party tools and libraries, such as
-                                <a
-                                    href="https://forge.laravel.com"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                                    >Forge</a
-                                >,
-                                <a
-                                    href="https://vapor.laravel.com"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                                    >Vapor</a
-                                >,
-                                <a
-                                    href="https://nova.laravel.com"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                                    >Nova</a
-                                >, and
-                                <a
-                                    href="https://envoyer.io"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                                    >Envoyer</a
-                                >
-                                help you take your projects to the next level. Pair them with powerful open source
-                                libraries like
-                                <a
-                                    href="https://laravel.com/docs/billing"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                                    >Cashier</a
-                                >,
-                                <a
-                                    href="https://laravel.com/docs/dusk"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                                    >Dusk</a
-                                >,
-                                <a
-                                    href="https://laravel.com/docs/broadcasting"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                                    >Echo</a
-                                >,
-                                <a
-                                    href="https://laravel.com/docs/horizon"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                                    >Horizon</a
-                                >,
-                                <a
-                                    href="https://laravel.com/docs/sanctum"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                                    >Sanctum</a
-                                >,
-                                <a
-                                    href="https://laravel.com/docs/telescope"
-                                    class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
-                                    >Telescope</a
-                                >, and more.
+                        <!-- Product preview -->
+                        <div class="border-t border-zinc-800 px-4 md:px-5 py-4">
+                            <p class="text-xs text-zinc-500 uppercase tracking-wider mb-3 font-medium">
+                                Produk Unggulan
                             </p>
+                            <div class="flex gap-3">
+                                <div class="flex-1 rounded-xl bg-zinc-800/50 border border-zinc-700/50 p-3">
+                                    <div class="w-full aspect-square rounded-lg bg-gradient-to-br from-amber-400/30 to-amber-600/30 mb-2" />
+                                    <p class="text-xs font-medium text-zinc-300">Kue Bolu</p>
+                                    <p class="text-xs text-zinc-500">Rp 45.000</p>
+                                </div>
+                                <div class="flex-1 rounded-xl bg-zinc-800/50 border border-zinc-700/50 p-3">
+                                    <div class="w-full aspect-square rounded-lg bg-gradient-to-br from-pink-400/30 to-pink-600/30 mb-2" />
+                                    <p class="text-xs font-medium text-zinc-300">Kue Lapis</p>
+                                    <p class="text-xs text-zinc-500">Rp 35.000</p>
+                                </div>
+                                <div class="flex-1 rounded-xl bg-zinc-800/50 border border-zinc-700/50 p-3">
+                                    <div class="w-full aspect-square rounded-lg bg-gradient-to-br from-green-400/30 to-green-600/30 mb-2" />
+                                    <p class="text-xs font-medium text-zinc-300">Kue Lumpur</p>
+                                    <p class="text-xs text-zinc-500">Rp 25.000</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Accessible badge -->
+                        <div class="border-t border-zinc-800 px-4 md:px-5 py-3 flex items-center justify-between">
+                            <span class="text-xs text-zinc-500">Halaman ramah aksesibilitas</span>
+                            <span class="inline-flex items-center gap-1 text-xs text-emerald-400">
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Aktif
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <div class="flex justify-center mt-16 px-6 sm:items-center sm:justify-between">
-                <div class="text-center text-sm sm:text-start">&nbsp;</div>
+        <!-- ==================== ACCESSIBILITY ==================== -->
+        <section
+            class="relative px-6 py-20 md:py-28 bg-zinc-900/30"
+            aria-labelledby="a11y-title"
+        >
+            <div class="max-w-6xl mx-auto">
+                <div class="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+                    <!-- Left content -->
+                    <div>
+                        <h2
+                            id="a11y-title"
+                            class="text-2xl md:text-4xl lg:text-5xl font-extrabold tracking-tight"
+                        >
+                            Dibuat agar lebih mudah
+                            <br />
+                            <span class="text-[#FFD700]">diakses semua pelanggan</span>
+                        </h2>
+                        <p class="mt-4 text-sm md:text-base text-zinc-400 leading-relaxed">
+                            EtalaseKu memastikan setiap halaman publik dapat diakses oleh semua pengguna, termasuk mereka yang menggunakan teknologi bantuan.
+                        </p>
+                        <ul class="mt-8 space-y-4">
+                            <li
+                                v-for="item in [
+                                    { text: 'Dukungan navigasi keyboard penuh', icon: 'keyboard' },
+                                    { text: 'Alt text deskriptif pada semua gambar', icon: 'image' },
+                                    { text: 'Mode kontras tinggi untuk keterbacaan', icon: 'contrast' },
+                                    { text: 'Struktur heading ramah screen reader', icon: 'structure' },
+                                    { text: 'Ukuran teks yang nyaman dibaca', icon: 'text' },
+                                ]"
+                                :key="item.text"
+                                class="flex items-start gap-3"
+                            >
+                                <span class="w-5 h-5 mt-0.5 shrink-0 rounded-full bg-emerald-400/20 flex items-center justify-center" aria-hidden="true">
+                                    <svg class="w-3 h-3 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                    </svg>
+                                </span>
+                                <span class="text-sm md:text-base text-zinc-300">{{ item.text }}</span>
+                            </li>
+                        </ul>
+                    </div>
 
-                <div class="text-center text-sm text-gray-500 dark:text-gray-400 sm:text-end sm:ms-0">
-                    Laravel v{{ laravelVersion }} (PHP v{{ phpVersion }})
+                    <!-- Right visual -->
+                    <div class="hidden md:flex justify-center" aria-hidden="true">
+                        <div class="relative w-72 h-72">
+                            <div class="absolute inset-0 rounded-3xl bg-gradient-to-br from-purple-600/10 to-pink-600/10 border border-zinc-800 flex items-center justify-center">
+                                <svg class="w-32 h-32 text-zinc-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
+
+        <!-- ==================== PRICING ==================== -->
+        <section
+            id="harga"
+            class="relative px-6 py-20 md:py-28"
+            aria-labelledby="harga-title"
+        >
+            <div class="max-w-6xl mx-auto">
+                <!-- Section heading -->
+                <div class="text-center max-w-2xl mx-auto mb-12 md:mb-16">
+                    <h2
+                        id="harga-title"
+                        class="text-2xl md:text-4xl lg:text-5xl font-extrabold tracking-tight"
+                    >
+                        Pilih Paket Sesuai
+                        <br />
+                        <span class="text-[#FFD700]">Kebutuhan UMKM</span>
+                    </h2>
+                    <p class="mt-4 text-sm md:text-base text-zinc-400 leading-relaxed">
+                        Mulai dari gratis, kembangkan toko digital UMKM Anda tanpa biaya awal.
+                    </p>
+                </div>
+
+                <!-- Pricing cards -->
+                <div class="grid md:grid-cols-2 gap-6 md:gap-8 max-w-3xl mx-auto">
+                    <div
+                        v-for="plan in plans"
+                        :key="plan.name"
+                        class="relative rounded-2xl border p-6 md:p-8 transition-all duration-300"
+                        :class="plan.highlighted
+                            ? 'border-yellow-500/40 bg-zinc-900/80 shadow-xl shadow-yellow-500/5'
+                            : 'border-zinc-800/60 bg-zinc-900/50 hover:border-zinc-700/60'"
+                    >
+                        <!-- Highlight badge -->
+                        <div
+                            v-if="plan.highlighted"
+                            class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-[#FFD700] text-black text-xs font-bold"
+                        >
+                            Populer
+                        </div>
+
+                        <div class="text-center mb-6">
+                            <h3 class="text-lg font-semibold">{{ plan.name }}</h3>
+                            <div class="mt-3">
+                                <span class="text-3xl md:text-4xl font-extrabold">{{ plan.price }}</span>
+                                <span class="text-sm text-zinc-400 ml-1">{{ plan.period }}</span>
+                            </div>
+                            <p class="mt-3 text-sm text-zinc-400 leading-relaxed">
+                                {{ plan.description }}
+                            </p>
+                        </div>
+
+                        <!-- Features list -->
+                        <ul class="space-y-3 mb-8">
+                            <li
+                                v-for="feature in plan.features"
+                                :key="feature"
+                                class="flex items-start gap-3 text-sm"
+                            >
+                                <svg class="w-4 h-4 mt-0.5 shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                </svg>
+                                <span class="text-zinc-300">{{ feature }}</span>
+                            </li>
+                        </ul>
+
+                        <!-- CTA -->
+                        <Link
+                            :href="route(plan.href)"
+                            class="block w-full text-center py-3 rounded-xl text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/50"
+                            :class="plan.highlighted
+                                ? 'bg-[#FFD700] text-black hover:bg-yellow-300'
+                                : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white border border-zinc-700/60'"
+                        >
+                            {{ plan.cta }}
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== CTA BANNER ==================== -->
+        <section class="relative px-6 py-20 md:py-28">
+            <div class="max-w-3xl mx-auto text-center">
+                <h2 class="text-2xl md:text-4xl lg:text-5xl font-extrabold tracking-tight">
+                    Siap Membawa UMKM Anda
+                    <br />
+                    <span class="text-[#FFD700]">ke Dunia Digital?</span>
+                </h2>
+                <p class="mt-4 text-sm md:text-base text-zinc-400 max-w-xl mx-auto leading-relaxed">
+                    Bergabung dengan ribuan UMKM lain yang sudah menggunakan EtalaseKu untuk mengelola katalog digital dan tautan bisnis.
+                </p>
+                <div class="mt-8">
+                    <Link
+                        :href="route('register')"
+                        class="inline-flex items-center gap-2 px-8 md:px-10 py-3.5 md:py-4 text-base md:text-lg font-bold text-black bg-[#FFD700] hover:bg-yellow-300 hover:scale-[1.02] active:scale-[0.98] transition-all rounded-full shadow-lg shadow-yellow-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/50"
+                    >
+                        Mulai Gratis Sekarang
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg>
+                    </Link>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== FOOTER ==================== -->
+        <footer class="border-t border-zinc-800 px-6 py-10 md:py-12" role="contentinfo">
+            <div class="max-w-6xl mx-auto">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <!-- Brand -->
+                    <div class="text-center md:text-left">
+                        <Link
+                            href="/"
+                            class="text-xl md:text-2xl font-extrabold tracking-tight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/50 rounded-lg px-1"
+                        >
+                            <span class="text-white">Etalase</span><span class="text-[#FFD700]">Ku</span>
+                        </Link>
+                        <p class="mt-1 text-xs text-zinc-500">
+                            Platform katalog digital inklusif untuk UMKM Indonesia.
+                        </p>
+                    </div>
+
+                    <!-- Links -->
+                    <nav class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-zinc-400" aria-label="Footer navigasi">
+                        <a
+                            href="#fitur"
+                            class="hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/50 rounded px-1"
+                        >
+                            Fitur
+                        </a>
+                        <a
+                            href="#harga"
+                            class="hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/50 rounded px-1"
+                        >
+                            Harga
+                        </a>
+                        <a
+                            href="#"
+                            class="hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/50 rounded px-1"
+                        >
+                            Syarat Layanan
+                        </a>
+                        <a
+                            href="#"
+                            class="hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/50 rounded px-1"
+                        >
+                            Kebijakan Privasi
+                        </a>
+                        <a
+                            href="#"
+                            class="hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/50 rounded px-1"
+                        >
+                            Pusat Bantuan
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- Copyright -->
+                <div class="mt-8 pt-6 border-t border-zinc-800/60 text-center text-xs text-zinc-600">
+                    &copy; {{ new Date().getFullYear() }} EtalaseKu. All rights reserved.
+                </div>
+            </div>
+        </footer>
     </div>
 </template>
-
-<style>
-.bg-dots-darker {
-    background-image: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z' fill='rgba(0,0,0,0.07)'/%3E%3C/svg%3E");
-}
-@media (prefers-color-scheme: dark) {
-    .dark\:bg-dots-lighter {
-        background-image: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z' fill='rgba(255,255,255,0.07)'/%3E%3C/svg%3E");
-    }
-}
-</style>

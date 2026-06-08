@@ -24,7 +24,12 @@ use Inertia\Inertia;
 |
 */
 
-Route::redirect('/', '/login');
+Route::get('/', function () {
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+    ]);
+});
 
 Route::get('/catalog/{slug}', [CatalogController::class, 'show'])->name('catalog.show');
 Route::post('/catalog/{user}/checkout', [CheckoutController::class, 'store'])->name('catalog.checkout');

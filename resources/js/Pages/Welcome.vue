@@ -1,10 +1,55 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3'
+import { computed } from 'vue'
+import { Head, Link, usePage } from '@inertiajs/vue3'
 
 defineProps({
     canLogin: Boolean,
     canRegister: Boolean,
 })
+
+const page = usePage();
+
+const plans = computed(() => {
+    const loggedIn = !!page.props.auth?.user;
+    return [
+        {
+            name: 'Gratis',
+            price: 'Rp 0',
+            period: 'selamanya',
+            description: 'Coba semua fitur dasar tanpa biaya. Mulai kembangkan toko digital UMKM Anda sekarang.',
+            features: [
+                'Katalog produk hingga 10 item',
+                'Tautan bisnis tidak terbatas',
+                'Profil toko',
+                'Statistik kunjungan',
+                'Aksesibilitas dasar',
+                'Tema warna',
+            ],
+            cta: 'Mulai Gratis',
+            href: loggedIn ? 'merchant.manage' : 'register',
+            highlighted: false,
+        },
+        {
+            name: 'Pro',
+            price: 'Rp 49.000',
+            period: '/bulan',
+            description: 'Fitur lengkap untuk UMKM yang ingin berkembang lebih jauh dengan katalog tanpa batas.',
+            features: [
+                'Katalog produk tidak terbatas',
+                'Tautan bisnis tidak terbatas',
+                'Profil toko premium',
+                'Statistik lengkap',
+                'Aksesibilitas penuh',
+                'Tema kustom',
+                'Prioritas dukungan',
+                'Hapus branding EtalaseKu',
+            ],
+            cta: 'Langganan Pro',
+            href: loggedIn ? 'upgrade-pro.page' : 'register',
+            highlighted: true,
+        },
+    ];
+});
 
 const features = [
     {
@@ -36,45 +81,6 @@ const features = [
         title: 'Checkout WhatsApp',
         description: 'Pelanggan dapat langsung memesan produk melalui tombol checkout yang terhubung langsung ke WhatsApp bisnis Anda.',
         icon: 'checkout',
-    },
-]
-
-const plans = [
-    {
-        name: 'Gratis',
-        price: 'Rp 0',
-        period: 'selamanya',
-        description: 'Coba semua fitur dasar tanpa biaya. Mulai kembangkan toko digital UMKM Anda sekarang.',
-        features: [
-            'Katalog produk hingga 10 item',
-            'Tautan bisnis tidak terbatas',
-            'Profil toko',
-            'Statistik kunjungan',
-            'Aksesibilitas dasar',
-            'Tema warna',
-        ],
-        cta: 'Mulai Gratis',
-        href: 'register',
-        highlighted: false,
-    },
-    {
-        name: 'Pro',
-        price: 'Rp 49.000',
-        period: '/bulan',
-        description: 'Fitur lengkap untuk UMKM yang ingin berkembang lebih jauh dengan katalog tanpa batas.',
-        features: [
-            'Katalog produk tidak terbatas',
-            'Tautan bisnis tidak terbatas',
-            'Profil toko premium',
-            'Statistik lengkap',
-            'Aksesibilitas penuh',
-            'Tema kustom',
-            'Prioritas dukungan',
-            'Hapus branding EtalaseKu',
-        ],
-        cta: 'Langganan Pro',
-        href: 'register',
-        highlighted: true,
     },
 ]
 

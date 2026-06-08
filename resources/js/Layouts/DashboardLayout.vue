@@ -18,6 +18,7 @@ const storeInitial = computed(() => {
     const name = user.value?.store_name || user.value?.name || '';
     return name.charAt(0).toUpperCase() || 'T';
 });
+const plan = computed(() => user.value?.plan || 'free');
 const avatarUrl = computed(() => {
     const u = user.value;
     if (u?.profile_photo_url) return u.profile_photo_url;
@@ -142,25 +143,42 @@ function closeSidebar() {
                         <div v-else class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm shrink-0" aria-hidden="true">
                             {{ storeInitial }}
                         </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-on-surface truncate">{{ storeName }}</p>
-                            <p class="text-xs text-on-surface-variant truncate">{{ user?.email || '' }}</p>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-on-surface truncate">{{ storeName }}</p>
+                        <p class="text-xs text-on-surface-variant truncate">{{ user?.email || '' }}</p>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span
+                                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border"
+                                :class="plan === 'pro'
+                                    ? 'bg-yellow-500/10 text-yellow-500 border-yellow-500/30'
+                                    : 'bg-surface-container text-on-surface-variant border-outline'"
+                            >
+                                {{ plan === 'pro' ? 'Pro' : 'Gratis' }}
+                            </span>
+                            <Link
+                                v-if="plan === 'free'"
+                                :href="route('upgrade-pro.page')"
+                                class="text-[10px] font-semibold text-primary hover:underline"
+                            >
+                                Upgrade ke Pro
+                            </Link>
                         </div>
                     </div>
-                    <button
-                        @click="logout"
-                        class="flex items-center gap-3 px-3 py-2.5 w-full rounded-xl text-sm font-medium text-red-400 hover:bg-surface-container transition-colors"
-                    >
-                        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                        </svg>
-                        Logout
-                    </button>
                 </div>
-            </aside>
-        </Transition>
+                <button
+                    @click="logout"
+                    class="flex items-center gap-3 px-3 py-2.5 w-full rounded-xl text-sm font-medium text-red-400 hover:bg-surface-container transition-colors"
+                >
+                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Logout
+                </button>
+            </div>
+        </aside>
+    </Transition>
 
-        <!-- Desktop Sidebar -->
+    <!-- Desktop Sidebar -->
         <aside class="hidden md:flex md:flex-col md:w-60 lg:w-64 md:fixed md:inset-y-0 md:border-r md:border-outline md:bg-surface z-30">
             <div class="flex items-center h-16 px-6 border-b border-outline">
                 <span class="font-bold text-xl text-on-surface tracking-tight">EtalaseKu</span>
@@ -204,13 +222,30 @@ function closeSidebar() {
                         <div v-else class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm shrink-0" aria-hidden="true">
                             {{ storeInitial }}
                         </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-on-surface truncate">{{ storeName }}</p>
-                            <p class="text-xs text-on-surface-variant truncate">{{ user?.email || '' }}</p>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-on-surface truncate">{{ storeName }}</p>
+                        <p class="text-xs text-on-surface-variant truncate">{{ user?.email || '' }}</p>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span
+                                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border"
+                                :class="plan === 'pro'
+                                    ? 'bg-yellow-500/10 text-yellow-500 border-yellow-500/30'
+                                    : 'bg-surface-container text-on-surface-variant border-outline'"
+                            >
+                                {{ plan === 'pro' ? 'Pro' : 'Gratis' }}
+                            </span>
+                            <Link
+                                v-if="plan === 'free'"
+                                :href="route('upgrade-pro.page')"
+                                class="text-[10px] font-semibold text-primary hover:underline"
+                            >
+                                Upgrade ke Pro
+                            </Link>
                         </div>
                     </div>
                 </div>
-        </aside>
+            </div>
+    </aside>
 
         <!-- Main area -->
         <div class="flex-1 flex flex-col md:ml-60 lg:ml-64">

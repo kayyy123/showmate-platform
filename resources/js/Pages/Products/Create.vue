@@ -1,7 +1,15 @@
 <script setup>
-import { ref } from 'vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { ref, computed } from 'vue';
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import DashboardLayout from '@/Layouts/DashboardLayout.vue';
+
+const props = defineProps({
+    productCount: Number,
+});
+
+const page = usePage();
+const plan = computed(() => page.props.auth?.user?.plan || 'free');
+const atProductLimit = computed(() => plan.value === 'free' && (props.productCount || 0) >= 10);
 
 const form = useForm({
     name: '',
@@ -189,6 +197,28 @@ function formatPriceInput(e) {
                     </div>
                 </section>
 
+                <!-- Limit Warning -->
+                <div
+                    v-if="atProductLimit"
+                    class="rounded-2xl border border-yellow-500/30 bg-yellow-500/5 p-5"
+                >
+                    <div class="flex items-start gap-3">
+                        <svg class="w-5 h-5 mt-0.5 shrink-0 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                        </svg>
+                        <div>
+                            <p class="text-sm font-semibold text-on-surface">Batas Produk Tercapai</p>
+                            <p class="text-xs text-on-surface-variant mt-1">Paket Gratis hanya mendukung hingga 10 produk. Upgrade ke Pro untuk katalog tanpa batas.</p>
+                            <Link
+                                :href="route('upgrade-pro.page')"
+                                class="inline-block mt-2 text-xs font-semibold text-yellow-500 hover:underline"
+                            >
+                                Upgrade ke Pro &rarr;
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Actions -->
                 <div class="flex gap-3 pt-2 pb-6">
                     <Link
@@ -199,7 +229,7 @@ function formatPriceInput(e) {
                     </Link>
                     <button
                         type="submit"
-                        :disabled="form.processing"
+                        :disabled="form.processing || atProductLimit"
                         class="flex-1 h-12 rounded-xl bg-primary text-on-primary font-bold text-sm flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 disabled:opacity-50"
                     >
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">

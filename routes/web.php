@@ -5,6 +5,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StoreProfileController;
 use App\Http\Controllers\Auth\SocialiteController;
@@ -68,6 +69,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/links/{link}', [LinkController::class, 'destroy'])->name('links.destroy');
     Route::post('/links/reorder', [LinkController::class, 'reorder'])->name('links.reorder');
     Route::post('/links/{link}/toggle-active', [LinkController::class, 'toggleActive'])->name('links.toggle-active');
+
+    Route::get('/upgrade-pro', [PlanController::class, 'upgradePage'])->name('upgrade-pro.page');
+    Route::post('/upgrade-pro', [PlanController::class, 'upgrade'])->name('upgrade-pro.upgrade');
 });
 
 require __DIR__.'/auth.php';

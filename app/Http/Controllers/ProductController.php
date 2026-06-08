@@ -11,13 +11,19 @@ use Inertia\Response;
 
 class ProductController extends Controller
 {
-    public function create(): Response
+    public function create(Request $request): Response
     {
-        return Inertia::render('Products/Create');
+        return Inertia::render('Products/Create', [
+            'productCount' => $request->user()->products()->count(),
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
     {
+        if (!$request->user()->canCreateProduct()) {
+            return redirect()->back()->with('error', 'Paket Gratis hanya mendukung hingga 10 produk. Upgrade ke Pro untuk katalog tanpa batas.');
+        }
+
         $validated = $request->validate([
             'name' => 'required|max:255',
             'description' => 'nullable',

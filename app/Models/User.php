@@ -34,6 +34,7 @@ class User extends Authenticatable
         'store_logo',
         'google_id',
         'avatar',
+        'plan',
     ];
 
     protected static function booted()
@@ -89,5 +90,24 @@ class User extends Authenticatable
     public function links(): HasMany
     {
         return $this->hasMany(Link::class)->orderBy('sort_order');
+    }
+
+    public function isPro(): bool
+    {
+        return $this->plan === 'pro';
+    }
+
+    public function isFree(): bool
+    {
+        return $this->plan === 'free';
+    }
+
+    public function canCreateProduct(): bool
+    {
+        if ($this->isPro()) {
+            return true;
+        }
+
+        return $this->products()->count() < 10;
     }
 }

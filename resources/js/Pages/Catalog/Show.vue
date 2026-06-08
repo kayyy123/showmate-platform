@@ -173,7 +173,7 @@ function submitCheckout() {
 </script>
 
 <template>
-    <Head :title="merchant.name + ' - Katalog UMKM'" />
+    <Head :title="merchant.name + ' - Katalog EtalaseKu'" />
 
     <div class="min-h-screen bg-surface text-on-surface">
 

@@ -83,10 +83,10 @@ function submit() {
 </script>
 
 <template>
-    <Head title="Profil UMKM" />
+    <Head title="Profil EtalaseKu" />
 
     <DashboardLayout activeTab="profile">
-        <template #header>Profil UMKM</template>
+        <template #header>Profil EtalaseKu</template>
 
         <div class="space-y-6 max-w-3xl">
 

@@ -75,7 +75,7 @@ function closeSidebar() {
                 class="fixed inset-y-0 left-0 z-50 w-64 bg-surface border-r border-outline flex flex-col md:hidden"
             >
                 <div class="flex items-center justify-between h-16 px-4 border-b border-outline">
-                    <span class="font-bold text-lg text-on-surface">UMKN</span>
+                    <span class="font-bold text-lg text-on-surface">EtalaseKu</span>
                     <button
                         @click="closeSidebar"
                         class="w-10 h-10 rounded-lg flex items-center justify-center hover:bg-surface-container transition-colors"
@@ -131,7 +131,7 @@ function closeSidebar() {
         <!-- Desktop Sidebar -->
         <aside class="hidden md:flex md:flex-col md:w-60 lg:w-64 md:fixed md:inset-y-0 md:border-r md:border-outline md:bg-surface z-30">
             <div class="flex items-center h-16 px-6 border-b border-outline">
-                <span class="font-bold text-xl text-on-surface tracking-tight">UMKN</span>
+                <span class="font-bold text-xl text-on-surface tracking-tight">EtalaseKu</span>
             </div>
             <nav class="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
                 <Link
@@ -187,7 +187,7 @@ function closeSidebar() {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
                     </button>
-                    <span class="font-bold text-lg text-on-surface">UMKN</span>
+                    <span class="font-bold text-lg text-on-surface">EtalaseKu</span>
                 </div>
                 <div class="flex items-center gap-1">
                     <button

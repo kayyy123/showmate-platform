@@ -1,8 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import AppHeader from '@/Components/AppHeader.vue';
-import BottomNavBar from '@/Components/Shared/BottomNavBar.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 const props = defineProps({
     product: Object,
@@ -48,10 +47,10 @@ function submit() {
 <template>
     <Head title="Edit Produk" />
 
-    <div class="min-h-screen bg-surface text-on-surface">
-        <AppHeader headline="Edit Produk" :showBack="true" backRoute="/dashboard" />
+    <DashboardLayout activeTab="manage">
+        <template #header>Edit Produk</template>
 
-        <main class="pt-20 pb-24 px-5 max-w-[420px] mx-auto">
+        <div class="max-w-2xl">
             <form @submit.prevent="submit" class="space-y-5">
                 <div>
                     <label class="block text-sm font-semibold text-on-surface-variant uppercase tracking-wider mb-2" for="name">
@@ -62,7 +61,7 @@ function submit() {
                         v-model="form.name"
                         type="text"
                         placeholder="e.g. Handmade Leather Tote"
-                        class="w-full h-12 bg-surface-container border border-outline rounded-lg px-4 text-on-surface placeholder-on-surface-variant focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
+                        class="w-full h-12 bg-surface-container border border-outline rounded-lg px-4 text-on-surface placeholder-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
                     />
                     <p v-if="form.errors.name" class="mt-1 text-sm text-red-400" role="alert">{{ form.errors.name }}</p>
                 </div>
@@ -79,7 +78,7 @@ function submit() {
                             type="number"
                             placeholder="0"
                             min="0"
-                            class="w-full h-12 bg-surface-container border border-outline rounded-lg pl-10 pr-4 text-on-surface placeholder-on-surface-variant focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
+                            class="w-full h-12 bg-surface-container border border-outline rounded-lg pl-10 pr-4 text-on-surface placeholder-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
                         />
                     </div>
                     <p v-if="form.errors.price" class="mt-1 text-sm text-red-400" role="alert">{{ form.errors.price }}</p>
@@ -94,7 +93,7 @@ function submit() {
                         v-model="form.category"
                         type="text"
                         placeholder="e.g. Fashion, Food, Elektronik"
-                        class="w-full h-12 bg-surface-container border border-outline rounded-lg px-4 text-on-surface placeholder-on-surface-variant focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
+                        class="w-full h-12 bg-surface-container border border-outline rounded-lg px-4 text-on-surface placeholder-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
                     />
                 </div>
 
@@ -107,7 +106,7 @@ function submit() {
                         v-model="form.tag"
                         type="text"
                         placeholder="e.g. Best Seller, New, Limited"
-                        class="w-full h-12 bg-surface-container border border-outline rounded-lg px-4 text-on-surface placeholder-on-surface-variant focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
+                        class="w-full h-12 bg-surface-container border border-outline rounded-lg px-4 text-on-surface placeholder-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
                     />
                 </div>
 
@@ -120,7 +119,7 @@ function submit() {
                         v-model="form.alt_text"
                         type="text"
                         placeholder="Deskripsi singkat gambar untuk aksesibilitas"
-                        class="w-full h-12 bg-surface-container border border-outline rounded-lg px-4 text-on-surface placeholder-on-surface-variant focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
+                        class="w-full h-12 bg-surface-container border border-outline rounded-lg px-4 text-on-surface placeholder-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
                     />
                 </div>
 
@@ -133,7 +132,7 @@ function submit() {
                         v-model="form.description"
                         placeholder="Deskripsikan produk Anda..."
                         rows="4"
-                        class="w-full bg-surface-container border border-outline rounded-lg p-4 text-on-surface placeholder-on-surface-variant resize-none focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
+                        class="w-full bg-surface-container border border-outline rounded-lg p-4 text-on-surface placeholder-on-surface-variant resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
                     ></textarea>
                 </div>
 
@@ -142,7 +141,7 @@ function submit() {
                         Gambar Produk
                     </label>
                     <div
-                        class="relative w-full aspect-video bg-surface-container border-2 border-dashed border-outline rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-accent transition-colors group overflow-hidden"
+                        class="relative w-full aspect-video bg-surface-container border-2 border-dashed border-outline rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors group overflow-hidden"
                     >
                         <input
                             type="file"
@@ -152,7 +151,7 @@ function submit() {
                             aria-label="Upload gambar produk"
                         />
                         <div v-if="!previewUrl" class="text-center p-6">
-                            <svg class="w-10 h-10 text-on-surface-variant mx-auto mb-2 group-hover:text-accent transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <svg class="w-10 h-10 text-on-surface-variant mx-auto mb-2 group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                             </svg>
                             <p class="text-sm text-on-surface-variant">Tap untuk upload gambar</p>
@@ -178,20 +177,20 @@ function submit() {
                         :aria-checked="form.is_active"
                         @click="form.is_active = !form.is_active"
                         class="relative w-11 h-6 rounded-full transition-colors"
-                        :class="form.is_active ? 'bg-accent' : 'bg-surface-container-high border border-outline'"
+                        :class="form.is_active ? 'bg-primary' : 'bg-surface-container-high border border-outline'"
                     >
                         <span
                             class="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-transform"
                             :class="form.is_active ? 'translate-x-5' : ''"
                         />
                     </button>
-                    <span class="text-sm" :class="form.is_active ? 'text-accent font-medium' : 'text-on-surface-variant'">
+                    <span class="text-sm" :class="form.is_active ? 'text-primary font-medium' : 'text-on-surface-variant'">
                         {{ form.is_active ? 'Aktif' : 'Nonaktif' }}
                     </span>
                 </div>
 
-                <div v-if="form.recentlySuccessful" class="bg-accent/10 border border-accent rounded-lg p-4 text-center" role="status">
-                    <p class="text-accent font-bold">Produk berhasil diperbarui!</p>
+                <div v-if="form.recentlySuccessful" class="bg-primary/10 border border-primary rounded-lg p-4 text-center" role="status">
+                    <p class="text-primary font-bold">Produk berhasil diperbarui!</p>
                 </div>
 
                 <div class="flex gap-3">
@@ -204,14 +203,12 @@ function submit() {
                     <button
                         type="submit"
                         :disabled="form.processing"
-                        class="flex-1 h-12 bg-accent text-on-accent rounded-lg font-bold uppercase tracking-wider hover:brightness-110 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent/30 disabled:opacity-50 disabled:grayscale"
+                        class="flex-1 h-12 bg-primary text-on-primary rounded-lg font-bold uppercase tracking-wider hover:brightness-110 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 disabled:opacity-50 disabled:grayscale"
                     >
                         {{ form.processing ? 'Menyimpan...' : 'Simpan Perubahan' }}
                     </button>
                 </div>
             </form>
-        </main>
-
-        <BottomNavBar active="manage" />
-    </div>
+        </div>
+    </DashboardLayout>
 </template>

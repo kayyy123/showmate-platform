@@ -1,6 +1,31 @@
+<script setup>
+defineProps({
+    type: {
+        type: String,
+        default: 'submit',
+    },
+    disabled: {
+        type: Boolean,
+        default: false,
+    },
+    size: {
+        type: String,
+        default: 'md',
+    },
+});
+</script>
+
 <template>
     <button
-        class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+        :type="type"
+        :disabled="disabled"
+        class="inline-flex items-center justify-center font-bold rounded-xl transition-all focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 disabled:opacity-50 disabled:pointer-events-none"
+        :class="[
+            size === 'sm' ? 'px-3 py-1.5 text-xs gap-1.5' : '',
+            size === 'md' ? 'px-5 py-2.5 text-sm gap-2' : '',
+            size === 'lg' ? 'px-6 py-3 text-base gap-2' : '',
+            'bg-primary text-on-primary hover:brightness-110 active:scale-[0.98]',
+        ]"
     >
         <slot />
     </button>

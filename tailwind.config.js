@@ -17,12 +17,20 @@ export default {
                 'surface-container': 'rgb(var(--color-surface-container) / <alpha-value>)',
                 'surface-container-low': 'rgb(var(--color-surface-container-low) / <alpha-value>)',
                 'surface-container-high': 'rgb(var(--color-surface-container-high) / <alpha-value>)',
+                'surface-deep': 'rgb(var(--color-surface-deep) / <alpha-value>)',
+
+                primary: 'rgb(var(--color-primary) / <alpha-value>)',
+                'on-primary': 'rgb(var(--color-on-primary) / <alpha-value>)',
+                secondary: 'rgb(var(--color-secondary) / <alpha-value>)',
+                'on-secondary': 'rgb(var(--color-on-secondary) / <alpha-value>)',
+                tertiary: 'rgb(var(--color-tertiary) / <alpha-value>)',
+                'on-tertiary': 'rgb(var(--color-on-tertiary) / <alpha-value>)',
+
                 accent: 'rgb(var(--color-accent) / <alpha-value>)',
                 'on-accent': 'rgb(var(--color-on-accent) / <alpha-value>)',
                 'on-surface': 'rgb(var(--color-on-surface) / <alpha-value>)',
                 'on-surface-variant': 'rgb(var(--color-on-surface-variant) / <alpha-value>)',
                 outline: 'rgb(var(--color-outline) / <alpha-value>)',
-                'surface-deep': 'rgb(var(--color-surface-deep) / <alpha-value>)',
             },
             fontFamily: {
                 sans: ['Inter', ...defaultTheme.fontFamily.sans],

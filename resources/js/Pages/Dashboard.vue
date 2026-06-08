@@ -1,27 +1,67 @@
 <script setup>
-import { Head } from '@inertiajs/vue3';
-import AppHeader from '@/Components/AppHeader.vue';
-import BottomNavBar from '@/Components/Shared/BottomNavBar.vue';
+import { computed } from 'vue';
+import { Head, usePage } from '@inertiajs/vue3';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
+
+const props = defineProps({
+    stats: Object,
+    recentProducts: Array,
+});
+
+const page = usePage();
 </script>
 
 <template>
     <Head title="Dashboard" />
 
-    <div class="min-h-screen bg-surface text-on-surface">
-        <AppHeader headline="Dashboard" />
+    <DashboardLayout activeTab="manage">
+        <template #header>Dashboard</template>
 
-        <main class="pt-20 pb-24 px-4 max-w-[420px] mx-auto">
-            <div class="text-center py-12">
-                <div class="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-8 h-8 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                </div>
-                <h2 class="font-header text-xl text-on-surface mb-2">Selamat Datang</h2>
-                <p class="text-on-surface-variant text-sm">Gunakan navigasi bawah untuk mengelola katalog Anda.</p>
+        <div v-if="stats" class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+            <div class="bg-surface-container-low border border-outline rounded-xl p-4">
+                <p class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1">Total Produk</p>
+                <p class="text-2xl font-bold text-on-surface">{{ stats.totalProducts }}</p>
             </div>
-        </main>
+            <div class="bg-surface-container-low border border-outline rounded-xl p-4">
+                <p class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1">Aktif</p>
+                <p class="text-2xl font-bold text-primary">{{ stats.activeProducts }}</p>
+            </div>
+            <div class="bg-surface-container-low border border-outline rounded-xl p-4">
+                <p class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1">Checkout</p>
+                <p class="text-2xl font-bold text-primary">{{ stats.totalCheckouts }}</p>
+            </div>
+            <div class="bg-surface-container-low border border-outline rounded-xl p-4">
+                <p class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1">Kunjungan</p>
+                <p class="text-2xl font-bold text-primary">{{ stats.totalVisits }}</p>
+            </div>
+        </div>
 
-        <BottomNavBar active="manage" />
-    </div>
+        <div v-if="recentProducts?.length" class="mt-6">
+            <h3 class="font-bold text-lg text-on-surface mb-3">Produk Terbaru</h3>
+            <div class="space-y-2">
+                <div
+                    v-for="product in recentProducts"
+                    :key="product.id"
+                    class="flex items-center gap-3 p-3 bg-surface-container-low rounded-xl border border-outline"
+                >
+                    <img
+                        v-if="product.image_url"
+                        :src="product.image_url"
+                        :alt="product.alt_text || product.name"
+                        class="w-12 h-12 rounded-lg object-cover"
+                    />
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-on-surface truncate">{{ product.name }}</p>
+                        <p class="text-xs text-on-surface-variant">Rp {{ Number(product.price).toLocaleString('id-ID') }}</p>
+                    </div>
+                    <span
+                        class="text-[10px] px-1.5 py-0.5 rounded border font-bold uppercase"
+                        :class="product.is_active ? 'border-primary text-primary' : 'border-on-surface-variant text-on-surface-variant'"
+                    >
+                        {{ product.is_active ? 'Aktif' : 'Nonaktif' }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </DashboardLayout>
 </template>

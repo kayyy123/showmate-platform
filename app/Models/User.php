@@ -9,10 +9,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -91,6 +92,26 @@ class User extends Authenticatable
     public function links(): HasMany
     {
         return $this->hasMany(Link::class)->orderBy('sort_order');
+    }
+
+    public function stores(): HasMany
+    {
+        return $this->hasMany(Store::class);
+    }
+
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(MerchantSubscription::class);
+    }
+
+    public function withdrawals(): HasMany
+    {
+        return $this->hasMany(Withdrawal::class);
+    }
+
+    public function activeSubscription()
+    {
+        return $this->hasOne(MerchantSubscription::class)->where('status', 'active');
     }
 
     public function isPro(): bool

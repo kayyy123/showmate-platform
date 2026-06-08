@@ -1,6 +1,14 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\StoreController;
+use App\Http\Controllers\Admin\SubscriptionPlanController;
+use App\Http\Controllers\Admin\InclusiveApplicationController as AdminInclusiveApplicationController;
+use App\Http\Controllers\Admin\WithdrawalController;
+use App\Http\Controllers\InclusiveApplicationController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\MerchantController;
@@ -57,16 +65,90 @@ Route::middleware(['auth', 'role:merchant'])->group(function () {
 
     Route::get('/upgrade-pro', [PlanController::class, 'upgradePage'])->name('upgrade-pro.page');
     Route::post('/upgrade-pro', [PlanController::class, 'upgrade'])->name('upgrade-pro.upgrade');
+
+    Route::prefix('/inclusive-applications')->name('inclusive-applications.')->group(function () {
+        Route::get('/', [InclusiveApplicationController::class, 'index'])->name('index');
+        Route::get('/create', [InclusiveApplicationController::class, 'create'])->name('create');
+        Route::post('/', [InclusiveApplicationController::class, 'store'])->name('store');
+        Route::get('/{inclusive_application}', [InclusiveApplicationController::class, 'show'])->name('show');
+    });
 });
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-    Route::get('/users', [AdminDashboardController::class, 'users'])->name('users');
-    Route::get('/products', [AdminDashboardController::class, 'products'])->name('products');
-    Route::get('/links', [AdminDashboardController::class, 'links'])->name('links');
-    Route::get('/orders', [AdminDashboardController::class, 'orders'])->name('orders');
-    Route::get('/statistics', [AdminDashboardController::class, 'statistics'])->name('statistics');
-    Route::get('/settings', [AdminDashboardController::class, 'settings'])->name('settings');
+
+    Route::prefix('/stores')->name('stores.')->group(function () {
+        Route::get('/', [StoreController::class, 'index'])->name('index');
+        Route::get('/create', [StoreController::class, 'create'])->name('create');
+        Route::post('/', [StoreController::class, 'store'])->name('store');
+        Route::get('/{store}/edit', [StoreController::class, 'edit'])->name('edit');
+        Route::put('/{store}', [StoreController::class, 'update'])->name('update');
+        Route::delete('/{store}', [StoreController::class, 'destroy'])->name('destroy');
+        Route::post('/{store}/restore', [StoreController::class, 'restore'])->name('restore');
+        Route::delete('/{store}/force', [StoreController::class, 'forceDelete'])->name('force-delete');
+    });
+
+    Route::prefix('/products')->name('products.')->group(function () {
+        Route::get('/', [AdminProductController::class, 'index'])->name('index');
+        Route::get('/create', [AdminProductController::class, 'create'])->name('create');
+        Route::post('/', [AdminProductController::class, 'store'])->name('store');
+        Route::get('/{product}/edit', [AdminProductController::class, 'edit'])->name('edit');
+        Route::put('/{product}', [AdminProductController::class, 'update'])->name('update');
+        Route::delete('/{product}', [AdminProductController::class, 'destroy'])->name('destroy');
+        Route::post('/{product}/toggle-visibility', [AdminProductController::class, 'toggleVisibility'])->name('toggle-visibility');
+        Route::post('/{product}/restore', [AdminProductController::class, 'restore'])->name('restore');
+        Route::delete('/{product}/force', [AdminProductController::class, 'forceDelete'])->name('force-delete');
+    });
+
+    Route::prefix('/categories')->name('categories.')->group(function () {
+        Route::get('/', [CategoryController::class, 'index'])->name('index');
+        Route::get('/create', [CategoryController::class, 'create'])->name('create');
+        Route::post('/', [CategoryController::class, 'store'])->name('store');
+        Route::get('/{category}/edit', [CategoryController::class, 'edit'])->name('edit');
+        Route::put('/{category}', [CategoryController::class, 'update'])->name('update');
+        Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('destroy');
+        Route::post('/{category}/restore', [CategoryController::class, 'restore'])->name('restore');
+        Route::delete('/{category}/force', [CategoryController::class, 'forceDelete'])->name('force-delete');
+    });
+
+    Route::prefix('/subscriptions')->name('subscriptions.')->group(function () {
+        Route::prefix('/plans')->name('plans.')->group(function () {
+            Route::get('/', [SubscriptionPlanController::class, 'index'])->name('index');
+            Route::get('/create', [SubscriptionPlanController::class, 'create'])->name('create');
+            Route::post('/', [SubscriptionPlanController::class, 'store'])->name('store');
+            Route::get('/{subscription_plan}/edit', [SubscriptionPlanController::class, 'edit'])->name('edit');
+            Route::put('/{subscription_plan}', [SubscriptionPlanController::class, 'update'])->name('update');
+            Route::delete('/{subscription_plan}', [SubscriptionPlanController::class, 'destroy'])->name('destroy');
+        });
+        Route::get('/assign', [SubscriptionPlanController::class, 'assignForm'])->name('assign-form');
+        Route::post('/assign', [SubscriptionPlanController::class, 'assign'])->name('assign');
+    });
+
+    Route::prefix('/orders')->name('orders.')->group(function () {
+        Route::get('/', [OrderController::class, 'index'])->name('index');
+        Route::get('/{order}', [OrderController::class, 'show'])->name('show');
+        Route::put('/{order}/status', [OrderController::class, 'updateStatus'])->name('update-status');
+        Route::delete('/{order}', [OrderController::class, 'destroy'])->name('destroy');
+        Route::post('/{order}/restore', [OrderController::class, 'restore'])->name('restore');
+        Route::delete('/{order}/force', [OrderController::class, 'forceDelete'])->name('force-delete');
+    });
+
+    Route::prefix('/withdrawals')->name('withdrawals.')->group(function () {
+        Route::get('/', [WithdrawalController::class, 'index'])->name('index');
+        Route::get('/{withdrawal}', [WithdrawalController::class, 'show'])->name('show');
+        Route::post('/{withdrawal}/approve', [WithdrawalController::class, 'approve'])->name('approve');
+        Route::post('/{withdrawal}/reject', [WithdrawalController::class, 'reject'])->name('reject');
+        Route::delete('/{withdrawal}', [WithdrawalController::class, 'destroy'])->name('destroy');
+        Route::post('/{withdrawal}/restore', [WithdrawalController::class, 'restore'])->name('restore');
+        Route::delete('/{withdrawal}/force', [WithdrawalController::class, 'forceDelete'])->name('force-delete');
+    });
+
+    Route::prefix('/inclusive-applications')->name('inclusive-applications.')->group(function () {
+        Route::get('/', [AdminInclusiveApplicationController::class, 'index'])->name('index');
+        Route::get('/{inclusive_application}', [AdminInclusiveApplicationController::class, 'show'])->name('show');
+        Route::post('/{inclusive_application}/approve', [AdminInclusiveApplicationController::class, 'approve'])->name('approve');
+        Route::post('/{inclusive_application}/reject', [AdminInclusiveApplicationController::class, 'reject'])->name('reject');
+    });
 });
 
 require __DIR__.'/auth.php';

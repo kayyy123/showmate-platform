@@ -46,15 +46,13 @@ const submit = () => {
         <!-- Main content -->
         <main class="flex-1 flex flex-col lg:flex-row">
             <!-- Left: poster -->
-            <div class="hidden lg:block lg:w-1/2 relative">
-                <div class="absolute inset-0 p-2">
-                    <div class="w-full h-full rounded-2xl bg-[#f8f3ea] flex items-center justify-center overflow-hidden">
-                        <img
-                            src="/images/register.png"
-                            alt="Ilustrasi ekosistem inklusif EtalaseKu untuk registrasi"
-                            class="w-full h-full object-contain"
-                        />
-                    </div>
+            <div class="hidden lg:block lg:w-1/2 flex items-center justify-center">
+                <div class="h-full max-w-full rounded-2xl bg-[#f8f3ea] overflow-hidden shadow-lg flex items-center justify-center" style="aspect-ratio: 912 / 1724">
+                    <img
+                        src="/images/register.png"
+                        alt="Ilustrasi ekosistem inklusif EtalaseKu untuk registrasi"
+                        class="w-full h-full object-contain"
+                    />
                 </div>
             </div>
 

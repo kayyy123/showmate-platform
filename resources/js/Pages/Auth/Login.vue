@@ -54,13 +54,13 @@ const submit = () => {
         <!-- Main content -->
         <main class="flex-1 flex flex-col lg:flex-row">
             <!-- Left: poster -->
-            <div class="hidden lg:block lg:w-1/2 relative overflow-hidden">
-                <div class="absolute inset-0 p-4">
-                    <div class="w-full h-full rounded-2xl overflow-hidden">
+            <div class="hidden lg:block lg:w-1/2 relative">
+                <div class="absolute inset-0 p-2">
+                    <div class="w-full h-full rounded-2xl bg-[#1e0a3c] flex items-center justify-center overflow-hidden">
                         <img
                             src="/images/login.png"
                             alt="Ilustrasi aksesibilitas EtalaseKu untuk login"
-                            class="w-full h-full object-cover"
+                            class="w-full h-full object-contain"
                         />
                     </div>
                 </div>

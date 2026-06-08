@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\MerchantController;
@@ -26,10 +26,6 @@ Route::post('/catalog/{user}/checkout', [CheckoutController::class, 'store'])->n
 Route::middleware('guest')->group(function () {
     Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle'])->name('auth.google');
     Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
-});
-
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 });
 
 Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
@@ -61,6 +57,16 @@ Route::middleware(['auth', 'role:merchant'])->group(function () {
 
     Route::get('/upgrade-pro', [PlanController::class, 'upgradePage'])->name('upgrade-pro.page');
     Route::post('/upgrade-pro', [PlanController::class, 'upgrade'])->name('upgrade-pro.upgrade');
+});
+
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/users', [AdminDashboardController::class, 'users'])->name('users');
+    Route::get('/products', [AdminDashboardController::class, 'products'])->name('products');
+    Route::get('/links', [AdminDashboardController::class, 'links'])->name('links');
+    Route::get('/orders', [AdminDashboardController::class, 'orders'])->name('orders');
+    Route::get('/statistics', [AdminDashboardController::class, 'statistics'])->name('statistics');
+    Route::get('/settings', [AdminDashboardController::class, 'settings'])->name('settings');
 });
 
 require __DIR__.'/auth.php';

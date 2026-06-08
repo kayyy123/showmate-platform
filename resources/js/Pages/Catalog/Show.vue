@@ -32,6 +32,83 @@ const channels = computed(() => {
 const hasProducts = computed(() => props.products && props.products.length > 0);
 const hasLinks = computed(() => props.links && props.links.length > 0);
 
+const searchQuery = ref('');
+const selectedCategory = ref('');
+const selectedTag = ref('');
+const minPrice = ref('');
+const maxPrice = ref('');
+
+const categories = computed(() => {
+    if (!props.products) return [];
+    const cats = [...new Set(props.products.map(p => p.category).filter(Boolean))];
+    return cats.sort();
+});
+
+const tags = computed(() => {
+    if (!props.products) return [];
+    const t = [...new Set(props.products.map(p => p.tag).filter(Boolean))];
+    return t.sort();
+});
+
+const priceError = computed(() => {
+    if (minPrice.value !== '' && maxPrice.value !== '' && Number(minPrice.value) > Number(maxPrice.value)) {
+        return 'Harga minimum tidak boleh lebih besar dari harga maksimum';
+    }
+    return '';
+});
+
+const filteredProducts = computed(() => {
+    if (!props.products) return [];
+    let result = [...props.products];
+
+    if (searchQuery.value.trim()) {
+        const q = searchQuery.value.trim().toLowerCase();
+        result = result.filter(p => p.name.toLowerCase().includes(q));
+    }
+
+    if (selectedCategory.value) {
+        result = result.filter(p => p.category === selectedCategory.value);
+    }
+
+    if (selectedTag.value) {
+        result = result.filter(p => p.tag === selectedTag.value);
+    }
+
+    if (!priceError.value) {
+        if (minPrice.value !== '') {
+            const min = Number(minPrice.value);
+            if (!isNaN(min)) {
+                result = result.filter(p => Number(p.price) >= min);
+            }
+        }
+
+        if (maxPrice.value !== '') {
+            const max = Number(maxPrice.value);
+            if (!isNaN(max)) {
+                result = result.filter(p => Number(p.price) <= max);
+            }
+        }
+    }
+
+    return result;
+});
+
+const showFilteredEmptyState = computed(() => {
+    return hasProducts.value && filteredProducts.value.length === 0 && !priceError.value;
+});
+
+const hasActiveFilters = computed(() => {
+    return searchQuery.value || selectedCategory.value || selectedTag.value || minPrice.value || maxPrice.value;
+});
+
+function resetFilters() {
+    searchQuery.value = '';
+    selectedCategory.value = '';
+    selectedTag.value = '';
+    minPrice.value = '';
+    maxPrice.value = '';
+}
+
 const form = useForm({
     product_id: null,
     buyer_name: '',
@@ -293,9 +370,119 @@ function submitCheckout() {
                     </svg>
                     Katalog Produk
                 </h2>
-                <div class="space-y-3">
+
+                <!-- Filters -->
+                <div class="rounded-2xl border border-outline bg-surface p-4 mb-4 space-y-3" role="search" aria-label="Filter produk">
+                    <!-- Search -->
+                    <div class="relative">
+                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <input
+                            v-model="searchQuery"
+                            type="search"
+                            placeholder="Cari produk..."
+                            aria-label="Cari produk"
+                            class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container border border-outline text-on-surface placeholder:text-on-surface-variant text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
+                        />
+                    </div>
+
+                    <!-- Category + Tag row -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5" for="filter-category">Kategori</label>
+                            <select
+                                id="filter-category"
+                                v-model="selectedCategory"
+                                class="w-full px-3 py-2.5 rounded-xl bg-surface-container border border-outline text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors appearance-none"
+                            >
+                                <option value="">Semua Kategori</option>
+                                <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5" for="filter-tag">Tag</label>
+                            <select
+                                id="filter-tag"
+                                v-model="selectedTag"
+                                class="w-full px-3 py-2.5 rounded-xl bg-surface-container border border-outline text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors appearance-none"
+                            >
+                                <option value="">Semua Tag</option>
+                                <option v-for="tag in tags" :key="tag" :value="tag">{{ tag }}</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Price row -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5" for="filter-min-price">Harga Min</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-on-surface-variant pointer-events-none font-mono" aria-hidden="true">Rp</span>
+                                <input
+                                    id="filter-min-price"
+                                    v-model="minPrice"
+                                    type="number"
+                                    min="0"
+                                    placeholder="0"
+                                    aria-label="Harga minimum"
+                                    class="w-full pl-9 pr-3 py-2.5 rounded-xl bg-surface-container border border-outline text-on-surface placeholder:text-on-surface-variant text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                />
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5" for="filter-max-price">Harga Maks</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-on-surface-variant pointer-events-none font-mono" aria-hidden="true">Rp</span>
+                                <input
+                                    id="filter-max-price"
+                                    v-model="maxPrice"
+                                    type="number"
+                                    min="0"
+                                    placeholder="0"
+                                    aria-label="Harga maksimum"
+                                    class="w-full pl-9 pr-3 py-2.5 rounded-xl bg-surface-container border border-outline text-on-surface placeholder:text-on-surface-variant text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Price error -->
+                    <p v-if="priceError" class="text-sm text-red-500 flex items-center gap-1.5" role="alert">
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {{ priceError }}
+                    </p>
+
+                    <!-- Result count + Reset -->
+                    <div class="flex items-center justify-between pt-1">
+                        <p class="text-xs text-on-surface-variant" aria-live="polite">
+                            <template v-if="priceError">
+                                Perbaiki rentang harga untuk melihat hasil
+                            </template>
+                            <template v-else-if="hasActiveFilters">
+                                {{ filteredProducts.length }} produk ditemukan
+                            </template>
+                            <template v-else>
+                                {{ products.length }} produk
+                            </template>
+                        </p>
+                        <button
+                            v-if="hasActiveFilters"
+                            @click="resetFilters"
+                            class="text-xs font-semibold text-primary hover:text-primary/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 px-2 py-1 rounded-lg"
+                            aria-label="Reset semua filter"
+                        >
+                            Reset
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product list -->
+                <div v-if="!showFilteredEmptyState" class="space-y-3">
                     <div
-                        v-for="product in products"
+                        v-for="product in filteredProducts"
                         :key="product.id"
                         class="rounded-2xl border border-outline bg-surface overflow-hidden transition-all hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5"
                     >
@@ -308,7 +495,7 @@ function submitCheckout() {
                                     class="w-full h-full object-cover"
                                 />
                                 <div v-else class="w-full h-full flex items-center justify-center" aria-hidden="true">
-                                    <svg class="w-6 h-6 text-on-surface-variant/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-6 h-6 text-on-surface-variant/40" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
                                 </div>
@@ -341,6 +528,18 @@ function submitCheckout() {
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Filtered empty state -->
+                <div
+                    v-if="showFilteredEmptyState"
+                    class="text-center py-12 rounded-2xl border border-dashed border-outline"
+                >
+                    <svg class="w-12 h-12 mx-auto mb-3 text-on-surface-variant/30" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <p class="text-on-surface font-semibold">Produk tidak ditemukan</p>
+                    <p class="text-sm text-on-surface-variant mt-1">Coba ubah kata kunci atau filter lainnya</p>
                 </div>
             </section>
 

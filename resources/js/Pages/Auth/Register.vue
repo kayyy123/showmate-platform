@@ -47,7 +47,7 @@ const submit = () => {
         <main class="flex-1 flex flex-col lg:flex-row items-stretch">
             <!-- Left: poster -->
             <div class="hidden lg:flex lg:w-1/2 items-center justify-center p-4">
-                <div class="max-h-[75vh] max-w-full rounded-2xl bg-[#f8f3ea] overflow-hidden shadow-lg flex items-center justify-center" style="aspect-ratio: 912 / 1724">
+                <div class="max-h-[75vh] max-w-full rounded-2xl bg-[#f8f3ea] overflow-hidden shadow-lg flex items-center justify-center" style="aspect-ratio: 1368 / 1724">
                     <img
                         src="/images/register.png"
                         alt="Ilustrasi ekosistem inklusif EtalaseKu untuk registrasi"

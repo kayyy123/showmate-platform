@@ -55,7 +55,7 @@ const submit = () => {
         <main class="flex-1 flex flex-col lg:flex-row items-stretch">
             <!-- Left: poster -->
             <div class="hidden lg:flex lg:w-1/2 items-center justify-center p-4">
-                <div class="max-h-[75vh] max-w-full rounded-2xl bg-[#1e0a3c] overflow-hidden shadow-lg flex items-center justify-center" style="aspect-ratio: 863 / 1823">
+                <div class="max-h-[75vh] max-w-full rounded-2xl bg-[#1e0a3c] overflow-hidden shadow-lg flex items-center justify-center" style="aspect-ratio: 1295 / 1823">
                     <img
                         src="/images/login.png"
                         alt="Ilustrasi aksesibilitas EtalaseKu untuk login"

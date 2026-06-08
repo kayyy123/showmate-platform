@@ -2,6 +2,9 @@
 import { computed, ref } from 'vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
 import Modal from '@/Components/Modal.vue';
+import { useAccessibility } from '@/Composables/useAccessibility';
+
+const { fontSize, highContrast, increaseFont, decreaseFont, resetFont, toggleHighContrast } = useAccessibility();
 
 const props = defineProps({
     merchant: Object,
@@ -154,6 +157,51 @@ function getIcon(icon) {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                         </svg>
                         {{ shared ? 'Tersalin!' : 'Salin' }}
+                    </button>
+                </div>
+
+                <!-- A11y toolbar -->
+                <div class="flex items-center justify-center gap-2 mt-3" role="toolbar" aria-label="Pengaturan aksesibilitas">
+                    <button
+                        @click="decreaseFont"
+                        :disabled="fontSize <= 80"
+                        class="w-9 h-9 rounded-lg border border-outline text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                        aria-label="Perkecil ukuran teks"
+                    >
+                        <svg class="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+                        </svg>
+                    </button>
+                    <span class="text-xs font-medium text-on-surface-variant w-8 text-center" aria-live="polite">{{ fontSize }}%</span>
+                    <button
+                        @click="increaseFont"
+                        :disabled="fontSize >= 140"
+                        class="w-9 h-9 rounded-lg border border-outline text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                        aria-label="Perbesar ukuran teks"
+                    >
+                        <svg class="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                    </button>
+                    <span class="w-px h-6 bg-outline mx-1" aria-hidden="true" />
+                    <button
+                        @click="toggleHighContrast"
+                        class="w-9 h-9 rounded-lg border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                        :class="highContrast ? 'bg-primary text-on-primary border-primary' : 'border-outline text-on-surface-variant hover:bg-surface-container hover:text-on-surface'"
+                        :aria-label="highContrast ? 'Nonaktifkan mode kontras tinggi' : 'Aktifkan mode kontras tinggi'"
+                        :aria-pressed="highContrast"
+                    >
+                        <svg class="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                    </button>
+                    <button
+                        v-if="fontSize !== 100"
+                        @click="resetFont"
+                        class="text-xs font-medium text-primary hover:text-primary/80 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                        aria-label="Reset ukuran teks ke default"
+                    >
+                        Reset
                     </button>
                 </div>
             </div>

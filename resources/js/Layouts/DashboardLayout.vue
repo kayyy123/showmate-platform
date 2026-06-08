@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import { useTheme } from '@/Composables/useTheme';
+import { useAccessibility } from '@/Composables/useAccessibility';
 
 const props = defineProps({
     activeTab: {
@@ -13,6 +14,7 @@ const props = defineProps({
 const page = usePage();
 const user = computed(() => page.props.auth.user);
 const { isDark, toggleTheme } = useTheme();
+const { fontSize, highContrast, increaseFont, decreaseFont, resetFont, toggleHighContrast } = useAccessibility();
 
 const sidebarOpen = ref(false);
 const profileMenuOpen = ref(false);
@@ -55,6 +57,7 @@ function closeSidebar() {
                 v-if="sidebarOpen"
                 class="fixed inset-0 z-40 bg-on-surface/50 md:hidden"
                 @click="closeSidebar"
+                aria-hidden="true"
             />
         </Transition>
 
@@ -89,6 +92,7 @@ function closeSidebar() {
                         :key="item.key"
                         :href="item.route"
                         @click="closeSidebar"
+                        :aria-current="activeTab === item.key ? 'page' : undefined"
                         class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors"
                         :class="activeTab === item.key ? 'bg-primary/10 text-primary' : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'"
                     >
@@ -134,6 +138,7 @@ function closeSidebar() {
                     v-for="item in navItems"
                     :key="item.key"
                     :href="item.route"
+                    :aria-current="activeTab === item.key ? 'page' : undefined"
                     class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors"
                     :class="activeTab === item.key ? 'bg-primary/10 text-primary' : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'"
                 >
@@ -260,7 +265,41 @@ function closeSidebar() {
                         <slot name="header" />
                     </h2>
                 </div>
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-1">
+                    <span class="hidden sm:flex items-center gap-1 mr-1" role="toolbar" aria-label="Pengaturan aksesibilitas">
+                        <button
+                            @click="decreaseFont"
+                            :disabled="fontSize <= 80"
+                            class="w-8 h-8 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                            aria-label="Perkecil ukuran teks"
+                        >
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+                            </svg>
+                        </button>
+                        <span class="text-[11px] font-medium text-on-surface-variant w-6 text-center" aria-live="polite">{{ fontSize }}%</span>
+                        <button
+                            @click="increaseFont"
+                            :disabled="fontSize >= 140"
+                            class="w-8 h-8 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                            aria-label="Perbesar ukuran teks"
+                        >
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                        </button>
+                        <button
+                            @click="toggleHighContrast"
+                            class="w-8 h-8 rounded-lg flex items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                            :class="highContrast ? 'text-primary' : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'"
+                            :aria-label="highContrast ? 'Nonaktifkan mode kontras tinggi' : 'Aktifkan mode kontras tinggi'"
+                            :aria-pressed="highContrast"
+                        >
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                        </button>
+                    </span>
                     <button
                         @click="toggleTheme"
                         class="w-10 h-10 rounded-lg flex items-center justify-center hover:bg-surface-container transition-colors text-on-surface"

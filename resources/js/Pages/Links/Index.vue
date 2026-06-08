@@ -403,9 +403,14 @@ function formatUrlDisplay(url) {
                     class="fixed inset-0 z-50 flex items-center justify-center p-4"
                     @click.self="closeModal"
                 >
-                    <div class="w-full max-w-md bg-surface rounded-2xl border border-outline shadow-xl overflow-hidden">
+                    <div
+                        class="w-full max-w-md bg-surface rounded-2xl border border-outline shadow-xl overflow-hidden"
+                        role="dialog"
+                        aria-modal="true"
+                        :aria-label="editingLink ? 'Edit Tautan' : 'Tambah Tautan Baru'"
+                    >
                         <div class="p-5 border-b border-outline">
-                            <h3 class="text-lg font-bold text-on-surface">
+                            <h3 class="text-lg font-bold text-on-surface" :id="editingLink ? 'edit-link-title' : 'add-link-title'">
                                 {{ editingLink ? 'Edit Tautan' : 'Tambah Tautan Baru' }}
                             </h3>
                         </div>
@@ -502,14 +507,19 @@ function formatUrlDisplay(url) {
                     class="fixed inset-0 z-50 flex items-center justify-center p-4"
                     @click.self="cancelDelete"
                 >
-                    <div class="w-full max-w-sm bg-surface rounded-2xl border border-outline shadow-xl overflow-hidden p-6 text-center">
+                    <div
+                        class="w-full max-w-sm bg-surface rounded-2xl border border-outline shadow-xl overflow-hidden p-6 text-center"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label="Konfirmasi hapus tautan"
+                    >
                         <div class="w-14 h-14 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
-                            <svg class="w-7 h-7 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-7 h-7 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
                             </svg>
                         </div>
-                        <h3 class="text-lg font-bold text-on-surface mb-1">Hapus Tautan</h3>
-                        <p class="text-sm text-on-surface-variant mb-6">
+                        <h3 class="text-lg font-bold text-on-surface mb-1" id="delete-confirm-title">Hapus Tautan</h3>
+                        <p class="text-sm text-on-surface-variant mb-6" id="delete-confirm-desc">
                             Yakin ingin menghapus <strong class="text-on-surface">{{ deletingLink?.title }}</strong>? Tindakan ini tidak dapat dibatalkan.
                         </p>
                         <div class="flex gap-3">

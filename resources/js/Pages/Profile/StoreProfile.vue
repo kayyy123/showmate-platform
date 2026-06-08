@@ -90,8 +90,13 @@ function submit() {
 
         <div class="space-y-6 max-w-3xl">
 
+            <div aria-live="polite" aria-atomic="true" class="sr-only">
+                {{ form.recentlySuccessful ? 'Profil berhasil disimpan' : '' }}
+            </div>
+
             <!-- Banner Preview -->
-            <section>
+            <section aria-labelledby="banner-preview-heading">
+                <h2 id="banner-preview-heading" class="sr-only">Pratinjau Banner</h2>
                 <div
                     class="relative w-full h-40 md:h-48 rounded-2xl overflow-hidden"
                     :class="selectedTheme.bg"
@@ -135,13 +140,13 @@ function submit() {
             </section>
 
             <!-- Branding -->
-            <section>
-                <div class="flex items-center gap-2 mb-4">
-                    <svg class="w-5 h-5 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <section aria-labelledby="branding-heading">
+                <h2 id="branding-heading" class="flex items-center gap-2 mb-4">
+                    <svg class="w-5 h-5 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
-                    <h2 class="font-bold text-lg text-on-surface">Branding UMKM</h2>
-                </div>
+                    Branding UMKM
+                </h2>
                 <div class="rounded-2xl border border-outline bg-surface p-5 space-y-5">
                     <!-- Logo -->
                     <div>
@@ -210,13 +215,13 @@ function submit() {
             </section>
 
             <!-- Kontak & Media Sosial -->
-            <section>
-                <div class="flex items-center gap-2 mb-4">
-                    <svg class="w-5 h-5 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <section aria-labelledby="kontak-heading">
+                <h2 id="kontak-heading" class="flex items-center gap-2 mb-4">
+                    <svg class="w-5 h-5 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                     </svg>
-                    <h2 class="font-bold text-lg text-on-surface">Kontak & Media Sosial</h2>
-                </div>
+                    Kontak & Media Sosial
+                </h2>
                 <div class="rounded-2xl border border-outline bg-surface p-5 space-y-4">
                     <!-- WhatsApp -->
                     <div>
@@ -284,13 +289,13 @@ function submit() {
             </section>
 
             <!-- Marketplace -->
-            <section>
-                <div class="flex items-center gap-2 mb-4">
-                    <svg class="w-5 h-5 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <section aria-labelledby="marketplace-heading">
+                <h2 id="marketplace-heading" class="flex items-center gap-2 mb-4">
+                    <svg class="w-5 h-5 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                     </svg>
-                    <h2 class="font-bold text-lg text-on-surface">Marketplace</h2>
-                </div>
+                    Marketplace
+                </h2>
                 <div class="rounded-2xl border border-outline bg-surface p-5 space-y-4">
                     <!-- Shopee -->
                     <div>
@@ -335,13 +340,13 @@ function submit() {
             </section>
 
             <!-- Tampilan Publik -->
-            <section>
-                <div class="flex items-center gap-2 mb-4">
-                    <svg class="w-5 h-5 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <section aria-labelledby="tampilan-heading">
+                <h2 id="tampilan-heading" class="flex items-center gap-2 mb-4">
+                    <svg class="w-5 h-5 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
                     </svg>
-                    <h2 class="font-bold text-lg text-on-surface">Tampilan Halaman Publik</h2>
-                </div>
+                    Tampilan Halaman Publik
+                </h2>
                 <div class="rounded-2xl border border-outline bg-surface p-5 space-y-4">
                     <p class="text-sm text-on-surface-variant">Pilih skema warna untuk halaman katalog publik Anda. Perubahan tersimpan di perangkat ini.</p>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -376,14 +381,14 @@ function submit() {
             </section>
 
             <!-- Pratinjau Publik -->
-            <section>
+            <section aria-labelledby="preview-heading">
                 <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center gap-2">
-                        <svg class="w-5 h-5 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
-                        <h2 class="font-bold text-lg text-on-surface">Pratinjau Halaman Publik</h2>
+                        <h2 id="preview-heading" class="font-bold text-lg text-on-surface">Pratinjau Halaman Publik</h2>
                     </div>
                     <a
                         :href="catalogUrl"
@@ -392,7 +397,7 @@ function submit() {
                         class="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
                     >
                         Buka halaman
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                         </svg>
                     </a>

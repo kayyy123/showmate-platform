@@ -47,6 +47,25 @@
     }
 }
 
+@layer base {
+    :root {
+        --a11y-font-scale: 1;
+    }
+
+    html {
+        font-size: calc(1rem * var(--a11y-font-scale));
+    }
+}
+
+@layer components {
+    .skip-to-content {
+        @apply fixed top-0 left-0 z-[100] -translate-y-full focus:translate-y-0
+               bg-primary text-on-primary px-4 py-2 text-sm font-bold
+               focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50
+               transition-transform duration-200;
+    }
+}
+
 @layer utilities {
     .no-scrollbar::-webkit-scrollbar {
         display: none;
@@ -54,5 +73,34 @@
     .no-scrollbar {
         -ms-overflow-style: none;
         scrollbar-width: none;
+    }
+}
+
+@layer base {
+    :root[data-a11y-high-contrast] {
+        --color-primary: 255 215 0;
+        --color-on-primary: 0 0 0;
+        --color-secondary: 0 180 255;
+        --color-tertiary: 255 100 100;
+        --color-surface: 0 0 0;
+        --color-surface-container: 20 20 20;
+        --color-surface-container-low: 10 10 10;
+        --color-surface-container-high: 30 30 30;
+        --color-on-surface: 255 255 255;
+        --color-on-surface-variant: 220 220 220;
+        --color-outline: 120 120 120;
+    }
+    :root[data-theme="light"][data-a11y-high-contrast] {
+        --color-primary: 0 51 102;
+        --color-on-primary: 255 255 255;
+        --color-secondary: 0 100 200;
+        --color-tertiary: 200 0 0;
+        --color-surface: 255 255 255;
+        --color-surface-container: 240 240 240;
+        --color-surface-container-low: 248 248 248;
+        --color-surface-container-high: 230 230 230;
+        --color-on-surface: 0 0 0;
+        --color-on-surface-variant: 40 40 40;
+        --color-outline: 80 80 80;
     }
 }

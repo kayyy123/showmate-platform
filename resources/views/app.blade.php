@@ -16,6 +16,11 @@
         @inertiaHead
     </head>
     <body class="font-sans antialiased">
-        @inertia
+        <a href="#main-content" class="skip-to-content">
+            Langsung ke konten utama
+        </a>
+        <div id="main-content">
+            @inertia
+        </div>
     </body>
 </html>

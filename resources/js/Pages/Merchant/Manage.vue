@@ -65,7 +65,9 @@ watch(() => page.props.flash?.success, (msg) => {
         <template #header>Dashboard</template>
 
         <!-- Stat Cards -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+        <section aria-labelledby="stats-heading">
+            <h2 id="stats-heading" class="sr-only">Statistik</h2>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
             <div class="bg-surface-container-low border border-outline rounded-xl p-4">
                 <div class="flex items-center gap-2 mb-2">
                     <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -106,6 +108,7 @@ watch(() => page.props.flash?.success, (msg) => {
                 <p class="text-2xl font-bold text-on-surface">{{ stats.inactive }}</p>
             </div>
         </div>
+        </section>
 
         <!-- Add Product & Search -->
         <div class="flex flex-col sm:flex-row gap-3 mb-4">

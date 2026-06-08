@@ -56,16 +56,16 @@ function formatPriceInput(e) {
         <template #header>Edit Produk</template>
 
         <div class="max-w-2xl">
-            <form @submit.prevent="submit" class="space-y-6">
+            <form @submit.prevent="submit" class="space-y-6" novalidate>
 
                 <!-- Status -->
-                <section>
-                    <div class="flex items-center gap-2 mb-4">
+                <section aria-labelledby="status-heading">
+                    <h2 id="status-heading" class="flex items-center gap-2 mb-4">
                         <svg class="w-5 h-5 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <h2 class="font-bold text-lg text-on-surface">Status Produk</h2>
-                    </div>
+                        Status Produk
+                    </h2>
                     <div class="rounded-2xl border border-outline bg-surface p-5">
                         <div class="flex items-center justify-between">
                             <div>
@@ -103,13 +103,13 @@ function formatPriceInput(e) {
                 </section>
 
                 <!-- Informasi Produk -->
-                <section>
-                    <div class="flex items-center gap-2 mb-4">
+                <section aria-labelledby="edit-product-info-heading">
+                    <h2 id="edit-product-info-heading" class="flex items-center gap-2 mb-4">
                         <svg class="w-5 h-5 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                         </svg>
-                        <h2 class="font-bold text-lg text-on-surface">Informasi Produk</h2>
-                    </div>
+                        Informasi Produk
+                    </h2>
                     <div class="rounded-2xl border border-outline bg-surface p-5 space-y-5">
                         <div>
                             <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2" for="name">
@@ -207,13 +207,13 @@ function formatPriceInput(e) {
                 </section>
 
                 <!-- Gambar Produk -->
-                <section>
-                    <div class="flex items-center gap-2 mb-4">
+                <section aria-labelledby="edit-product-image-heading">
+                    <h2 id="edit-product-image-heading" class="flex items-center gap-2 mb-4">
                         <svg class="w-5 h-5 text-primary shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                        <h2 class="font-bold text-lg text-on-surface">Gambar Produk</h2>
-                    </div>
+                        Gambar Produk
+                    </h2>
                     <div class="rounded-2xl border border-outline bg-surface p-5">
                         <div
                             class="relative w-full aspect-video bg-surface-container border-2 border-dashed border-outline rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-all group overflow-hidden"

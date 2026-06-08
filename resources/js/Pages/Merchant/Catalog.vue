@@ -195,11 +195,12 @@ function formatPrice(price) {
                         class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-outline bg-surface text-on-surface placeholder:text-on-surface-variant text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all"
                     />
                 </div>
-                <div class="flex gap-2">
+                <div class="flex gap-2" role="group" aria-label="Filter status produk">
                     <button
                         @click="filterStatus = 'all'"
                         class="px-3 py-2.5 rounded-xl text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                         :class="filterStatus === 'all' ? 'bg-primary text-on-primary' : 'border border-outline text-on-surface-variant hover:bg-surface-container'"
+                        :aria-pressed="filterStatus === 'all'"
                     >
                         Semua
                     </button>
@@ -207,6 +208,7 @@ function formatPrice(price) {
                         @click="filterStatus = 'active'"
                         class="px-3 py-2.5 rounded-xl text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                         :class="filterStatus === 'active' ? 'bg-primary text-on-primary' : 'border border-outline text-on-surface-variant hover:bg-surface-container'"
+                        :aria-pressed="filterStatus === 'active'"
                     >
                         Aktif
                     </button>
@@ -214,6 +216,7 @@ function formatPrice(price) {
                         @click="filterStatus = 'inactive'"
                         class="px-3 py-2.5 rounded-xl text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                         :class="filterStatus === 'inactive' ? 'bg-primary text-on-primary' : 'border border-outline text-on-surface-variant hover:bg-surface-container'"
+                        :aria-pressed="filterStatus === 'inactive'"
                     >
                         Nonaktif
                     </button>

@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import DashboardLayout from '@/Layouts/DashboardLayout.vue';
+import { confirmDelete } from '@/Composables/useConfirm.js';
 
 const page = usePage();
 
@@ -28,8 +29,9 @@ const filteredProducts = computed(() => {
     );
 });
 
-function destroyProduct(product) {
-    if (confirm(`Hapus produk "${product.name}"?`)) {
+async function destroyProduct(product) {
+    const confirmed = await confirmDelete();
+    if (confirmed) {
         router.delete(route('products.destroy', product.id));
     }
 }

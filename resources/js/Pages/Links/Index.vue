@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue';
 import { Head, useForm, usePage, router } from '@inertiajs/vue3';
 import DashboardLayout from '@/Layouts/DashboardLayout.vue';
+import { confirmDelete } from '@/Composables/useConfirm.js';
 
 const props = defineProps({
     links: Array,
@@ -12,8 +13,7 @@ const catalogUrl = `/catalog/${page.props.auth.user.slug}`;
 
 const showModal = ref(false);
 const editingLink = ref(null);
-const deletingLink = ref(null);
-const showDeleteConfirm = ref(false);
+
 
 const form = useForm({
     title: '',
@@ -90,26 +90,13 @@ function submit() {
     }
 }
 
-function confirmDelete(link) {
-    deletingLink.value = link;
-    showDeleteConfirm.value = true;
-}
-
-function executeDelete() {
-    if (deletingLink.value) {
-        router.delete(route('links.destroy', deletingLink.value.id), {
+async function destroyLink(link) {
+    const confirmed = await confirmDelete();
+    if (confirmed) {
+        router.delete(route('links.destroy', link.id), {
             preserveScroll: true,
-            onSuccess: () => {
-                showDeleteConfirm.value = false;
-                deletingLink.value = null;
-            },
         });
     }
-}
-
-function cancelDelete() {
-    showDeleteConfirm.value = false;
-    deletingLink.value = null;
 }
 
 function toggleActive(link) {
@@ -308,7 +295,7 @@ function formatUrlDisplay(url) {
 
                     <!-- Delete -->
                     <button
-                        @click="confirmDelete(link)"
+                        @click="destroyLink(link)"
                         class="w-8 h-8 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-red-500/10 hover:text-red-500 transition-colors shrink-0"
                         aria-label="Hapus tautan"
                     >
@@ -466,65 +453,6 @@ function formatUrlDisplay(url) {
                                 </button>
                             </div>
                         </form>
-                    </div>
-                </div>
-            </Transition>
-        </Teleport>
-
-        <!-- Delete Confirmation Modal -->
-        <Teleport to="body">
-            <Transition
-                enter-active-class="transition-all duration-200"
-                enter-from-class="opacity-0"
-                enter-to-class="opacity-100"
-                leave-active-class="transition-all duration-200"
-                leave-from-class="opacity-100"
-                leave-to-class="opacity-0"
-            >
-                <div v-if="showDeleteConfirm" class="fixed inset-0 z-50 bg-on-surface/50" @click="cancelDelete" />
-            </Transition>
-            <Transition
-                enter-active-class="transition-all duration-200"
-                enter-from-class="opacity-0 scale-95 -translate-y-4"
-                enter-to-class="opacity-100 scale-100 translate-y-0"
-                leave-active-class="transition-all duration-150"
-                leave-from-class="opacity-100 scale-100 translate-y-0"
-                leave-to-class="opacity-0 scale-95 -translate-y-4"
-            >
-                <div
-                    v-if="showDeleteConfirm"
-                    class="fixed inset-0 z-50 flex items-center justify-center p-4"
-                    @click.self="cancelDelete"
-                >
-                    <div
-                        class="w-full max-w-sm bg-surface rounded-2xl border border-outline shadow-xl overflow-hidden p-6 text-center"
-                        role="dialog"
-                        aria-modal="true"
-                        aria-label="Konfirmasi hapus tautan"
-                    >
-                        <div class="w-14 h-14 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
-                            <svg class="w-7 h-7 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-bold text-on-surface mb-1" id="delete-confirm-title">Hapus Tautan</h3>
-                        <p class="text-sm text-on-surface-variant mb-6" id="delete-confirm-desc">
-                            Yakin ingin menghapus <strong class="text-on-surface">{{ deletingLink?.title }}</strong>? Tindakan ini tidak dapat dibatalkan.
-                        </p>
-                        <div class="flex gap-3">
-                            <button
-                                @click="cancelDelete"
-                                class="flex-1 px-4 py-3 rounded-xl border border-outline text-on-surface font-medium text-sm hover:bg-surface-container transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
-                            >
-                                Batal
-                            </button>
-                            <button
-                                @click="executeDelete"
-                                class="flex-1 px-4 py-3 rounded-xl bg-red-500 text-white text-sm font-bold hover:brightness-110 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50"
-                            >
-                                Hapus
-                            </button>
-                        </div>
                     </div>
                 </div>
             </Transition>

@@ -22,6 +22,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'role',
         'password',
         'slug',
         'store_name',
@@ -109,5 +110,15 @@ class User extends Authenticatable
         }
 
         return $this->products()->count() < 10;
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isMerchant(): bool
+    {
+        return $this->role === 'merchant';
     }
 }

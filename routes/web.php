@@ -1,29 +1,17 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MerchantController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PlanController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StoreProfileController;
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\LinkController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -40,16 +28,17 @@ Route::middleware('guest')->group(function () {
     Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
 });
 
-Route::permanentRedirect('/dashboard', '/merchant/manage')
-    ->name('dashboard');
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+});
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
     Route::get('/merchant/catalog', [MerchantController::class, 'catalog'])->name('merchant.catalog');
     Route::get('/merchant/manage', [MerchantController::class, 'manage'])->name('merchant.manage');
     Route::get('/merchant/stats', [MerchantController::class, 'stats'])->name('merchant.stats');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'role:merchant'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

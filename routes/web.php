@@ -7,6 +7,7 @@ use App\Http\Controllers\MerchantController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StoreProfileController;
+use App\Http\Controllers\LinkController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -49,6 +50,13 @@ Route::middleware('auth')->group(function () {
     Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
     Route::post('/products/{product}/toggle-visibility', [ProductController::class, 'toggleVisibility'])->name('products.toggle-visibility');
+
+    Route::get('/links', [LinkController::class, 'index'])->name('links.index');
+    Route::post('/links', [LinkController::class, 'store'])->name('links.store');
+    Route::put('/links/{link}', [LinkController::class, 'update'])->name('links.update');
+    Route::delete('/links/{link}', [LinkController::class, 'destroy'])->name('links.destroy');
+    Route::post('/links/reorder', [LinkController::class, 'reorder'])->name('links.reorder');
+    Route::post('/links/{link}/toggle-active', [LinkController::class, 'toggleActive'])->name('links.toggle-active');
 });
 
 require __DIR__.'/auth.php';

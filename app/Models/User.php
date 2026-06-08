@@ -83,4 +83,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Checkout::class);
     }
+
+    public function links(): HasMany
+    {
+        return $this->hasMany(Link::class)->orderBy('sort_order');
+    }
 }

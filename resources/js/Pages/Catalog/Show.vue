@@ -10,6 +10,7 @@ import Modal from '@/Components/Modal.vue';
 const props = defineProps({
     merchant: Object,
     products: Array,
+    links: Array,
 });
 
 const page = usePage();
@@ -133,6 +134,31 @@ function submitCheckout() {
                         <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/>
                     </svg>
                     <span>{{ channel.name }}</span>
+                </a>
+            </div>
+
+            <!-- Dynamic Links -->
+            <div v-if="links && links.length" class="grid gap-3 mb-8">
+                <a
+                    v-for="link in links"
+                    :key="link.id"
+                    :href="link.url"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="flex items-center gap-3 p-4 rounded-2xl border border-outline bg-surface hover:bg-surface-container hover:border-primary/50 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                >
+                    <div class="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-on-surface">{{ link.title }}</p>
+                        <p class="text-xs text-on-surface-variant truncate">{{ link.url }}</p>
+                    </div>
+                    <svg class="w-5 h-5 text-on-surface-variant shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
                 </a>
             </div>
 

@@ -29,6 +29,12 @@ class CatalogController extends Controller
             'visited_at' => now(),
         ]);
 
+        $links = $user->links()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->get()
+            ->map(fn ($link) => [...$link->toArray()]);
+
         return Inertia::render('Catalog/Show', [
             'merchant' => [
                 'id' => $user->id,
@@ -43,6 +49,7 @@ class CatalogController extends Controller
                 'store_logo_url' => $user->store_logo ? Storage::url($user->store_logo) : null,
             ],
             'products' => $products,
+            'links' => $links,
         ]);
     }
 }

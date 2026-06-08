@@ -45,9 +45,9 @@ const submit = () => {
         </header>
 
         <!-- Main content -->
-        <main class="flex-1 flex flex-col lg:flex-row items-stretch">
+        <main class="flex-1 flex flex-col lg:flex-row items-center px-6 lg:px-12">
             <!-- Left: poster -->
-            <div class="hidden lg:flex lg:w-[55%] items-center justify-center p-4">
+            <div class="hidden lg:flex lg:w-[55%] items-center justify-center py-4">
                 <div class="max-h-[78vh] max-w-full rounded-2xl bg-[#f8f3ea] overflow-hidden shadow-lg flex items-center justify-center" style="aspect-ratio: 4 / 3">
                     <img
                         src="/images/register.png"
@@ -58,7 +58,7 @@ const submit = () => {
             </div>
 
             <!-- Right: form -->
-            <div class="w-full lg:w-[45%] flex items-center justify-center px-6 py-8 lg:py-0">
+            <div class="w-full lg:w-[45%] flex items-center justify-center py-8 lg:py-0">
                 <div class="w-full max-w-[420px]">
                     <!-- Heading -->
                     <h1 class="text-2xl font-bold text-white">Buat Akun Baru</h1>

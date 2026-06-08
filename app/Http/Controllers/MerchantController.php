@@ -11,9 +11,19 @@ use Inertia\Inertia;
 
 class MerchantController extends Controller
 {
-    public function catalog()
+    public function catalog(Request $request)
     {
-        return Inertia::render('Merchant/Catalog');
+        $products = Product::where('user_id', $request->user()->id)
+            ->latest()
+            ->get(['id', 'name', 'price', 'is_active', 'created_at', 'image', 'category', 'tag', 'alt_text', 'description'])
+            ->map(fn ($product) => [
+                ...$product->toArray(),
+                'image_url' => $product->image ? Storage::url($product->image) : null,
+            ]);
+
+        return Inertia::render('Merchant/Catalog', [
+            'products' => $products,
+        ]);
     }
 
     public function manage(Request $request)

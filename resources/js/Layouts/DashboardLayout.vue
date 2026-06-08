@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { Link, router, usePage } from '@inertiajs/vue3';
 import { useTheme } from '@/Composables/useTheme';
 import { useAccessibility } from '@/Composables/useAccessibility';
@@ -20,6 +20,8 @@ const storeInitial = computed(() => {
 });
 const avatarUrl = computed(() => {
     const u = user.value;
+    if (u?.profile_photo_url) return u.profile_photo_url;
+    if (u?.profile_photo) return '/storage/' + u.profile_photo;
     if (u?.store_logo) return '/storage/' + u.store_logo;
     if (u?.avatar) return u.avatar;
     return null;
@@ -29,6 +31,9 @@ const { fontSize, highContrast, increaseFont, decreaseFont, toggleHighContrast }
 
 const sidebarOpen = ref(false);
 const profileMenuOpen = ref(false);
+const imgError = ref(false);
+
+watch(avatarUrl, () => { imgError.value = false; });
 
 const navItems = [
     { key: 'manage', label: 'Dashboard', icon: 'dashboard', route: route('merchant.manage') },
@@ -128,12 +133,13 @@ function closeSidebar() {
                 <div class="p-3 border-t border-outline space-y-2">
                     <div class="flex items-center gap-3 px-3 py-2">
                         <img
-                            v-if="avatarUrl"
+                            v-if="!imgError && avatarUrl"
                             :src="avatarUrl"
                             :alt="'Foto profil ' + storeName"
-                            class="w-8 h-8 rounded-full object-cover shrink-0"
+                            class="w-10 h-10 rounded-full object-cover object-center shrink-0"
+                            @error="imgError = true"
                         />
-                        <div v-else class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm shrink-0" aria-hidden="true">
+                        <div v-else class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm shrink-0" aria-hidden="true">
                             {{ storeInitial }}
                         </div>
                         <div class="flex-1 min-w-0">
@@ -189,12 +195,13 @@ function closeSidebar() {
                 <div class="p-3 border-t border-outline">
                     <div class="flex items-center gap-3 px-3 py-2">
                         <img
-                            v-if="avatarUrl"
+                            v-if="!imgError && avatarUrl"
                             :src="avatarUrl"
                             :alt="'Foto profil ' + storeName"
-                            class="w-8 h-8 rounded-full object-cover shrink-0"
+                            class="w-10 h-10 rounded-full object-cover object-center shrink-0"
+                            @error="imgError = true"
                         />
-                        <div v-else class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm shrink-0" aria-hidden="true">
+                        <div v-else class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm shrink-0" aria-hidden="true">
                             {{ storeInitial }}
                         </div>
                         <div class="flex-1 min-w-0">
@@ -240,10 +247,11 @@ function closeSidebar() {
                             class="w-10 h-10 rounded-full overflow-hidden bg-primary/20 flex items-center justify-center text-primary font-bold text-sm hover:brightness-110 transition-all"
                         >
                             <img
-                                v-if="avatarUrl"
+                                v-if="!imgError && avatarUrl"
                                 :src="avatarUrl"
-                                alt="Foto profil"
-                                class="w-full h-full object-cover"
+                                :alt="'Foto profil ' + storeName"
+                                class="w-full h-full object-cover object-center"
+                                @error="imgError = true"
                             />
                             <span v-else>{{ storeInitial }}</span>
                         </button>
@@ -355,12 +363,13 @@ function closeSidebar() {
                             @click="profileMenuOpen = !profileMenuOpen"
                             class="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-surface-container transition-colors"
                         >
-                            <div class="w-8 h-8 rounded-full overflow-hidden bg-primary/20 flex items-center justify-center text-primary font-bold text-sm shrink-0">
+                            <div class="w-10 h-10 rounded-full overflow-hidden bg-primary/20 flex items-center justify-center text-primary font-bold text-sm shrink-0">
                                 <img
-                                    v-if="avatarUrl"
+                                    v-if="!imgError && avatarUrl"
                                     :src="avatarUrl"
                                     :alt="'Foto profil ' + storeName"
-                                    class="w-full h-full object-cover"
+                                    class="w-full h-full object-cover object-center"
+                                    @error="imgError = true"
                                 />
                                 <span v-else aria-hidden="true">{{ storeInitial }}</span>
                             </div>

@@ -12,7 +12,7 @@
         "laravel/sanctum": "^3.2",
         "laravel/socialite": "*",
         "laravel/tinker": "^2.8",
-        "spatie/laravel-permission": "*",
+        "spatie/laravel-permission": "^6.25",
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {

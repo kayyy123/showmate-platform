@@ -37,7 +37,14 @@ class RoleAndPermissionSeeder extends Seeder
             'view inclusive applications',
         ]);
 
-        User::where('role', 'admin')->get()->each(fn($user) => $user->assignRole('admin'));
-        User::where('role', 'merchant')->get()->each(fn($user) => $user->assignRole('merchant'));
+        foreach (User::all() as $user) {
+            if ($user->role === 'admin' && !$user->hasRole('admin')) {
+                $user->assignRole('admin');
+            } elseif ($user->role === 'merchant' && !$user->hasRole('merchant')) {
+                $user->assignRole('merchant');
+            } elseif (!$user->hasAnyRole(Role::all()) && $user->role === 'merchant') {
+                $user->assignRole('merchant');
+            }
+        }
     }
 }

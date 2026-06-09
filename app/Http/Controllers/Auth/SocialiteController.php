@@ -52,11 +52,15 @@ class SocialiteController extends Controller
             $user = User::create([
                 'name' => $googleUser->getName() ?? $googleUser->getEmail(),
                 'email' => $googleUser->getEmail(),
+                'role' => 'merchant',
                 'google_id' => $googleUser->getId(),
                 'avatar' => $googleUser->getAvatar(),
                 'password' => bcrypt(Str::random(24)),
                 'email_verified_at' => now(),
             ]);
+
+            $user->assignRole('merchant');
+
             Log::info('Google OAuth callback: user created', [
                 'id' => $user->id,
                 'email' => $user->email,

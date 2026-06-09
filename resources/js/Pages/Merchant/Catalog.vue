@@ -16,15 +16,22 @@ const fullCatalogUrl = window.location.origin + catalogUrl;
 const searchQuery = ref('');
 const filterStatus = ref('all');
 
+function normalizeCode(str) {
+    return str ? str.toLowerCase().replace(/[\s-]/g, '') : '';
+}
+
 const filteredProducts = computed(() => {
     let items = props.products;
     const q = searchQuery.value.toLowerCase().trim();
     if (q) {
-        items = items.filter(p =>
-            (p.name && p.name.toLowerCase().includes(q)) ||
-            (p.category && p.category.toLowerCase().includes(q)) ||
-            (p.tag && p.tag.toLowerCase().includes(q))
-        );
+        const qNormalized = normalizeCode(q);
+        items = items.filter(p => {
+            if (p.name && p.name.toLowerCase().includes(q)) return true;
+            if (p.product_code && normalizeCode(p.product_code).includes(qNormalized)) return true;
+            if (p.category && p.category.toLowerCase().includes(q)) return true;
+            if (p.tag && p.tag.toLowerCase().includes(q)) return true;
+            return false;
+        });
     }
     if (filterStatus.value === 'active') {
         items = items.filter(p => p.is_active);
@@ -172,8 +179,8 @@ function formatPrice(price) {
                     <input
                         v-model="searchQuery"
                         type="text"
-                        placeholder="Cari produk..."
-                        aria-label="Cari produk"
+                        placeholder="Cari nama atau kode produk..."
+                        aria-label="Cari nama atau kode produk"
                         class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-outline bg-surface text-on-surface placeholder:text-on-surface-variant text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all"
                     />
                 </div>

@@ -45,6 +45,10 @@ const selectedTag = ref('');
 const minPrice = ref('');
 const maxPrice = ref('');
 
+function normalizeCode(str) {
+    return str ? str.toLowerCase().replace(/[\s-]/g, '') : '';
+}
+
 const categories = computed(() => {
     if (!props.products) return [];
     const cats = [...new Set(props.products.map(p => p.category).filter(Boolean))];
@@ -70,7 +74,12 @@ const filteredProducts = computed(() => {
 
     if (searchQuery.value.trim()) {
         const q = searchQuery.value.trim().toLowerCase();
-        result = result.filter(p => p.name.toLowerCase().includes(q));
+        const qNormalized = normalizeCode(q);
+        result = result.filter(p => {
+            if (p.name && p.name.toLowerCase().includes(q)) return true;
+            if (p.product_code && normalizeCode(p.product_code).includes(qNormalized)) return true;
+            return false;
+        });
     }
 
     if (selectedCategory.value) {
@@ -212,8 +221,8 @@ function submitCheckout() {
                         <input
                             v-model="searchQuery"
                             type="search"
-                            placeholder="Cari produk..."
-                            aria-label="Cari produk"
+                            placeholder="Cari nama atau kode produk..."
+                            aria-label="Cari nama atau kode produk"
                             class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container border border-outline text-on-surface placeholder:text-on-surface-variant text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
                         />
                     </div>

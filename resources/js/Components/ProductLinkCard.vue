@@ -68,6 +68,7 @@ function handleAction() {
                     {{ product.tag }}
                 </span>
             </div>
+            <p v-if="product.product_code" class="text-[10px] font-mono text-on-surface-variant mt-0.5">Kode: {{ product.product_code }}</p>
             <p
                 v-if="product.description"
                 class="text-xs text-on-surface-variant mt-0.5 line-clamp-2"

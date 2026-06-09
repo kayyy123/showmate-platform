@@ -8,6 +8,10 @@ const page = usePage();
 
 const searchQuery = ref('');
 
+function normalizeCode(str) {
+    return str ? str.toLowerCase().replace(/[\s-]/g, '') : '';
+}
+
 const props = defineProps({
     products: Array,
 });
@@ -22,11 +26,14 @@ const stats = computed(() => {
 const filteredProducts = computed(() => {
     const q = searchQuery.value.toLowerCase().trim();
     if (!q) return props.products;
-    return props.products.filter(p =>
-        (p.name && p.name.toLowerCase().includes(q)) ||
-        (p.category && p.category.toLowerCase().includes(q)) ||
-        (p.tag && p.tag.toLowerCase().includes(q))
-    );
+    const qNormalized = normalizeCode(q);
+    return props.products.filter(p => {
+        if (p.name && p.name.toLowerCase().includes(q)) return true;
+        if (p.product_code && normalizeCode(p.product_code).includes(qNormalized)) return true;
+        if (p.category && p.category.toLowerCase().includes(q)) return true;
+        if (p.tag && p.tag.toLowerCase().includes(q)) return true;
+        return false;
+    });
 });
 
 async function destroyProduct(product) {
@@ -110,8 +117,8 @@ function toggleVisibility(product) {
             <input
                 v-model="searchQuery"
                 type="text"
-                placeholder="Cari produk..."
-                aria-label="Cari produk"
+                placeholder="Cari nama atau kode produk..."
+                aria-label="Cari nama atau kode produk"
                 class="flex-1 py-3 px-4 rounded-xl border border-outline bg-surface text-on-surface placeholder-on-surface-variant text-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 focus-visible:border-primary transition-all"
             />
         </div>

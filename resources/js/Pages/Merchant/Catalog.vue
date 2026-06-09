@@ -20,12 +20,15 @@ const selectedTags = ref([]);
 const minPrice = ref('');
 const maxPrice = ref('');
 
+const showFilterPanel = ref(false);
+const tempCategories = ref([]);
+const tempTags = ref([]);
+const tempMinPrice = ref('');
+const tempMaxPrice = ref('');
+const tempFilterStatus = ref('all');
+
 function normalizeCode(str) {
     return str ? str.toLowerCase().replace(/[\s-]/g, '') : '';
-}
-
-function formatPriceShort(val) {
-    return 'Rp ' + Number(val).toLocaleString('id-ID');
 }
 
 const categories = computed(() => {
@@ -38,17 +41,6 @@ const tags = computed(() => {
     if (!props.products) return [];
     const t = [...new Set(props.products.map(p => p.tag).filter(Boolean))];
     return t.sort();
-});
-
-const priceError = computed(() => {
-    if (minPrice.value !== '' && maxPrice.value !== '' && Number(minPrice.value) > Number(maxPrice.value)) {
-        return 'Harga minimum tidak boleh lebih besar dari harga maksimum';
-    }
-    return '';
-});
-
-const hasActiveFilters = computed(() => {
-    return searchQuery.value || selectedCategories.value.length > 0 || selectedTags.value.length > 0 || filterStatus.value !== 'all' || minPrice.value || maxPrice.value;
 });
 
 const filteredProducts = computed(() => {
@@ -75,18 +67,16 @@ const filteredProducts = computed(() => {
     } else if (filterStatus.value === 'inactive') {
         items = items.filter(p => !p.is_active);
     }
-    if (!priceError.value) {
-        if (minPrice.value !== '') {
-            const min = Number(minPrice.value);
-            if (!isNaN(min)) {
-                items = items.filter(p => Number(p.price) >= min);
-            }
+    if (minPrice.value !== '') {
+        const min = Number(minPrice.value);
+        if (!isNaN(min)) {
+            items = items.filter(p => Number(p.price) >= min);
         }
-        if (maxPrice.value !== '') {
-            const max = Number(maxPrice.value);
-            if (!isNaN(max)) {
-                items = items.filter(p => Number(p.price) <= max);
-            }
+    }
+    if (maxPrice.value !== '') {
+        const max = Number(maxPrice.value);
+        if (!isNaN(max)) {
+            items = items.filter(p => Number(p.price) <= max);
         }
     }
     return items;
@@ -95,40 +85,62 @@ const filteredProducts = computed(() => {
 const activeCount = computed(() => props.products.filter(p => p.is_active).length);
 const inactiveCount = computed(() => props.products.filter(p => !p.is_active).length);
 
-function toggleCategory(cat) {
-    const idx = selectedCategories.value.indexOf(cat);
+const activeFilterCount = computed(() => {
+    let count = 0;
+    if (selectedCategories.value.length > 0) count += selectedCategories.value.length;
+    if (selectedTags.value.length > 0) count += selectedTags.value.length;
+    if (minPrice.value) count++;
+    if (maxPrice.value) count++;
+    if (filterStatus.value !== 'all') count++;
+    return count;
+});
+
+function openFilterPanel() {
+    tempCategories.value = [...selectedCategories.value];
+    tempTags.value = [...selectedTags.value];
+    tempMinPrice.value = minPrice.value;
+    tempMaxPrice.value = maxPrice.value;
+    tempFilterStatus.value = filterStatus.value;
+    showFilterPanel.value = true;
+}
+
+function closeFilterPanel() {
+    showFilterPanel.value = false;
+}
+
+function applyFilters() {
+    selectedCategories.value = [...tempCategories.value];
+    selectedTags.value = [...tempTags.value];
+    minPrice.value = tempMinPrice.value;
+    maxPrice.value = tempMaxPrice.value;
+    filterStatus.value = tempFilterStatus.value;
+    showFilterPanel.value = false;
+}
+
+function clearTempFilters() {
+    tempCategories.value = [];
+    tempTags.value = [];
+    tempMinPrice.value = '';
+    tempMaxPrice.value = '';
+    tempFilterStatus.value = 'all';
+}
+
+function toggleTempCategory(cat) {
+    const idx = tempCategories.value.indexOf(cat);
     if (idx === -1) {
-        selectedCategories.value = [...selectedCategories.value, cat];
+        tempCategories.value = [...tempCategories.value, cat];
     } else {
-        selectedCategories.value = selectedCategories.value.filter(c => c !== cat);
+        tempCategories.value = tempCategories.value.filter(c => c !== cat);
     }
 }
 
-function toggleTag(tag) {
-    const idx = selectedTags.value.indexOf(tag);
+function toggleTempTag(tag) {
+    const idx = tempTags.value.indexOf(tag);
     if (idx === -1) {
-        selectedTags.value = [...selectedTags.value, tag];
+        tempTags.value = [...tempTags.value, tag];
     } else {
-        selectedTags.value = selectedTags.value.filter(t => t !== tag);
+        tempTags.value = tempTags.value.filter(t => t !== tag);
     }
-}
-
-function removeFilter(type) {
-    if (type === 'search') searchQuery.value = '';
-    else if (type === 'category') selectedCategories.value = [];
-    else if (type === 'tag') selectedTags.value = [];
-    else if (type === 'status') filterStatus.value = 'all';
-    else if (type === 'minPrice') minPrice.value = '';
-    else if (type === 'maxPrice') maxPrice.value = '';
-}
-
-function resetFilters() {
-    searchQuery.value = '';
-    selectedCategories.value = [];
-    selectedTags.value = [];
-    filterStatus.value = 'all';
-    minPrice.value = '';
-    maxPrice.value = '';
 }
 
 function copyLink() {
@@ -258,7 +270,7 @@ function formatPrice(price) {
             </div>
 
             <!-- Search & Filter -->
-            <div class="flex flex-col sm:flex-row gap-3">
+            <div class="flex gap-2">
                 <div class="relative flex-1">
                     <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -271,164 +283,141 @@ function formatPrice(price) {
                         class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-outline bg-surface text-on-surface placeholder:text-on-surface-variant text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all"
                     />
                 </div>
-                <div class="flex gap-2" role="group" aria-label="Filter status produk">
-                    <button
-                        @click="filterStatus = 'all'"
-                        class="px-3 py-2.5 rounded-xl text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
-                        :class="filterStatus === 'all' ? 'bg-primary text-on-primary' : 'border border-outline text-on-surface-variant hover:bg-surface-container'"
-                        :aria-pressed="filterStatus === 'all'"
-                    >
-                        Semua
-                    </button>
-                    <button
-                        @click="filterStatus = 'active'"
-                        class="px-3 py-2.5 rounded-xl text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
-                        :class="filterStatus === 'active' ? 'bg-primary text-on-primary' : 'border border-outline text-on-surface-variant hover:bg-surface-container'"
-                        :aria-pressed="filterStatus === 'active'"
-                    >
-                        Aktif
-                    </button>
-                    <button
-                        @click="filterStatus = 'inactive'"
-                        class="px-3 py-2.5 rounded-xl text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
-                        :class="filterStatus === 'inactive' ? 'bg-primary text-on-primary' : 'border border-outline text-on-surface-variant hover:bg-surface-container'"
-                        :aria-pressed="filterStatus === 'inactive'"
-                    >
-                        Nonaktif
-                    </button>
-                </div>
+                <button
+                    @click="showFilterPanel ? closeFilterPanel() : openFilterPanel()"
+                    class="shrink-0 inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                    :class="activeFilterCount
+                        ? 'border-primary bg-primary/10 text-primary'
+                        : 'border-outline text-on-surface-variant hover:bg-surface-container hover:text-on-surface'"
+                    :aria-expanded="showFilterPanel"
+                    aria-haspopup="true"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                    </svg>
+                    Filter
+                    <span v-if="activeFilterCount" class="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-primary text-[10px] font-bold text-on-primary leading-none">
+                        {{ activeFilterCount }}
+                    </span>
+                </button>
             </div>
 
-            <!-- Category, Tag & Price Filters -->
-            <div v-if="categories.length > 0 || tags.length > 0" class="space-y-3">
-                <div v-if="categories.length > 0">
-                    <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5">Kategori</label>
-                    <div class="flex flex-wrap gap-2">
-                        <button
-                            v-for="cat in categories"
-                            :key="cat"
-                            @click="toggleCategory(cat)"
-                            class="px-3 py-1.5 rounded-full text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
-                            :class="selectedCategories.includes(cat)
-                                ? 'bg-primary text-on-primary'
-                                : 'border border-outline text-on-surface-variant hover:bg-surface-container'"
-                            :aria-pressed="selectedCategories.includes(cat)"
-                        >
-                            {{ cat }}
-                        </button>
-                    </div>
-                </div>
-
-                <div v-if="tags.length > 0">
-                    <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5">Tag</label>
-                    <div class="flex flex-wrap gap-2">
-                        <button
-                            v-for="tag in tags"
-                            :key="tag"
-                            @click="toggleTag(tag)"
-                            class="px-3 py-1.5 rounded-full text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
-                            :class="selectedTags.includes(tag)
-                                ? 'bg-primary text-on-primary'
-                                : 'border border-outline text-on-surface-variant hover:bg-surface-container'"
-                            :aria-pressed="selectedTags.includes(tag)"
-                        >
-                            {{ tag }}
-                        </button>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5" for="filter-min-price">Harga Minimum</label>
-                        <div class="relative">
-                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-on-surface-variant pointer-events-none font-mono" aria-hidden="true">Rp</span>
-                            <input
-                                id="filter-min-price"
-                                v-model="minPrice"
-                                type="number"
-                                min="0"
-                                placeholder="Rp 0"
-                                aria-label="Harga minimum"
-                                class="w-full pl-9 pr-3 py-2.5 rounded-xl bg-surface-container border border-outline text-on-surface placeholder:text-on-surface-variant text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                            />
+            <!-- Filter Panel Dropdown -->
+            <div v-if="showFilterPanel" class="relative z-30">
+                <div class="w-full max-w-xs ml-auto rounded-2xl border-2 border-primary bg-surface p-5 shadow-2xl space-y-4">
+                    <div v-if="categories.length > 0">
+                        <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2">Kategori</label>
+                        <div class="space-y-1">
+                            <label
+                                v-for="cat in categories"
+                                :key="cat"
+                                class="flex items-center gap-2.5 px-2 py-1.5 rounded-lg cursor-pointer hover:bg-surface-container transition-colors"
+                            >
+                                <input
+                                    type="checkbox"
+                                    :checked="tempCategories.includes(cat)"
+                                    @change="toggleTempCategory(cat)"
+                                    class="w-4 h-4 rounded border-outline text-primary focus:ring-primary/30 focus:ring-offset-0"
+                                />
+                                <span class="text-sm text-on-surface select-none">{{ cat }}</span>
+                            </label>
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5" for="filter-max-price">Harga Maksimum</label>
-                        <div class="relative">
-                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-on-surface-variant pointer-events-none font-mono" aria-hidden="true">Rp</span>
-                            <input
-                                id="filter-max-price"
-                                v-model="maxPrice"
-                                type="number"
-                                min="0"
-                                placeholder="Rp 100.000"
-                                aria-label="Harga maksimum"
-                                class="w-full pl-9 pr-3 py-2.5 rounded-xl bg-surface-container border border-outline text-on-surface placeholder:text-on-surface-variant text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                            />
+
+                    <hr class="border-outline/60" />
+
+                    <div v-if="tags.length > 0">
+                        <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2">Tag</label>
+                        <div class="space-y-1">
+                            <label
+                                v-for="tag in tags"
+                                :key="tag"
+                                class="flex items-center gap-2.5 px-2 py-1.5 rounded-lg cursor-pointer hover:bg-surface-container transition-colors"
+                            >
+                                <input
+                                    type="checkbox"
+                                    :checked="tempTags.includes(tag)"
+                                    @change="toggleTempTag(tag)"
+                                    class="w-4 h-4 rounded border-outline text-primary focus:ring-primary/30 focus:ring-offset-0"
+                                />
+                                <span class="text-sm text-on-surface select-none">{{ tag }}</span>
+                            </label>
                         </div>
                     </div>
-                </div>
 
-                <p v-if="priceError" class="text-sm text-red-500 flex items-center gap-1.5" role="alert">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    {{ priceError }}
-                </p>
+                    <hr class="border-outline/60" />
 
-                <!-- Active filter chips -->
-                <div v-if="hasActiveFilters" class="flex flex-wrap gap-1.5">
-                    <span
-                        v-if="searchQuery"
-                        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary"
-                    >
-                        {{ searchQuery }}
-                        <button @click="removeFilter('search')" class="hover:text-primary/70 focus-visible:outline-none" aria-label="Hapus pencarian">×</button>
-                    </span>
-                    <span
-                        v-for="cat in selectedCategories"
-                        :key="'cat-'+cat"
-                        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary"
-                    >
-                        {{ cat }}
-                        <button @click="toggleCategory(cat)" class="hover:text-primary/70 focus-visible:outline-none" aria-label="Hapus kategori">×</button>
-                    </span>
-                    <span
-                        v-for="tag in selectedTags"
-                        :key="'tag-'+tag"
-                        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary"
-                    >
-                        {{ tag }}
-                        <button @click="toggleTag(tag)" class="hover:text-primary/70 focus-visible:outline-none" aria-label="Hapus tag">×</button>
-                    </span>
-                    <span
-                        v-if="filterStatus !== 'all'"
-                        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary"
-                    >
-                        {{ filterStatus === 'active' ? 'Aktif' : 'Nonaktif' }}
-                        <button @click="removeFilter('status')" class="hover:text-primary/70 focus-visible:outline-none" aria-label="Hapus filter status">×</button>
-                    </span>
-                    <span
-                        v-if="minPrice"
-                        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary"
-                    >
-                        Min: {{ formatPriceShort(minPrice) }}
-                        <button @click="removeFilter('minPrice')" class="hover:text-primary/70 focus-visible:outline-none" aria-label="Hapus harga minimum">×</button>
-                    </span>
-                    <span
-                        v-if="maxPrice"
-                        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary"
-                    >
-                        Max: {{ formatPriceShort(maxPrice) }}
-                        <button @click="removeFilter('maxPrice')" class="hover:text-primary/70 focus-visible:outline-none" aria-label="Hapus harga maksimum">×</button>
-                    </span>
-                    <button
-                        @click="resetFilters"
-                        class="text-[11px] font-semibold text-primary hover:text-primary/80 transition-colors focus-visible:outline-none px-2 py-0.5"
-                    >
-                        Reset
-                    </button>
+                    <div>
+                        <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2">Status</label>
+                        <div class="flex gap-2">
+                            <button
+                                @click="tempFilterStatus = 'all'"
+                                class="px-3 py-1.5 rounded-xl text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                                :class="tempFilterStatus === 'all' ? 'bg-primary text-on-primary' : 'border border-outline text-on-surface-variant hover:bg-surface-container'"
+                            >
+                                Semua
+                            </button>
+                            <button
+                                @click="tempFilterStatus = 'active'"
+                                class="px-3 py-1.5 rounded-xl text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                                :class="tempFilterStatus === 'active' ? 'bg-primary text-on-primary' : 'border border-outline text-on-surface-variant hover:bg-surface-container'"
+                            >
+                                Aktif
+                            </button>
+                            <button
+                                @click="tempFilterStatus = 'inactive'"
+                                class="px-3 py-1.5 rounded-xl text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                                :class="tempFilterStatus === 'inactive' ? 'bg-primary text-on-primary' : 'border border-outline text-on-surface-variant hover:bg-surface-container'"
+                            >
+                                Nonaktif
+                            </button>
+                        </div>
+                    </div>
+
+                    <hr class="border-outline/60" />
+
+                    <div>
+                        <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2">Harga</label>
+                        <div class="space-y-2">
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-on-surface-variant pointer-events-none font-mono" aria-hidden="true">Rp</span>
+                                <input
+                                    v-model="tempMinPrice"
+                                    type="number"
+                                    min="0"
+                                    placeholder="Minimum"
+                                    aria-label="Harga minimum"
+                                    class="w-full pl-9 pr-3 py-2 rounded-xl bg-surface-container border border-outline text-on-surface placeholder:text-on-surface-variant text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                />
+                            </div>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-on-surface-variant pointer-events-none font-mono" aria-hidden="true">Rp</span>
+                                <input
+                                    v-model="tempMaxPrice"
+                                    type="number"
+                                    min="0"
+                                    placeholder="Maksimum"
+                                    aria-label="Harga maksimum"
+                                    class="w-full pl-9 pr-3 py-2 rounded-xl bg-surface-container border border-outline text-on-surface placeholder:text-on-surface-variant text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-2 border-t border-outline/60">
+                        <button
+                            @click="clearTempFilters"
+                            class="text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors px-3 py-1.5 rounded-lg hover:bg-surface-container"
+                        >
+                            Bersihkan Filter
+                        </button>
+                        <button
+                            @click="applyFilters"
+                            class="px-5 py-1.5 rounded-xl bg-primary text-on-primary text-sm font-bold hover:brightness-110 active:scale-[0.98] transition-all"
+                        >
+                            Terapkan Filter
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -457,7 +446,7 @@ function formatPrice(price) {
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <p class="font-medium">Produk tidak ditemukan</p>
-                <p class="text-sm mt-1">Coba gunakan kata kunci lain atau ubah filter.</p>
+                <p class="text-sm mt-1">Tidak ada produk yang cocok dengan filter yang dipilih</p>
             </div>
 
             <!-- Product Grid -->

@@ -52,7 +52,7 @@ class Product extends Model
     public static function generateUniqueProductCode(): string
     {
         do {
-            $code = 'ELK-' . str_pad(random_int(0, 9999999999), 10, '0', STR_PAD_LEFT);
+            $code = 'ELK-' . str_pad(random_int(0, 9999), 4, '0', STR_PAD_LEFT);
         } while (static::where('product_code', $code)->exists());
 
         return $code;

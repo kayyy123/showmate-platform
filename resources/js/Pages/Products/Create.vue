@@ -66,6 +66,15 @@ function formatPriceInput(e) {
                     </h2>
                     <div class="rounded-2xl border border-outline bg-surface p-5 space-y-5">
                         <div>
+                            <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">
+                                Kode Produk
+                            </label>
+                            <div class="w-full h-12 bg-surface-container/50 border border-dashed border-outline rounded-xl px-4 flex items-center text-sm text-on-surface-variant">
+                                Kode dibuat otomatis setelah produk disimpan
+                            </div>
+                        </div>
+
+                        <div>
                             <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2" for="name">
                                 Nama Produk <span class="text-red-400">*</span>
                             </label>

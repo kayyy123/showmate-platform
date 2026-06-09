@@ -13,18 +13,16 @@ return new class extends Migration
             $table->string('store_slug')->nullable()->unique()->after('store_name');
         });
 
-        // Backfill store_slug untuk user yang sudah ada
-        \App\Models\User::whereNull('store_slug')->chunkById(100, function ($users) {
-            foreach ($users as $user) {
-                $source = $user->store_name ?: $user->name;
-                $slug = Str::slug($source);
-                $original = $slug;
-                $counter = 2;
-                while (\App\Models\User::where('store_slug', $slug)->exists()) {
-                    $slug = $original . '-' . $counter++;
-                }
-                $user->update(['store_slug' => $slug]);
+        // Backfill store_slug menggunakan DB raw query (eloquent update diabaikan karena store_slug tidak di fillable)
+        \Illuminate\Support\Facades\DB::table('users')->whereNull('store_slug')->orderBy('id')->each(function ($user) {
+            $source = $user->store_name ?: $user->name;
+            $slug = Str::slug($source);
+            $original = $slug;
+            $counter = 2;
+            while (\Illuminate\Support\Facades\DB::table('users')->where('store_slug', $slug)->exists()) {
+                $slug = $original . '-' . $counter++;
             }
+            \Illuminate\Support\Facades\DB::table('users')->where('id', $user->id)->update(['store_slug' => $slug]);
         });
 
         // Keep nullable — the model auto-generates on create/update

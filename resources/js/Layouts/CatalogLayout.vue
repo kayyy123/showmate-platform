@@ -1,0 +1,247 @@
+<script setup>
+import { ref, computed } from 'vue';
+import { useAccessibility } from '@/Composables/useAccessibility';
+import { useTheme } from '@/Composables/useTheme';
+
+const props = defineProps({
+    merchant: { type: Object, required: true },
+    activeTab: { type: String, default: 'products' },
+});
+
+const emit = defineEmits(['update:activeTab']);
+
+const { fontSize, highContrast, increaseFont, decreaseFont, toggleHighContrast } = useAccessibility();
+const { isDark, toggleTheme } = useTheme();
+
+const sidebarOpen = ref(false);
+
+const storeName = computed(() => props.merchant?.name || 'Toko');
+const storeLogoUrl = computed(() => props.merchant?.store_logo_url || null);
+
+const sidebarItems = [
+    { key: 'products', label: 'Katalog Toko', icon: 'package' },
+    { key: 'about', label: 'Tentang Toko', icon: 'info' },
+    { key: 'links', label: 'Kontak / Tautan', icon: 'link' },
+];
+
+function setActiveTab(key) {
+    emit('update:activeTab', key);
+    sidebarOpen.value = false;
+}
+</script>
+
+<template>
+    <div class="min-h-screen bg-surface text-on-surface flex" :style="{ fontSize: fontSize + '%' }" :class="{ 'high-contrast': highContrast }">
+        <!-- Skip to content -->
+        <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:bg-primary focus:text-on-primary focus:rounded-xl focus:font-semibold focus:outline-none">
+            Langsung ke konten utama
+        </a>
+
+        <!-- Mobile overlay -->
+        <Transition
+            enter-active-class="transition-opacity duration-200"
+            enter-from-class="opacity-0"
+            enter-to-class="opacity-100"
+            leave-active-class="transition-opacity duration-200"
+            leave-from-class="opacity-100"
+            leave-to-class="opacity-0"
+        >
+            <div
+                v-if="sidebarOpen"
+                class="fixed inset-0 z-40 bg-on-surface/50 md:hidden"
+                @click="sidebarOpen = false"
+                aria-hidden="true"
+            />
+        </Transition>
+
+        <!-- Mobile Sidebar -->
+        <Transition
+            enter-active-class="transition-transform duration-200"
+            enter-from-class="-translate-x-full"
+            enter-to-class="translate-x-0"
+            leave-active-class="transition-transform duration-200"
+            leave-from-class="translate-x-0"
+            leave-to-class="-translate-x-full"
+        >
+            <aside
+                v-if="sidebarOpen"
+                class="fixed inset-y-0 left-0 z-50 w-64 bg-surface border-r border-outline flex flex-col md:hidden"
+                aria-label="Navigasi katalog"
+            >
+                <div class="flex items-center justify-between h-16 px-4 border-b border-outline">
+                    <span class="font-bold text-lg text-on-surface">Katalog Toko</span>
+                    <button
+                        @click="sidebarOpen = false"
+                        class="w-10 h-10 rounded-lg flex items-center justify-center hover:bg-surface-container transition-colors"
+                        aria-label="Tutup sidebar"
+                    >
+                        <svg class="w-5 h-5 text-on-surface-variant" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <nav class="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
+                    <button
+                        v-for="item in sidebarItems"
+                        :key="item.key"
+                        @click="setActiveTab(item.key)"
+                        :aria-current="activeTab === item.key ? 'page' : undefined"
+                        class="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium transition-colors text-left"
+                        :class="activeTab === item.key ? 'bg-primary/10 text-primary' : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'"
+                    >
+                        <svg v-if="item.icon === 'package'" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                        </svg>
+                        <svg v-else-if="item.icon === 'info'" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <svg v-else-if="item.icon === 'link'" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                        </svg>
+                        {{ item.label }}
+                    </button>
+                </nav>
+                <div class="p-3 border-t border-outline">
+                    <p class="text-xs text-on-surface-variant text-center">{{ storeName }}</p>
+                </div>
+            </aside>
+        </Transition>
+
+        <!-- Desktop Sidebar -->
+        <aside class="hidden md:flex md:flex-col md:w-60 lg:w-64 md:fixed md:inset-y-0 md:border-r md:border-outline md:bg-surface z-30">
+            <div class="flex items-center h-16 px-6 border-b border-outline">
+                <h1 class="font-bold text-xl text-on-surface tracking-tight truncate">{{ storeName }}</h1>
+            </div>
+            <nav class="flex-1 py-4 px-3 space-y-1 overflow-y-auto" aria-label="Navigasi katalog">
+                <button
+                    v-for="item in sidebarItems"
+                    :key="item.key"
+                    @click="setActiveTab(item.key)"
+                    :aria-current="activeTab === item.key ? 'page' : undefined"
+                    class="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium transition-colors text-left"
+                    :class="activeTab === item.key ? 'bg-primary/10 text-primary' : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'"
+                >
+                    <svg v-if="item.icon === 'package'" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                    <svg v-else-if="item.icon === 'info'" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <svg v-else-if="item.icon === 'link'" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                    </svg>
+                    {{ item.label }}
+                </button>
+            </nav>
+            <div class="p-3 border-t border-outline">
+                <p class="text-xs text-on-surface-variant text-center">&copy; {{ new Date().getFullYear() }} {{ storeName }}</p>
+            </div>
+        </aside>
+
+        <!-- Main area -->
+        <div class="flex-1 flex flex-col md:ml-60 lg:ml-64">
+            <!-- Top bar -->
+            <header class="flex items-center justify-between h-16 px-4 border-b border-outline bg-surface/80 backdrop-blur sticky top-0 z-20">
+                <div class="flex items-center gap-3">
+                    <button
+                        @click="sidebarOpen = true"
+                        class="md:hidden w-10 h-10 rounded-lg flex items-center justify-center hover:bg-surface-container transition-colors"
+                        aria-label="Buka menu navigasi"
+                    >
+                        <svg class="w-6 h-6 text-on-surface" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                    <h2 class="font-bold text-lg text-on-surface md:hidden truncate">{{ storeName }}</h2>
+                    <h2 class="hidden md:block text-lg font-bold text-on-surface">
+                        <slot name="header" />
+                    </h2>
+                </div>
+                <div class="flex items-center gap-1">
+                    <span class="flex items-center gap-1" role="toolbar" aria-label="Pengaturan aksesibilitas">
+                        <button
+                            @click="decreaseFont"
+                            :disabled="fontSize <= 80"
+                            class="w-8 h-8 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                            aria-label="Perkecil ukuran teks"
+                        >
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+                            </svg>
+                        </button>
+                        <span class="text-[11px] font-medium text-on-surface-variant w-6 text-center" aria-live="polite">{{ fontSize }}%</span>
+                        <button
+                            @click="increaseFont"
+                            :disabled="fontSize >= 140"
+                            class="w-8 h-8 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                            aria-label="Perbesar ukuran teks"
+                        >
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                        </button>
+                        <button
+                            @click="toggleHighContrast"
+                            class="w-8 h-8 rounded-lg flex items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                            :class="highContrast ? 'text-primary' : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'"
+                            :aria-label="highContrast ? 'Nonaktifkan mode kontras tinggi' : 'Aktifkan mode kontras tinggi'"
+                            :aria-pressed="highContrast"
+                        >
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                        </button>
+                    </span>
+                    <button
+                        @click="toggleTheme"
+                        class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-surface-container transition-colors text-on-surface"
+                        :aria-label="isDark ? 'Mode terang' : 'Mode gelap'"
+                    >
+                        <svg v-if="isDark" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                        </svg>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Page content -->
+            <main id="main-content" class="flex-1">
+                <div class="max-w-5xl mx-auto px-4 py-6 md:px-6 md:py-8">
+                    <slot />
+                </div>
+            </main>
+
+            <!-- Mobile bottom nav -->
+            <nav class="md:hidden fixed bottom-0 left-0 w-full z-30 bg-surface border-t border-outline safe-area-bottom" aria-label="Navigasi bawah">
+                <div class="flex items-center justify-around h-16 max-w-lg mx-auto">
+                    <button
+                        v-for="item in sidebarItems"
+                        :key="item.key"
+                        @click="setActiveTab(item.key)"
+                        :aria-label="item.label"
+                        :aria-current="activeTab === item.key ? 'page' : undefined"
+                        class="flex flex-col items-center justify-center w-20 h-full gap-0.5 transition-colors"
+                        :class="activeTab === item.key ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface'"
+                    >
+                        <svg v-if="item.icon === 'package'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                        </svg>
+                        <svg v-else-if="item.icon === 'info'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <svg v-else-if="item.icon === 'link'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                        </svg>
+                        <span class="text-[10px] font-semibold uppercase tracking-wider">{{ item.label === 'Katalog Toko' ? 'Katalog' : item.label === 'Kontak / Tautan' ? 'Kontak' : 'Tentang' }}</span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Bottom padding for mobile nav -->
+        <div class="md:hidden h-16" />
+    </div>
+</template>

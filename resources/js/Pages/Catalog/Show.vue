@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch } from 'vue';
+import { computed, ref, nextTick, watch, onMounted, onUnmounted } from 'vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
 import CatalogLayout from '@/Layouts/CatalogLayout.vue';
 import Modal from '@/Components/Modal.vue';
@@ -46,6 +46,7 @@ const minPrice = ref('');
 const maxPrice = ref('');
 
 const showFilterPanel = ref(false);
+const filterModalRef = ref(null);
 const tempCategories = ref([]);
 const tempTags = ref([]);
 const tempMinPrice = ref('');
@@ -125,6 +126,9 @@ function openFilterPanel() {
     tempMinPrice.value = minPrice.value;
     tempMaxPrice.value = maxPrice.value;
     showFilterPanel.value = true;
+    nextTick(() => {
+        filterModalRef.value?.focus();
+    });
 }
 
 function closeFilterPanel() {
@@ -144,6 +148,11 @@ function clearTempFilters() {
     tempTags.value = [];
     tempMinPrice.value = '';
     tempMaxPrice.value = '';
+    selectedCategories.value = [];
+    selectedTags.value = [];
+    minPrice.value = '';
+    maxPrice.value = '';
+    showFilterPanel.value = false;
 }
 
 function toggleTempCategory(cat) {
@@ -267,13 +276,11 @@ function submitCheckout() {
                             />
                         </div>
                         <button
-                            @click="showFilterPanel ? closeFilterPanel() : openFilterPanel()"
+                            @click="openFilterPanel"
                             class="shrink-0 inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
                             :class="activeFilterCount
                                 ? 'border-primary bg-primary/10 text-primary'
                                 : 'border-outline text-on-surface-variant hover:bg-surface-container hover:text-on-surface'"
-                            :aria-expanded="showFilterPanel"
-                            aria-haspopup="true"
                         >
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
@@ -285,11 +292,37 @@ function submitCheckout() {
                         </button>
                     </div>
 
-                    <!-- Filter Panel Dropdown -->
-                    <div v-if="showFilterPanel" class="relative z-30">
-                        <div class="absolute right-0 top-0 w-80 rounded-2xl border-2 border-primary bg-surface p-5 shadow-2xl space-y-4">
-                            <div v-if="categories.length > 0">
-                                <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2">Kategori</label>
+                    <!-- Filter Modal -->
+                    <div
+                        v-if="showFilterPanel"
+                        class="fixed inset-0 z-50 flex items-center justify-center"
+                        @keydown.escape.prevent="closeFilterPanel"
+                        @click.self="closeFilterPanel"
+                    >
+                        <div class="fixed inset-0 bg-black/60" aria-hidden="true"></div>
+                        <div
+                            ref="filterModalRef"
+                            class="relative z-10 w-full max-w-md mx-4 rounded-2xl border-2 border-primary bg-surface p-6 shadow-2xl space-y-5"
+                            role="dialog"
+                            aria-modal="true"
+                            aria-label="Filter Produk"
+                            tabindex="-1"
+                        >
+                            <div class="flex items-center justify-between">
+                                <h2 class="text-lg font-bold text-on-surface">Filter Produk</h2>
+                                <button
+                                    @click="closeFilterPanel"
+                                    class="p-1.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                                    aria-label="Tutup"
+                                >
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <div v-if="categories.length > 0" class="space-y-2">
+                                <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider">Kategori</label>
                                 <div class="space-y-1">
                                     <label
                                         v-for="cat in categories"
@@ -309,8 +342,8 @@ function submitCheckout() {
 
                             <hr class="border-outline/60" />
 
-                            <div v-if="tags.length > 0">
-                                <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2">Tag</label>
+                            <div v-if="tags.length > 0" class="space-y-2">
+                                <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider">Tag</label>
                                 <div class="space-y-1">
                                     <label
                                         v-for="tag in tags"
@@ -330,8 +363,8 @@ function submitCheckout() {
 
                             <hr class="border-outline/60" />
 
-                            <div>
-                                <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2">Harga</label>
+                            <div class="space-y-2">
+                                <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider">Harga</label>
                                 <div class="space-y-2">
                                     <div class="relative">
                                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-on-surface-variant pointer-events-none font-mono" aria-hidden="true">Rp</span>

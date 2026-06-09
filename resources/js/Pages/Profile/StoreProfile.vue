@@ -10,7 +10,7 @@ const props = defineProps({
 });
 
 const page = usePage();
-const userSlug = page.props.auth.user.slug;
+const userSlug = page.props.auth.user.store_slug || page.props.auth.user.slug;
 const catalogUrl = `/catalog/${userSlug}`;
 
 const previewLogo = ref(props.store.store_logo_url || null);

@@ -39,17 +39,41 @@ class User extends Authenticatable
         'plan',
     ];
 
+    public static function generateUniqueSlug($source, $column = 'slug', $ignoreId = null)
+    {
+        $slug = Str::slug($source);
+        $original = $slug;
+        $counter = 2;
+        $query = static::where($column, $slug);
+        if ($ignoreId) {
+            $query->where('id', '!=', $ignoreId);
+        }
+        while ($query->exists()) {
+            $slug = $original . '-' . $counter++;
+            $query = static::where($column, $slug);
+            if ($ignoreId) {
+                $query->where('id', '!=', $ignoreId);
+            }
+        }
+        return $slug;
+    }
+
     protected static function booted()
     {
         static::creating(function ($user) {
             if (empty($user->slug)) {
-                $slug = Str::slug($user->name);
-                $original = $slug;
-                $counter = 2;
-                while (static::where('slug', $slug)->exists()) {
-                    $slug = $original . '-' . $counter++;
-                }
-                $user->slug = $slug;
+                $user->slug = static::generateUniqueSlug($user->name, 'slug');
+            }
+            if (empty($user->store_slug)) {
+                $source = $user->store_name ?: $user->name;
+                $user->store_slug = static::generateUniqueSlug($source, 'store_slug');
+            }
+        });
+
+        static::saving(function ($user) {
+            if ($user->exists && $user->isDirty('store_name')) {
+                $source = $user->store_name ?: $user->name;
+                $user->store_slug = static::generateUniqueSlug($source, 'store_slug', $user->id);
             }
         });
     }

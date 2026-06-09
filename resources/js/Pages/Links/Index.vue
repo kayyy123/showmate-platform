@@ -9,7 +9,7 @@ const props = defineProps({
 });
 
 const page = usePage();
-const catalogUrl = `/catalog/${page.props.auth.user.slug}`;
+const catalogUrl = `/catalog/${page.props.auth.user.store_slug || page.props.auth.user.slug}`;
 
 const showModal = ref(false);
 const editingLink = ref(null);

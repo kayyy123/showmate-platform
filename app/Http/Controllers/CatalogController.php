@@ -12,7 +12,7 @@ class CatalogController extends Controller
 {
     public function show(Request $request, string $slug)
     {
-        $user = User::where('slug', $slug)->firstOrFail();
+        $user = User::where('store_slug', $slug)->firstOrFail();
         $products = $user->products()
             ->where('is_active', true)
             ->latest()

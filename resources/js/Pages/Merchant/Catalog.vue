@@ -15,10 +15,28 @@ const fullCatalogUrl = window.location.origin + catalogUrl;
 
 const searchQuery = ref('');
 const filterStatus = ref('all');
+const selectedCategories = ref([]);
+const selectedTags = ref([]);
 
 function normalizeCode(str) {
     return str ? str.toLowerCase().replace(/[\s-]/g, '') : '';
 }
+
+const categories = computed(() => {
+    if (!props.products) return [];
+    const cats = [...new Set(props.products.map(p => p.category).filter(Boolean))];
+    return cats.sort();
+});
+
+const tags = computed(() => {
+    if (!props.products) return [];
+    const t = [...new Set(props.products.map(p => p.tag).filter(Boolean))];
+    return t.sort();
+});
+
+const hasActiveFilters = computed(() => {
+    return searchQuery.value || selectedCategories.value.length > 0 || selectedTags.value.length > 0 || filterStatus.value !== 'all';
+});
 
 const filteredProducts = computed(() => {
     let items = props.products;
@@ -33,6 +51,12 @@ const filteredProducts = computed(() => {
             return false;
         });
     }
+    if (selectedCategories.value.length > 0) {
+        items = items.filter(p => p.category && selectedCategories.value.includes(p.category));
+    }
+    if (selectedTags.value.length > 0) {
+        items = items.filter(p => p.tag && selectedTags.value.includes(p.tag));
+    }
     if (filterStatus.value === 'active') {
         items = items.filter(p => p.is_active);
     } else if (filterStatus.value === 'inactive') {
@@ -43,6 +67,38 @@ const filteredProducts = computed(() => {
 
 const activeCount = computed(() => props.products.filter(p => p.is_active).length);
 const inactiveCount = computed(() => props.products.filter(p => !p.is_active).length);
+
+function toggleCategory(cat) {
+    const idx = selectedCategories.value.indexOf(cat);
+    if (idx === -1) {
+        selectedCategories.value = [...selectedCategories.value, cat];
+    } else {
+        selectedCategories.value = selectedCategories.value.filter(c => c !== cat);
+    }
+}
+
+function toggleTag(tag) {
+    const idx = selectedTags.value.indexOf(tag);
+    if (idx === -1) {
+        selectedTags.value = [...selectedTags.value, tag];
+    } else {
+        selectedTags.value = selectedTags.value.filter(t => t !== tag);
+    }
+}
+
+function removeFilter(type) {
+    if (type === 'search') searchQuery.value = '';
+    else if (type === 'category') selectedCategories.value = [];
+    else if (type === 'tag') selectedTags.value = [];
+    else if (type === 'status') filterStatus.value = 'all';
+}
+
+function resetFilters() {
+    searchQuery.value = '';
+    selectedCategories.value = [];
+    selectedTags.value = [];
+    filterStatus.value = 'all';
+}
 
 function copyLink() {
     if (!navigator.clipboard) {
@@ -208,6 +264,85 @@ function formatPrice(price) {
                         :aria-pressed="filterStatus === 'inactive'"
                     >
                         Nonaktif
+                    </button>
+                </div>
+            </div>
+
+            <!-- Category & Tag Filters -->
+            <div v-if="categories.length > 0 || tags.length > 0" class="space-y-3">
+                <div v-if="categories.length > 0">
+                    <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5">Kategori</label>
+                    <div class="flex flex-wrap gap-2">
+                        <button
+                            v-for="cat in categories"
+                            :key="cat"
+                            @click="toggleCategory(cat)"
+                            class="px-3 py-1.5 rounded-full text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                            :class="selectedCategories.includes(cat)
+                                ? 'bg-primary text-on-primary'
+                                : 'border border-outline text-on-surface-variant hover:bg-surface-container'"
+                            :aria-pressed="selectedCategories.includes(cat)"
+                        >
+                            {{ cat }}
+                        </button>
+                    </div>
+                </div>
+
+                <div v-if="tags.length > 0">
+                    <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5">Tag</label>
+                    <div class="flex flex-wrap gap-2">
+                        <button
+                            v-for="tag in tags"
+                            :key="tag"
+                            @click="toggleTag(tag)"
+                            class="px-3 py-1.5 rounded-full text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                            :class="selectedTags.includes(tag)
+                                ? 'bg-primary text-on-primary'
+                                : 'border border-outline text-on-surface-variant hover:bg-surface-container'"
+                            :aria-pressed="selectedTags.includes(tag)"
+                        >
+                            {{ tag }}
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Active filter chips -->
+                <div v-if="hasActiveFilters" class="flex flex-wrap gap-1.5">
+                    <span
+                        v-if="searchQuery"
+                        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary"
+                    >
+                        {{ searchQuery }}
+                        <button @click="removeFilter('search')" class="hover:text-primary/70 focus-visible:outline-none" aria-label="Hapus pencarian">×</button>
+                    </span>
+                    <span
+                        v-for="cat in selectedCategories"
+                        :key="'cat-'+cat"
+                        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary"
+                    >
+                        {{ cat }}
+                        <button @click="toggleCategory(cat)" class="hover:text-primary/70 focus-visible:outline-none" aria-label="Hapus kategori">×</button>
+                    </span>
+                    <span
+                        v-for="tag in selectedTags"
+                        :key="'tag-'+tag"
+                        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary"
+                    >
+                        {{ tag }}
+                        <button @click="toggleTag(tag)" class="hover:text-primary/70 focus-visible:outline-none" aria-label="Hapus tag">×</button>
+                    </span>
+                    <span
+                        v-if="filterStatus !== 'all'"
+                        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary"
+                    >
+                        {{ filterStatus === 'active' ? 'Aktif' : 'Nonaktif' }}
+                        <button @click="removeFilter('status')" class="hover:text-primary/70 focus-visible:outline-none" aria-label="Hapus filter status">×</button>
+                    </span>
+                    <button
+                        @click="resetFilters"
+                        class="text-[11px] font-semibold text-primary hover:text-primary/80 transition-colors focus-visible:outline-none px-2 py-0.5"
+                    >
+                        Reset
                     </button>
                 </div>
             </div>

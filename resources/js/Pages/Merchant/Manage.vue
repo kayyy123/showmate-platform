@@ -7,6 +7,8 @@ import { confirmDelete } from '@/Composables/useConfirm.js';
 const page = usePage();
 
 const searchQuery = ref('');
+const selectedCategories = ref([]);
+const selectedTags = ref([]);
 
 function normalizeCode(str) {
     return str ? str.toLowerCase().replace(/[\s-]/g, '') : '';
@@ -23,18 +25,73 @@ const stats = computed(() => {
     return { total, active, inactive: total - active, categories };
 });
 
-const filteredProducts = computed(() => {
-    const q = searchQuery.value.toLowerCase().trim();
-    if (!q) return props.products;
-    const qNormalized = normalizeCode(q);
-    return props.products.filter(p => {
-        if (p.name && p.name.toLowerCase().includes(q)) return true;
-        if (p.product_code && normalizeCode(p.product_code).includes(qNormalized)) return true;
-        if (p.category && p.category.toLowerCase().includes(q)) return true;
-        if (p.tag && p.tag.toLowerCase().includes(q)) return true;
-        return false;
-    });
+const categories = computed(() => {
+    if (!props.products) return [];
+    const cats = [...new Set(props.products.map(p => p.category).filter(Boolean))];
+    return cats.sort();
 });
+
+const tags = computed(() => {
+    if (!props.products) return [];
+    const t = [...new Set(props.products.map(p => p.tag).filter(Boolean))];
+    return t.sort();
+});
+
+const hasActiveFilters = computed(() => {
+    return searchQuery.value || selectedCategories.value.length > 0 || selectedTags.value.length > 0;
+});
+
+const filteredProducts = computed(() => {
+    let items = props.products;
+    const q = searchQuery.value.toLowerCase().trim();
+    if (q) {
+        const qNormalized = normalizeCode(q);
+        items = items.filter(p => {
+            if (p.name && p.name.toLowerCase().includes(q)) return true;
+            if (p.product_code && normalizeCode(p.product_code).includes(qNormalized)) return true;
+            if (p.category && p.category.toLowerCase().includes(q)) return true;
+            if (p.tag && p.tag.toLowerCase().includes(q)) return true;
+            return false;
+        });
+    }
+    if (selectedCategories.value.length > 0) {
+        items = items.filter(p => p.category && selectedCategories.value.includes(p.category));
+    }
+    if (selectedTags.value.length > 0) {
+        items = items.filter(p => p.tag && selectedTags.value.includes(p.tag));
+    }
+    return items;
+});
+
+function toggleCategory(cat) {
+    const idx = selectedCategories.value.indexOf(cat);
+    if (idx === -1) {
+        selectedCategories.value = [...selectedCategories.value, cat];
+    } else {
+        selectedCategories.value = selectedCategories.value.filter(c => c !== cat);
+    }
+}
+
+function toggleTag(tag) {
+    const idx = selectedTags.value.indexOf(tag);
+    if (idx === -1) {
+        selectedTags.value = [...selectedTags.value, tag];
+    } else {
+        selectedTags.value = selectedTags.value.filter(t => t !== tag);
+    }
+}
+
+function removeFilter(type) {
+    if (type === 'search') searchQuery.value = '';
+    else if (type === 'category') selectedCategories.value = [];
+    else if (type === 'tag') selectedTags.value = [];
+}
+
+function resetFilters() {
+    searchQuery.value = '';
+    selectedCategories.value = [];
+    selectedTags.value = [];
+}
 
 async function destroyProduct(product) {
     const confirmed = await confirmDelete();
@@ -121,6 +178,78 @@ function toggleVisibility(product) {
                 aria-label="Cari nama atau kode produk"
                 class="flex-1 py-3 px-4 rounded-xl border border-outline bg-surface text-on-surface placeholder-on-surface-variant text-sm focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 focus-visible:border-primary transition-all"
             />
+        </div>
+
+        <!-- Category & Tag Filters -->
+        <div v-if="categories.length > 0 || tags.length > 0" class="space-y-3 mb-4">
+            <div v-if="categories.length > 0">
+                <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5">Kategori</label>
+                <div class="flex flex-wrap gap-2">
+                    <button
+                        v-for="cat in categories"
+                        :key="cat"
+                        @click="toggleCategory(cat)"
+                        class="px-3 py-1.5 rounded-full text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                        :class="selectedCategories.includes(cat)
+                            ? 'bg-primary text-on-primary'
+                            : 'border border-outline text-on-surface-variant hover:bg-surface-container'"
+                        :aria-pressed="selectedCategories.includes(cat)"
+                    >
+                        {{ cat }}
+                    </button>
+                </div>
+            </div>
+
+            <div v-if="tags.length > 0">
+                <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5">Tag</label>
+                <div class="flex flex-wrap gap-2">
+                    <button
+                        v-for="tag in tags"
+                        :key="tag"
+                        @click="toggleTag(tag)"
+                        class="px-3 py-1.5 rounded-full text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                        :class="selectedTags.includes(tag)
+                            ? 'bg-primary text-on-primary'
+                            : 'border border-outline text-on-surface-variant hover:bg-surface-container'"
+                        :aria-pressed="selectedTags.includes(tag)"
+                    >
+                        {{ tag }}
+                    </button>
+                </div>
+            </div>
+
+            <!-- Active filter chips -->
+            <div v-if="hasActiveFilters" class="flex flex-wrap gap-1.5">
+                <span
+                    v-if="searchQuery"
+                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary"
+                >
+                    {{ searchQuery }}
+                    <button @click="removeFilter('search')" class="hover:text-primary/70 focus-visible:outline-none" aria-label="Hapus pencarian">×</button>
+                </span>
+                <span
+                    v-for="cat in selectedCategories"
+                    :key="'cat-'+cat"
+                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary"
+                >
+                    {{ cat }}
+                    <button @click="toggleCategory(cat)" class="hover:text-primary/70 focus-visible:outline-none" aria-label="Hapus kategori">×</button>
+                </span>
+                <span
+                    v-for="tag in selectedTags"
+                    :key="'tag-'+tag"
+                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary"
+                >
+                    {{ tag }}
+                    <button @click="toggleTag(tag)" class="hover:text-primary/70 focus-visible:outline-none" aria-label="Hapus tag">×</button>
+                </span>
+                <button
+                    @click="resetFilters"
+                    class="text-[11px] font-semibold text-primary hover:text-primary/80 transition-colors focus-visible:outline-none px-2 py-0.5"
+                >
+                    Reset
+                </button>
+            </div>
         </div>
 
         <!-- Product List -->

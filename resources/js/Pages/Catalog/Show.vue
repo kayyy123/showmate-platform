@@ -40,8 +40,8 @@ const tabHeaders = {
 };
 
 const searchQuery = ref('');
-const selectedCategory = ref('');
-const selectedTag = ref('');
+const selectedCategories = ref([]);
+const selectedTags = ref([]);
 const minPrice = ref('');
 const maxPrice = ref('');
 
@@ -82,12 +82,12 @@ const filteredProducts = computed(() => {
         });
     }
 
-    if (selectedCategory.value) {
-        result = result.filter(p => p.category === selectedCategory.value);
+    if (selectedCategories.value.length > 0) {
+        result = result.filter(p => p.category && selectedCategories.value.includes(p.category));
     }
 
-    if (selectedTag.value) {
-        result = result.filter(p => p.tag === selectedTag.value);
+    if (selectedTags.value.length > 0) {
+        result = result.filter(p => p.tag && selectedTags.value.includes(p.tag));
     }
 
     if (!priceError.value) {
@@ -114,15 +114,45 @@ const showFilteredEmptyState = computed(() => {
 });
 
 const hasActiveFilters = computed(() => {
-    return searchQuery.value || selectedCategory.value || selectedTag.value || minPrice.value || maxPrice.value;
+    return searchQuery.value || selectedCategories.value.length > 0 || selectedTags.value.length > 0 || minPrice.value || maxPrice.value;
 });
 
 function resetFilters() {
     searchQuery.value = '';
-    selectedCategory.value = '';
-    selectedTag.value = '';
+    selectedCategories.value = [];
+    selectedTags.value = [];
     minPrice.value = '';
     maxPrice.value = '';
+}
+
+function toggleCategory(cat) {
+    const idx = selectedCategories.value.indexOf(cat);
+    if (idx === -1) {
+        selectedCategories.value = [...selectedCategories.value, cat];
+    } else {
+        selectedCategories.value = selectedCategories.value.filter(c => c !== cat);
+    }
+}
+
+function toggleTag(tag) {
+    const idx = selectedTags.value.indexOf(tag);
+    if (idx === -1) {
+        selectedTags.value = [...selectedTags.value, tag];
+    } else {
+        selectedTags.value = selectedTags.value.filter(t => t !== tag);
+    }
+}
+
+function removeFilter(type) {
+    if (type === 'search') searchQuery.value = '';
+    else if (type === 'minPrice') minPrice.value = '';
+    else if (type === 'maxPrice') maxPrice.value = '';
+    else if (type === 'category') selectedCategories.value = [];
+    else if (type === 'tag') selectedTags.value = [];
+}
+
+function formatPriceShort(val) {
+    return 'Rp ' + Number(val).toLocaleString('id-ID');
 }
 
 const form = useForm({
@@ -227,28 +257,39 @@ function submitCheckout() {
                         />
                     </div>
 
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5" for="filter-category">Kategori</label>
-                            <select
-                                id="filter-category"
-                                v-model="selectedCategory"
-                                class="w-full px-3 py-2.5 rounded-xl bg-surface-container border border-outline text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors appearance-none"
+                    <div v-if="categories.length > 0">
+                        <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5">Kategori</label>
+                        <div class="flex flex-wrap gap-2">
+                            <button
+                                v-for="cat in categories"
+                                :key="cat"
+                                @click="toggleCategory(cat)"
+                                class="px-3 py-1.5 rounded-full text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                                :class="selectedCategories.includes(cat)
+                                    ? 'bg-primary text-on-primary'
+                                    : 'border border-outline text-on-surface-variant hover:bg-surface-container'"
+                                :aria-pressed="selectedCategories.includes(cat)"
                             >
-                                <option value="">Semua Kategori</option>
-                                <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
-                            </select>
+                                {{ cat }}
+                            </button>
                         </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5" for="filter-tag">Tag</label>
-                            <select
-                                id="filter-tag"
-                                v-model="selectedTag"
-                                class="w-full px-3 py-2.5 rounded-xl bg-surface-container border border-outline text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors appearance-none"
+                    </div>
+
+                    <div v-if="tags.length > 0">
+                        <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5">Tag</label>
+                        <div class="flex flex-wrap gap-2">
+                            <button
+                                v-for="tag in tags"
+                                :key="tag"
+                                @click="toggleTag(tag)"
+                                class="px-3 py-1.5 rounded-full text-xs font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                                :class="selectedTags.includes(tag)
+                                    ? 'bg-primary text-on-primary'
+                                    : 'border border-outline text-on-surface-variant hover:bg-surface-container'"
+                                :aria-pressed="selectedTags.includes(tag)"
                             >
-                                <option value="">Semua Tag</option>
-                                <option v-for="tag in tags" :key="tag" :value="tag">{{ tag }}</option>
-                            </select>
+                                {{ tag }}
+                            </button>
                         </div>
                     </div>
 
@@ -291,6 +332,47 @@ function submitCheckout() {
                         </svg>
                         {{ priceError }}
                     </p>
+
+                    <!-- Active filter chips -->
+                    <div v-if="hasActiveFilters" class="flex flex-wrap gap-1.5">
+                        <span
+                            v-if="searchQuery"
+                            class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary"
+                        >
+                            {{ searchQuery }}
+                            <button @click="removeFilter('search')" class="hover:text-primary/70 focus-visible:outline-none" aria-label="Hapus pencarian">×</button>
+                        </span>
+                        <span
+                            v-for="cat in selectedCategories"
+                            :key="'cat-'+cat"
+                            class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary"
+                        >
+                            {{ cat }}
+                            <button @click="toggleCategory(cat)" class="hover:text-primary/70 focus-visible:outline-none" aria-label="Hapus kategori {{ cat }}">×</button>
+                        </span>
+                        <span
+                            v-for="tag in selectedTags"
+                            :key="'tag-'+tag"
+                            class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary"
+                        >
+                            {{ tag }}
+                            <button @click="toggleTag(tag)" class="hover:text-primary/70 focus-visible:outline-none" aria-label="Hapus tag {{ tag }}">×</button>
+                        </span>
+                        <span
+                            v-if="minPrice"
+                            class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary"
+                        >
+                            Min: {{ formatPriceShort(minPrice) }}
+                            <button @click="removeFilter('minPrice')" class="hover:text-primary/70 focus-visible:outline-none" aria-label="Hapus harga minimum">×</button>
+                        </span>
+                        <span
+                            v-if="maxPrice"
+                            class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary"
+                        >
+                            Max: {{ formatPriceShort(maxPrice) }}
+                            <button @click="removeFilter('maxPrice')" class="hover:text-primary/70 focus-visible:outline-none" aria-label="Hapus harga maksimum">×</button>
+                        </span>
+                    </div>
 
                     <div class="flex items-center justify-between pt-1">
                         <p class="text-xs text-on-surface-variant" aria-live="polite">

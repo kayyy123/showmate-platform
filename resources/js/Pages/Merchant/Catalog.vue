@@ -3,6 +3,7 @@ import { ref, computed } from 'vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 import { confirmDelete } from '@/Composables/useConfirm.js';
+import { showSuccess, showError } from '@/Composables/useToast';
 
 const props = defineProps({
     products: Array,
@@ -37,7 +38,21 @@ const activeCount = computed(() => props.products.filter(p => p.is_active).lengt
 const inactiveCount = computed(() => props.products.filter(p => !p.is_active).length);
 
 function copyLink() {
-    navigator.clipboard.writeText(fullCatalogUrl);
+    if (!navigator.clipboard) {
+        const textarea = document.createElement('textarea');
+        textarea.value = fullCatalogUrl;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showSuccess('Link katalog berhasil disalin');
+        return;
+    }
+    navigator.clipboard.writeText(fullCatalogUrl).then(() => {
+        showSuccess('Link katalog berhasil disalin');
+    }).catch(() => {
+        showError('Gagal menyalin link');
+    });
 }
 
 function shareCatalog() {

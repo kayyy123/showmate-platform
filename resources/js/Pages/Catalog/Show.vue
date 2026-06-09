@@ -295,7 +295,7 @@ function submitCheckout() {
 
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5" for="filter-min-price">Harga Min</label>
+                            <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5" for="filter-min-price">Harga Minimum</label>
                             <div class="relative">
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-on-surface-variant pointer-events-none font-mono" aria-hidden="true">Rp</span>
                                 <input
@@ -303,14 +303,14 @@ function submitCheckout() {
                                     v-model="minPrice"
                                     type="number"
                                     min="0"
-                                    placeholder="0"
+                                    placeholder="Rp 0"
                                     aria-label="Harga minimum"
                                     class="w-full pl-9 pr-3 py-2.5 rounded-xl bg-surface-container border border-outline text-on-surface placeholder:text-on-surface-variant text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                 />
                             </div>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5" for="filter-max-price">Harga Maks</label>
+                            <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5" for="filter-max-price">Harga Maksimum</label>
                             <div class="relative">
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-on-surface-variant pointer-events-none font-mono" aria-hidden="true">Rp</span>
                                 <input
@@ -318,7 +318,7 @@ function submitCheckout() {
                                     v-model="maxPrice"
                                     type="number"
                                     min="0"
-                                    placeholder="0"
+                                    placeholder="Rp 100.000"
                                     aria-label="Harga maksimum"
                                     class="w-full pl-9 pr-3 py-2.5 rounded-xl bg-surface-container border border-outline text-on-surface placeholder:text-on-surface-variant text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                 />

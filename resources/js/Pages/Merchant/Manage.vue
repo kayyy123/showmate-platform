@@ -9,9 +9,15 @@ const page = usePage();
 const searchQuery = ref('');
 const selectedCategories = ref([]);
 const selectedTags = ref([]);
+const minPrice = ref('');
+const maxPrice = ref('');
 
 function normalizeCode(str) {
     return str ? str.toLowerCase().replace(/[\s-]/g, '') : '';
+}
+
+function formatPriceShort(val) {
+    return 'Rp ' + Number(val).toLocaleString('id-ID');
 }
 
 const props = defineProps({
@@ -37,8 +43,15 @@ const tags = computed(() => {
     return t.sort();
 });
 
+const priceError = computed(() => {
+    if (minPrice.value !== '' && maxPrice.value !== '' && Number(minPrice.value) > Number(maxPrice.value)) {
+        return 'Harga minimum tidak boleh lebih besar dari harga maksimum';
+    }
+    return '';
+});
+
 const hasActiveFilters = computed(() => {
-    return searchQuery.value || selectedCategories.value.length > 0 || selectedTags.value.length > 0;
+    return searchQuery.value || selectedCategories.value.length > 0 || selectedTags.value.length > 0 || minPrice.value || maxPrice.value;
 });
 
 const filteredProducts = computed(() => {
@@ -59,6 +72,20 @@ const filteredProducts = computed(() => {
     }
     if (selectedTags.value.length > 0) {
         items = items.filter(p => p.tag && selectedTags.value.includes(p.tag));
+    }
+    if (!priceError.value) {
+        if (minPrice.value !== '') {
+            const min = Number(minPrice.value);
+            if (!isNaN(min)) {
+                items = items.filter(p => Number(p.price) >= min);
+            }
+        }
+        if (maxPrice.value !== '') {
+            const max = Number(maxPrice.value);
+            if (!isNaN(max)) {
+                items = items.filter(p => Number(p.price) <= max);
+            }
+        }
     }
     return items;
 });
@@ -85,12 +112,16 @@ function removeFilter(type) {
     if (type === 'search') searchQuery.value = '';
     else if (type === 'category') selectedCategories.value = [];
     else if (type === 'tag') selectedTags.value = [];
+    else if (type === 'minPrice') minPrice.value = '';
+    else if (type === 'maxPrice') maxPrice.value = '';
 }
 
 function resetFilters() {
     searchQuery.value = '';
     selectedCategories.value = [];
     selectedTags.value = [];
+    minPrice.value = '';
+    maxPrice.value = '';
 }
 
 async function destroyProduct(product) {
@@ -180,7 +211,7 @@ function toggleVisibility(product) {
             />
         </div>
 
-        <!-- Category & Tag Filters -->
+        <!-- Category, Tag & Price Filters -->
         <div v-if="categories.length > 0 || tags.length > 0" class="space-y-3 mb-4">
             <div v-if="categories.length > 0">
                 <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5">Kategori</label>
@@ -218,6 +249,46 @@ function toggleVisibility(product) {
                 </div>
             </div>
 
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5" for="filter-min-price">Harga Minimum</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-on-surface-variant pointer-events-none font-mono" aria-hidden="true">Rp</span>
+                        <input
+                            id="filter-min-price"
+                            v-model="minPrice"
+                            type="number"
+                            min="0"
+                            placeholder="Rp 0"
+                            aria-label="Harga minimum"
+                            class="w-full pl-9 pr-3 py-2.5 rounded-xl bg-surface-container border border-outline text-on-surface placeholder:text-on-surface-variant text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        />
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-1.5" for="filter-max-price">Harga Maksimum</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-on-surface-variant pointer-events-none font-mono" aria-hidden="true">Rp</span>
+                        <input
+                            id="filter-max-price"
+                            v-model="maxPrice"
+                            type="number"
+                            min="0"
+                            placeholder="Rp 100.000"
+                            aria-label="Harga maksimum"
+                            class="w-full pl-9 pr-3 py-2.5 rounded-xl bg-surface-container border border-outline text-on-surface placeholder:text-on-surface-variant text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <p v-if="priceError" class="text-sm text-red-500 flex items-center gap-1.5" role="alert">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {{ priceError }}
+            </p>
+
             <!-- Active filter chips -->
             <div v-if="hasActiveFilters" class="flex flex-wrap gap-1.5">
                 <span
@@ -242,6 +313,20 @@ function toggleVisibility(product) {
                 >
                     {{ tag }}
                     <button @click="toggleTag(tag)" class="hover:text-primary/70 focus-visible:outline-none" aria-label="Hapus tag">×</button>
+                </span>
+                <span
+                    v-if="minPrice"
+                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary"
+                >
+                    Min: {{ formatPriceShort(minPrice) }}
+                    <button @click="removeFilter('minPrice')" class="hover:text-primary/70 focus-visible:outline-none" aria-label="Hapus harga minimum">×</button>
+                </span>
+                <span
+                    v-if="maxPrice"
+                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary"
+                >
+                    Max: {{ formatPriceShort(maxPrice) }}
+                    <button @click="removeFilter('maxPrice')" class="hover:text-primary/70 focus-visible:outline-none" aria-label="Hapus harga maksimum">×</button>
                 </span>
                 <button
                     @click="resetFilters"

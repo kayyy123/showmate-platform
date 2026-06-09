@@ -43,6 +43,8 @@ class CheckoutController extends Controller
         if ($product->pricing_type === 'negotiable') {
             $message = "Halo, saya {$checkout->buyer_name} tertarik dengan produk Anda:\n\n";
             $message .= "*{$product->name}*\n";
+            $message .= "Kode Produk: {$product->product_code}\n";
+            $message .= "ID Pesanan: {$checkout->order_code}\n";
             $message .= "Jumlah: {$checkout->quantity} pcs\n";
             $message .= "Harga tercantum: Rp " . number_format($product->price, 0, ',', '.') . "/pcs\n";
             if ($checkout->notes) {
@@ -52,6 +54,8 @@ class CheckoutController extends Controller
         } else {
             $message = "Halo, saya {$checkout->buyer_name} ingin memesan:\n\n";
             $message .= "*{$product->name}*\n";
+            $message .= "Kode Produk: {$product->product_code}\n";
+            $message .= "ID Pesanan: {$checkout->order_code}\n";
             $message .= "Jumlah: {$checkout->quantity} pcs\n";
             $message .= "Total: Rp " . number_format($totalPrice, 0, ',', '.') . "\n";
             if ($checkout->notes) {

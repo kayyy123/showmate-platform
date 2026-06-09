@@ -12,6 +12,7 @@ class Checkout extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'order_code',
         'user_id',
         'product_id',
         'buyer_name',
@@ -29,6 +30,24 @@ class Checkout extends Model
             'quantity' => 'integer',
             'total_price' => 'decimal:2',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (Checkout $checkout) {
+            if (empty($checkout->order_code)) {
+                $checkout->order_code = static::generateUniqueOrderCode();
+            }
+        });
+    }
+
+    public static function generateUniqueOrderCode(): string
+    {
+        do {
+            $code = 'ELK-' . str_pad(random_int(0, 9999), 4, '0', STR_PAD_LEFT);
+        } while (static::where('order_code', $code)->exists());
+
+        return $code;
     }
 
     public function user(): BelongsTo

@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Product extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'product_code',
         'user_id',
         'store_id',
         'category_id',
@@ -36,6 +38,24 @@ class Product extends Model
             'is_active' => 'boolean',
             'sort_order' => 'integer',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (Product $product) {
+            if (empty($product->product_code)) {
+                $product->product_code = static::generateUniqueProductCode();
+            }
+        });
+    }
+
+    public static function generateUniqueProductCode(): string
+    {
+        do {
+            $code = 'ELK-' . str_pad(random_int(0, 9999999999), 10, '0', STR_PAD_LEFT);
+        } while (static::where('product_code', $code)->exists());
+
+        return $code;
     }
 
     public function user(): BelongsTo

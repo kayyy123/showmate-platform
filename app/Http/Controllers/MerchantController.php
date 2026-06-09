@@ -18,7 +18,7 @@ class MerchantController extends Controller
     {
         $products = Product::where('user_id', $request->user()->id)
             ->latest()
-            ->get(['id', 'name', 'price', 'is_active', 'created_at', 'image', 'category', 'tag', 'alt_text', 'description'])
+            ->get(['id', 'name', 'price', 'is_active', 'created_at', 'image', 'category', 'tag', 'alt_text', 'description', 'product_code'])
             ->map(fn ($product) => [
                 ...$product->toArray(),
                 'image_url' => $product->image ? Storage::url($product->image) : null,
@@ -35,7 +35,7 @@ class MerchantController extends Controller
 
         $products = Product::where('user_id', $user->id)
             ->latest()
-            ->get(['id', 'name', 'price', 'is_active', 'created_at', 'image', 'category', 'tag', 'alt_text'])
+            ->get(['id', 'name', 'price', 'is_active', 'created_at', 'image', 'category', 'tag', 'alt_text', 'product_code'])
             ->map(fn ($product) => [
                 ...$product->toArray(),
                 'image_url' => $product->image ? Storage::url($product->image) : null,
@@ -98,13 +98,15 @@ class MerchantController extends Controller
         }
 
         $recentCheckouts = Checkout::where('user_id', $user->id)
-            ->with('product:id,name')
+            ->with('product:id,name,product_code')
             ->latest()
             ->take(5)
             ->get()
             ->map(fn ($c) => [
                 'id' => $c->id,
+                'order_code' => $c->order_code,
                 'product_name' => $c->product?->name ?? 'Produk dihapus',
+                'product_code' => $c->product?->product_code,
                 'buyer_name' => $c->buyer_name,
                 'quantity' => $c->quantity,
                 'total_price' => $c->total_price,

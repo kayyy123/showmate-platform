@@ -338,6 +338,7 @@ function submitCheckout() {
                                             {{ product.tag }}
                                         </span>
                                     </div>
+                                    <p v-if="product.product_code" class="text-[10px] font-mono text-on-surface-variant mt-0.5">Kode: {{ product.product_code }}</p>
                                     <p v-if="product.description" class="text-xs text-on-surface-variant mt-0.5 line-clamp-2">
                                         {{ product.description }}
                                     </p>
@@ -539,6 +540,7 @@ function submitCheckout() {
 
                 <div v-if="selectedProduct" class="mb-4 p-3 rounded-xl bg-surface-container-high">
                     <p class="font-semibold text-on-surface">{{ selectedProduct.name }}</p>
+                    <p v-if="selectedProduct.product_code" class="text-[10px] font-mono text-on-surface-variant mt-0.5">Kode: {{ selectedProduct.product_code }}</p>
                     <p class="text-sm text-on-surface-variant mt-0.5">
                         {{ formatPrice(selectedProduct.price) }}
                     </p>

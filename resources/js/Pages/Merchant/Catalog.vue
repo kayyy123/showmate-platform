@@ -321,6 +321,7 @@ function formatPrice(price) {
                         <div class="flex items-start justify-between gap-2">
                             <h3 class="text-sm font-bold text-on-surface leading-tight line-clamp-2">{{ product.name }}</h3>
                         </div>
+                        <p v-if="product.product_code" class="text-[10px] font-mono text-on-surface-variant">Kode: {{ product.product_code }}</p>
                         <p v-if="product.category" class="text-xs text-on-surface-variant">{{ product.category }}</p>
                         <p class="text-primary font-bold text-base">Rp {{ Number(product.price).toLocaleString('id-ID') }}</p>
                         <p v-if="product.description" class="text-xs text-on-surface-variant line-clamp-2">{{ product.description }}</p>

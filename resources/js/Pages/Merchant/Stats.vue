@@ -225,11 +225,11 @@ const hasCheckouts = computed(() => (h.value.recentCheckouts?.length ?? 0) > 0);
                     <div v-if="hasCheckouts" role="table" aria-label="Daftar checkout terbaru">
                         <div class="hidden sm:grid grid-cols-12 gap-3 px-5 py-3 bg-surface-container-low border-b border-outline text-xs font-semibold text-on-surface-variant uppercase tracking-wider" role="row">
                             <div class="col-span-3" role="columnheader">Produk</div>
+                            <div class="col-span-2" role="columnheader">ID Pesanan</div>
                             <div class="col-span-2" role="columnheader">Pembeli</div>
-                            <div class="col-span-2 text-center" role="columnheader">Qty</div>
+                            <div class="col-span-1 text-center" role="columnheader">Qty</div>
                             <div class="col-span-2 text-center" role="columnheader">Total</div>
                             <div class="col-span-2 text-center" role="columnheader">Status</div>
-                            <div class="col-span-1" role="columnheader"><span class="sr-only">Waktu</span></div>
                         </div>
                         <div
                             v-for="(c, i) in h.recentCheckouts"
@@ -239,8 +239,9 @@ const hasCheckouts = computed(() => (h.value.recentCheckouts?.length ?? 0) > 0);
                             role="row"
                         >
                             <div class="col-span-2 sm:col-span-3 font-semibold text-on-surface truncate" role="cell">{{ c.product_name }}</div>
+                            <div class="col-span-2 sm:col-span-2 font-mono text-xs text-on-surface-variant truncate" role="cell">{{ c.order_code || '-' }}</div>
                             <div class="col-span-2 sm:col-span-2 text-on-surface-variant truncate" role="cell">{{ c.buyer_name }}</div>
-                            <div class="col-span-1 sm:col-span-2 sm:text-center text-on-surface-variant" role="cell">{{ c.quantity }}</div>
+                            <div class="col-span-1 sm:col-span-1 sm:text-center text-on-surface-variant" role="cell">{{ c.quantity }}</div>
                             <div class="col-span-1 sm:col-span-2 sm:text-center text-on-surface font-medium" role="cell">{{ formatRp(c.total_price) }}</div>
                             <div class="col-span-2 sm:col-span-2 sm:text-center" role="cell">
                                 <span
@@ -257,9 +258,6 @@ const hasCheckouts = computed(() => (h.value.recentCheckouts?.length ?? 0) > 0);
                                     />
                                     {{ c.status }}
                                 </span>
-                            </div>
-                            <div class="hidden sm:block col-span-1 text-[10px] text-on-surface-variant text-right" role="cell">
-                                <time :datetime="c.created_at">{{ c.created_at }}</time>
                             </div>
                         </div>
                     </div>

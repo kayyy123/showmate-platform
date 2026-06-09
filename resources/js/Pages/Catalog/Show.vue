@@ -3,6 +3,7 @@ import { computed, ref, watch } from 'vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
 import CatalogLayout from '@/Layouts/CatalogLayout.vue';
 import Modal from '@/Components/Modal.vue';
+import { showSuccess, showError } from '@/Composables/useToast';
 
 const props = defineProps({
     merchant: Object,
@@ -156,10 +157,23 @@ function shareCatalog() {
 }
 
 function copyLink() {
+    if (!navigator.clipboard) {
+        const textarea = document.createElement('textarea');
+        textarea.value = catalogUrl;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showSuccess('Link katalog berhasil disalin');
+        return;
+    }
     navigator.clipboard.writeText(catalogUrl).then(() => {
         shared.value = true;
         setTimeout(() => { shared.value = false; }, 2000);
-    }).catch(() => {});
+        showSuccess('Link katalog berhasil disalin');
+    }).catch(() => {
+        showError('Gagal menyalin link');
+    });
 }
 
 function submitCheckout() {

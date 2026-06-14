@@ -14,6 +14,7 @@ const plans = computed(() => {
     return [
         {
             name: 'Gratis',
+            badge: 'GRATIS',
             price: 'Rp 0',
             period: 'selamanya',
             description: 'Coba semua fitur dasar tanpa biaya. Mulai kembangkan toko digital UMKM Anda sekarang.',
@@ -23,7 +24,7 @@ const plans = computed(() => {
                 'Profil toko',
                 'Statistik kunjungan',
                 'Aksesibilitas dasar',
-                'Tema warna',
+                'Tema standar',
             ],
             cta: 'Mulai Gratis',
             href: loggedIn ? 'merchant.manage' : 'register',
@@ -31,6 +32,7 @@ const plans = computed(() => {
         },
         {
             name: 'Pro',
+            badge: 'POPULER',
             price: 'Rp 49.000',
             period: '/bulan',
             description: 'Fitur lengkap untuk UMKM yang ingin berkembang lebih jauh dengan katalog tanpa batas.',
@@ -456,17 +458,19 @@ const trustBadges = [
                     <div
                         v-for="plan in plans"
                         :key="plan.name"
-                        class="relative rounded-2xl border p-6 md:p-8 transition-all duration-300"
+                        class="relative rounded-2xl border p-6 md:p-8 transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl"
                         :class="plan.highlighted
-                            ? 'border-yellow-500/40 bg-zinc-900/80 shadow-xl shadow-yellow-500/5'
-                            : 'border-zinc-800/60 bg-zinc-900/50 hover:border-zinc-700/60'"
+                            ? 'border-yellow-500/40 bg-zinc-900/80 shadow-xl shadow-yellow-500/5 md:scale-[1.02]'
+                            : 'border-zinc-800/60 bg-zinc-900/50'"
                     >
-                        <!-- Highlight badge -->
+                        <!-- Badge -->
                         <div
-                            v-if="plan.highlighted"
-                            class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-[#FFD700] text-black text-xs font-bold"
+                            class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold"
+                            :class="plan.highlighted
+                                ? 'bg-[#FFD700] text-black'
+                                : 'bg-zinc-700 text-zinc-300'"
                         >
-                            Populer
+                            {{ plan.badge }}
                         </div>
 
                         <div class="text-center mb-6">
@@ -506,6 +510,10 @@ const trustBadges = [
                         </Link>
                     </div>
                 </div>
+
+                <p class="mt-8 text-center text-xs text-zinc-500 max-w-lg mx-auto">
+                    Pembayaran Pro akan tersedia melalui QRIS dan metode pembayaran lainnya pada versi produksi.
+                </p>
             </div>
         </section>
 

@@ -33,8 +33,8 @@ Route::post('/catalog/{user}/checkout', [CheckoutController::class, 'store'])->n
 
 Route::middleware('guest')->group(function () {
     Route::get('/auth/google', [SocialiteController::class, 'redirectToGoogle'])->name('auth.google');
-    Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
 });
+Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);
 
 Route::middleware(['auth', 'verified', 'role:merchant'])->group(function () {
     Route::get('/merchant/catalog', [MerchantController::class, 'catalog'])->name('merchant.catalog');

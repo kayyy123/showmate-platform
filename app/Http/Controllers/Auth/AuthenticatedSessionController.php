@@ -35,11 +35,20 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         $user = $request->user();
+
         if ($user->isAdmin()) {
             return redirect()->intended('/admin/dashboard');
         }
 
-        return redirect()->intended('/merchant/manage')->with('success', 'Selamat datang kembali!');
+        if ($user->isMerchant()) {
+            return redirect()->intended('/merchant/manage')->with('success', 'Selamat datang kembali!');
+        }
+
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login')->with('error', 'Akun Anda belum memiliki akses. Hubungi admin.');
     }
 
     /**

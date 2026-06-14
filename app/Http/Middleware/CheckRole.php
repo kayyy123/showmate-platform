@@ -12,7 +12,7 @@ class CheckRole
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
         if (!$request->user()) {
-            abort(403, 'Unauthorized');
+            return redirect()->route('login');
         }
 
         foreach ($roles as $role) {
@@ -21,6 +21,18 @@ class CheckRole
             }
         }
 
-        abort(403, 'Akses ditolak. Anda tidak memiliki izin untuk mengakses halaman ini.');
+        if ($request->user()->isMerchant()) {
+            return redirect()->route('merchant.manage');
+        }
+
+        if ($request->user()->isAdmin()) {
+            return redirect('/admin/dashboard');
+        }
+
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login')->with('error', 'Akun Anda belum memiliki akses. Hubungi admin.');
     }
 }

@@ -26,7 +26,7 @@ class CheckRole
         }
 
         if ($request->user()->isAdmin()) {
-            return redirect('/admin/dashboard');
+            return redirect()->route('admin.dashboard');
         }
 
         Auth::logout();

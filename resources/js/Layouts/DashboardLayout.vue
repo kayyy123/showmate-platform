@@ -41,6 +41,7 @@ const navItems = [
     { key: 'catalog', label: 'Katalog Saya', icon: 'link', route: route('merchant.catalog') },
     { key: 'links', label: 'Tautan Saya', icon: 'links', route: route('links.index') },
     { key: 'stats', label: 'Statistik', icon: 'chart', route: route('merchant.stats') },
+    { key: 'inclusive', label: 'Program Inklusif', icon: 'inclusive', route: route('inclusive-program.index') },
     { key: 'profile', label: 'Profil Toko', icon: 'store', route: route('store-profile.edit') },
 ];
 
@@ -48,6 +49,7 @@ const bottomNavTabs = [
     { key: 'links', label: 'Tautan', icon: 'links', route: route('links.index') },
     { key: 'manage', label: 'Dashboard', icon: 'dashboard', route: route('merchant.manage') },
     { key: 'catalog', label: 'Katalog', icon: 'link', route: route('merchant.catalog') },
+    { key: 'inclusive', label: 'Inklusif', icon: 'inclusive', route: route('inclusive-program.index') },
 ];
 
 function logout() {
@@ -92,7 +94,10 @@ function closeSidebar() {
                 class="fixed inset-y-0 left-0 z-50 w-64 bg-surface border-r border-outline flex flex-col md:hidden"
             >
                 <div class="flex items-center justify-between h-16 px-4 border-b border-outline">
-                    <span class="font-bold text-lg text-on-surface">EtalaseKu</span>
+                    <a href="/" class="flex items-center gap-2">
+                        <img src="/images/image4-removebg-preview.png" alt="Logo EtalaseKu" class="h-8" />
+                        <span class="font-bold text-lg text-on-surface">EtalaseKu</span>
+                    </a>
                     <button
                         @click="closeSidebar"
                         class="w-10 h-10 rounded-lg flex items-center justify-center hover:bg-surface-container transition-colors"
@@ -124,6 +129,9 @@ function closeSidebar() {
                         </svg>
                         <svg v-else-if="item.icon === 'chart'" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        <svg v-else-if="item.icon === 'inclusive'" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3v1.5M3 21v-6m0 0l2.77-.693a9 9 0 016.208.682l.108.054a9 9 0 006.086.71l3.114-.732a48.524 48.524 0 01-.005-10.499l-3.11.732a9 9 0 01-6.085-.711l-.108-.054a9 9 0 00-6.208-.682L3 4.5M3 15V4.5" />
                         </svg>
                         <svg v-else-if="item.icon === 'store'" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -181,7 +189,10 @@ function closeSidebar() {
     <!-- Desktop Sidebar -->
         <aside class="hidden md:flex md:flex-col md:w-60 lg:w-64 md:fixed md:inset-y-0 md:border-r md:border-outline md:bg-surface z-30">
             <div class="flex items-center h-16 px-6 border-b border-outline">
-                <span class="font-bold text-xl text-on-surface tracking-tight">EtalaseKu</span>
+                <a href="/" class="flex items-center gap-2">
+                    <img src="/images/image4-removebg-preview.png" alt="Logo EtalaseKu" class="h-8 md:h-10" />
+                    <span class="font-bold text-xl text-on-surface tracking-tight">EtalaseKu</span>
+                </a>
             </div>
             <nav class="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
                 <Link
@@ -203,6 +214,9 @@ function closeSidebar() {
                         </svg>
                         <svg v-else-if="item.icon === 'chart'" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        <svg v-else-if="item.icon === 'inclusive'" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3v1.5M3 21v-6m0 0l2.77-.693a9 9 0 016.208.682l.108.054a9 9 0 006.086.71l3.114-.732a48.524 48.524 0 01-.005-10.499l-3.11.732a9 9 0 01-6.085-.711l-.108-.054a9 9 0 00-6.208-.682L3 4.5M3 15V4.5" />
                         </svg>
                         <svg v-else-if="item.icon === 'store'" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -261,7 +275,10 @@ function closeSidebar() {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
                     </button>
-                    <span class="font-bold text-lg text-on-surface">EtalaseKu</span>
+                    <a href="/" class="flex items-center gap-2">
+                        <img src="/images/image4-removebg-preview.png" alt="Logo EtalaseKu" class="h-8" />
+                        <span class="font-bold text-lg text-on-surface">EtalaseKu</span>
+                    </a>
                 </div>
                 <div class="flex items-center gap-1">
                     <button

@@ -20,6 +20,7 @@ const statCards = [
         <header class="border-b border-outline bg-surface/80 backdrop-blur sticky top-0 z-20">
             <div class="max-w-6xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
                 <div class="flex items-center gap-4">
+                    <img src="/images/image4-removebg-preview.png" alt="Logo EtalaseKu" class="h-8 md:h-10" />
                     <span class="font-bold text-xl text-on-surface tracking-tight">EtalaseKu</span>
                     <span class="px-2.5 py-0.5 rounded-full bg-yellow-500/10 text-yellow-500 border border-yellow-500/30 text-[10px] font-bold uppercase tracking-wider">Admin</span>
                 </div>

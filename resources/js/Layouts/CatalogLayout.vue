@@ -17,6 +17,7 @@ const sidebarOpen = ref(false);
 
 const storeName = computed(() => props.merchant?.name || 'Toko');
 const storeLogoUrl = computed(() => props.merchant?.store_logo_url || null);
+const isInclusive = computed(() => !!props.merchant?.is_inclusive);
 
 const sidebarItems = [
     { key: 'products', label: 'Katalog Toko', icon: 'package' },
@@ -109,8 +110,16 @@ function setActiveTab(key) {
 
         <!-- Desktop Sidebar -->
         <aside class="hidden md:flex md:flex-col md:w-60 lg:w-64 md:fixed md:inset-y-0 md:border-r md:border-outline md:bg-surface z-30">
-            <div class="flex items-center h-16 px-6 border-b border-outline">
+            <div class="flex items-center h-16 px-6 border-b border-outline gap-2">
                 <h1 class="font-bold text-xl text-on-surface tracking-tight truncate">{{ storeName }}</h1>
+                <span
+                    v-if="isInclusive"
+                    class="shrink-0 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
+                    title="UMKM Inklusif"
+                    aria-label="UMKM Inklusif"
+                >
+                    ♿ Inklusif
+                </span>
             </div>
             <nav class="flex-1 py-4 px-3 space-y-1 overflow-y-auto" aria-label="Navigasi katalog">
                 <button
@@ -152,7 +161,17 @@ function setActiveTab(key) {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
                     </button>
-                    <h2 class="font-bold text-lg text-on-surface md:hidden truncate">{{ storeName }}</h2>
+                    <h2 class="font-bold text-lg text-on-surface md:hidden truncate flex items-center gap-1.5">
+                        {{ storeName }}
+                        <span
+                            v-if="isInclusive"
+                            class="shrink-0 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[8px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
+                            title="UMKM Inklusif"
+                            aria-label="UMKM Inklusif"
+                        >
+                            ♿ Inklusif
+                        </span>
+                    </h2>
                     <h2 class="hidden md:block text-lg font-bold text-on-surface">
                         <slot name="header" />
                     </h2>

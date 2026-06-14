@@ -14,7 +14,8 @@ class InclusiveApplicationReviewRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'admin_note' => 'nullable|string|max:1000',
+            'admin_note' => 'nullable|string|max:2000',
+            'rejection_reason' => 'required_if:action,reject|string|max:2000',
         ];
     }
 }

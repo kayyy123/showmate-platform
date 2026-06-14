@@ -3,7 +3,7 @@
 namespace App\Services\Admin;
 
 use App\Models\Checkout;
-use App\Models\InclusiveApplication;
+use App\Models\InclusiveProgramApplication;
 use App\Models\Product;
 use App\Models\Store;
 use App\Models\User;
@@ -21,8 +21,8 @@ class DashboardService
             'total_products' => Product::count(),
             'total_orders' => Checkout::count(),
             'store_pro' => User::where('role', 'merchant')->where('plan', 'pro')->count(),
-            'inclusive_sellers' => Store::whereHas('inclusiveApplications', fn($q) => $q->where('status', 'approved'))->count(),
-            'pending_applications' => InclusiveApplication::where('status', 'pending')->count(),
+            'inclusive_sellers' => InclusiveProgramApplication::where('status', 'approved')->count(),
+            'pending_applications' => InclusiveProgramApplication::where('status', 'pending')->count(),
         ];
     }
 

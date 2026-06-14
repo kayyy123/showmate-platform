@@ -41,7 +41,7 @@
             <i class="bi bi-store sidebar-link-icon"></i>
             <span>Profil Toko</span>
         </a>
-        <a href="{{ route('inclusive-applications.index') }}"
+        <a href="{{ route('inclusive-program.index') }}"
            class="sidebar-link {{ $activeTab === 'inclusive' ? 'active' : '' }}">
             <i class="bi bi-people-fill sidebar-link-icon"></i>
             <span>Program Inklusif</span>

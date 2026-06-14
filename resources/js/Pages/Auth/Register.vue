@@ -29,9 +29,10 @@ const submit = () => {
         <header class="flex items-center justify-between px-6 lg:px-12 py-4 shrink-0">
             <a
                 href="/"
-                class="text-3xl lg:text-4xl font-extrabold tracking-tight hover:opacity-90 transition-opacity"
+                class="flex items-center gap-2 hover:opacity-90 transition-opacity"
             >
-                <span class="text-white">Etalase</span><span class="text-[#FFD700]">Ku</span>
+                <img src="/images/image4-removebg-preview.png" alt="Logo EtalaseKu" class="h-10 md:h-12" />
+                <span class="text-2xl lg:text-3xl font-extrabold tracking-tight"><span class="text-white">Etalase</span><span class="text-[#FFD700]">Ku</span></span>
             </a>
             <a
                 href="/"
@@ -175,7 +176,10 @@ const submit = () => {
         <!-- Footer -->
         <footer class="shrink-0 px-6 lg:px-12 py-4 border-t border-zinc-800">
             <div class="flex flex-wrap items-center justify-center lg:justify-start gap-x-5 gap-y-1 text-xs text-zinc-500">
-                <span class="font-medium text-zinc-400">EtalaseKu</span>
+                <span class="inline-flex items-center gap-1.5 font-medium text-zinc-400">
+                    <img src="/images/image4-removebg-preview.png" alt="Logo EtalaseKu" class="h-5" />
+                    EtalaseKu
+                </span>
                 <a href="#" class="hover:text-zinc-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/50 rounded">Syarat Layanan</a>
                 <a href="#" class="hover:text-zinc-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/50 rounded">Kebijakan Privasi</a>
                 <a href="#" class="hover:text-zinc-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-400/50 rounded">Pusat Bantuan</a>

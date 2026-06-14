@@ -138,6 +138,11 @@ class User extends Authenticatable
         return $this->hasOne(MerchantSubscription::class)->where('status', 'active');
     }
 
+    public function inclusiveProgramApplications(): HasMany
+    {
+        return $this->hasMany(InclusiveProgramApplication::class);
+    }
+
     public function isPro(): bool
     {
         return $this->plan === 'pro';

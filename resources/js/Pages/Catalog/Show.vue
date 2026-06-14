@@ -9,6 +9,7 @@ const props = defineProps({
     merchant: Object,
     products: Array,
     links: Array,
+    adminWhatsapp: String,
 });
 
 const page = usePage();
@@ -17,6 +18,28 @@ const showModal = ref(false);
 const selectedProduct = ref(null);
 const shared = ref(false);
 const catalogUrl = typeof window !== 'undefined' ? window.location.href : '';
+
+const reportStoreModal = ref(false);
+const reportProductModal = ref(false);
+const reportReason = ref('');
+const reportDetail = ref('');
+const selectedReportProduct = ref(null);
+
+const storeReportReasons = [
+    'Dugaan penipuan',
+    'Informasi toko tidak sesuai',
+    'Produk mencurigakan',
+    'Penyalahgunaan platform',
+    'Lainnya',
+];
+
+const productReportReasons = [
+    'Produk tidak sesuai',
+    'Produk mencurigakan',
+    'Harga/informasi tidak jelas',
+    'Dugaan penipuan',
+    'Lainnya',
+];
 
 const channels = computed(() => {
     const items = [];
@@ -246,6 +269,52 @@ function submitCheckout() {
         },
     });
 }
+
+function openReportStore() {
+    resetReportForm();
+    reportStoreModal.value = true;
+}
+
+function openReportProduct(product) {
+    resetReportForm();
+    selectedReportProduct.value = product;
+    reportProductModal.value = true;
+}
+
+function resetReportForm() {
+    reportReason.value = '';
+    reportDetail.value = '';
+    selectedReportProduct.value = null;
+}
+
+function closeReportStore() {
+    reportStoreModal.value = false;
+    resetReportForm();
+}
+
+function closeReportProduct() {
+    reportProductModal.value = false;
+    resetReportForm();
+}
+
+function sendStoreReport() {
+    if (!reportReason.value) return;
+    const text = encodeURIComponent(
+        `Halo Admin EtalaseKu,\n\nSaya ingin melaporkan toko berikut:\n\nNama Toko: ${props.merchant.name}\nLink Katalog: ${catalogUrl}\n\nJenis Laporan: ${reportReason.value}\n\nDetail:\n${reportDetail.value || '-'}`
+    );
+    window.open(`https://wa.me/${props.adminWhatsapp}?text=${text}`, '_blank');
+    closeReportStore();
+}
+
+function sendProductReport() {
+    if (!reportReason.value || !selectedReportProduct.value) return;
+    const product = selectedReportProduct.value;
+    const text = encodeURIComponent(
+        `Halo Admin EtalaseKu,\n\nSaya ingin melaporkan produk berikut:\n\nNama Produk: ${product.name}\nKode Produk: ${product.product_code || '-'}\nNama Toko: ${props.merchant.name}\nLink Katalog: ${catalogUrl}\n\nJenis Laporan: ${reportReason.value}\n\nDetail:\n${reportDetail.value || '-'}`
+    );
+    window.open(`https://wa.me/${props.adminWhatsapp}?text=${text}`, '_blank');
+    closeReportProduct();
+}
 </script>
 
 <template>
@@ -460,6 +529,15 @@ function submitCheckout() {
                                         Beli
                                     </button>
                                 </div>
+                                <div class="mt-1.5">
+                                    <button
+                                        @click="openReportProduct(product)"
+                                        class="text-[10px] text-zinc-400 hover:text-red-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400/50 rounded px-1"
+                                        aria-label="Laporkan produk ini"
+                                    >
+                                        Laporkan
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -505,7 +583,17 @@ function submitCheckout() {
                             </svg>
                         </div>
                     </div>
-                    <h1 id="about-heading" class="text-2xl font-bold text-on-surface">{{ merchant.name }}</h1>
+                    <h1 id="about-heading" class="text-2xl font-bold text-on-surface flex items-center justify-center gap-2 flex-wrap">
+                        {{ merchant.name }}
+                        <span
+                            v-if="merchant.is_inclusive"
+                            class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
+                            title="UMKM Inklusif"
+                            aria-label="UMKM Inklusif"
+                        >
+                            ♿ UMKM Inklusif
+                        </span>
+                    </h1>
                     <p class="text-sm text-on-surface-variant mt-1">Toko</p>
                 </div>
 
@@ -533,6 +621,18 @@ function submitCheckout() {
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                             </svg>
                             {{ shared ? 'Tersalin!' : 'Salin Tautan' }}
+                        </button>
+                    </div>
+                    <div class="text-center pt-2">
+                        <button
+                            @click="openReportStore"
+                            class="inline-flex items-center gap-1.5 text-xs text-zinc-500 hover:text-red-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400/50 rounded px-2 py-1"
+                            aria-label="Laporkan toko ini"
+                        >
+                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 3v1.5M3 21v-6m0 0l2.77-.693a9 9 0 016.208.682l.108.054a9 9 0 006.086.71l3.114-.732a48.524 48.524 0 01-.005-10.499l-3.11.732a9 9 0 01-6.085-.711l-.108-.054a9 9 0 00-6.208-.682L3 4.5M3 15V4.5" />
+                            </svg>
+                            Laporkan Toko
                         </button>
                     </div>
                 </div>
@@ -724,6 +824,135 @@ function submitCheckout() {
                         </button>
                     </div>
                 </form>
+            </div>
+        </Modal>
+
+        <!-- Report Store Modal -->
+        <Modal :show="reportStoreModal" @close="closeReportStore" max-width="sm">
+            <div class="bg-surface p-6 rounded-2xl">
+                <h2 class="text-lg font-bold text-on-surface mb-4" id="report-store-heading">Laporkan Toko</h2>
+                <p class="text-sm text-on-surface-variant mb-4">Laporkan toko ini jika ada informasi yang mencurigakan atau tidak sesuai. Laporan akan dikirim ke admin EtalaseKu.</p>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-on-surface mb-2" id="report-store-reason-label">Alasan Laporan</label>
+                        <div class="space-y-2" role="radiogroup" aria-labelledby="report-store-reason-label">
+                            <label
+                                v-for="reason in storeReportReasons"
+                                :key="reason"
+                                class="flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer hover:bg-surface-container transition-colors"
+                                :class="reportReason === reason ? 'bg-primary/10 border border-primary/30' : 'border border-transparent'"
+                            >
+                                <input
+                                    type="radio"
+                                    :value="reason"
+                                    v-model="reportReason"
+                                    name="store_report_reason"
+                                    class="w-4 h-4 text-primary focus:ring-primary/30 border-outline"
+                                />
+                                <span class="text-sm text-on-surface select-none">{{ reason }}</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-on-surface mb-1" for="report-store-detail">Detail (opsional)</label>
+                        <textarea
+                            id="report-store-detail"
+                            v-model="reportDetail"
+                            rows="3"
+                            placeholder="Jelaskan detail laporan Anda..."
+                            class="w-full px-3 py-2 rounded-lg bg-surface-container-high border border-outline text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors resize-none"
+                        ></textarea>
+                    </div>
+
+                    <p class="text-[10px] text-zinc-400 italic">Fitur laporan digunakan untuk kasus serius seperti penipuan atau pelanggaran. Setelah dikirim, Anda akan diarahkan ke WhatsApp admin EtalaseKu.</p>
+
+                    <div class="flex gap-3 pt-2">
+                        <button
+                            type="button"
+                            @click="closeReportStore"
+                            class="flex-1 px-4 py-2 rounded-lg border border-outline text-on-surface font-medium hover:bg-surface-container-high transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                        >
+                            Batal
+                        </button>
+                        <button
+                            type="button"
+                            @click="sendStoreReport"
+                            :disabled="!reportReason"
+                            class="flex-1 px-4 py-2 rounded-lg bg-red-500 text-white font-bold hover:bg-red-600 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400/50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            Kirim Laporan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </Modal>
+
+        <!-- Report Product Modal -->
+        <Modal :show="reportProductModal" @close="closeReportProduct" max-width="sm">
+            <div class="bg-surface p-6 rounded-2xl">
+                <h2 class="text-lg font-bold text-on-surface mb-4" id="report-product-heading">Laporkan Produk</h2>
+                <p class="text-sm text-on-surface-variant mb-4">Laporkan produk ini jika ada informasi yang mencurigakan atau tidak sesuai. Laporan akan dikirim ke admin EtalaseKu.</p>
+
+                <div v-if="selectedReportProduct" class="mb-4 p-3 rounded-xl bg-surface-container-high">
+                    <p class="font-semibold text-on-surface">{{ selectedReportProduct.name }}</p>
+                    <p v-if="selectedReportProduct.product_code" class="text-[10px] font-mono text-on-surface-variant mt-0.5">Kode: {{ selectedReportProduct.product_code }}</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-on-surface mb-2" id="report-product-reason-label">Alasan Laporan</label>
+                        <div class="space-y-2" role="radiogroup" aria-labelledby="report-product-reason-label">
+                            <label
+                                v-for="reason in productReportReasons"
+                                :key="reason"
+                                class="flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer hover:bg-surface-container transition-colors"
+                                :class="reportReason === reason ? 'bg-primary/10 border border-primary/30' : 'border border-transparent'"
+                            >
+                                <input
+                                    type="radio"
+                                    :value="reason"
+                                    v-model="reportReason"
+                                    name="product_report_reason"
+                                    class="w-4 h-4 text-primary focus:ring-primary/30 border-outline"
+                                />
+                                <span class="text-sm text-on-surface select-none">{{ reason }}</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-on-surface mb-1" for="report-product-detail">Detail (opsional)</label>
+                        <textarea
+                            id="report-product-detail"
+                            v-model="reportDetail"
+                            rows="3"
+                            placeholder="Jelaskan detail laporan Anda..."
+                            class="w-full px-3 py-2 rounded-lg bg-surface-container-high border border-outline text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors resize-none"
+                        ></textarea>
+                    </div>
+
+                    <p class="text-[10px] text-zinc-400 italic">Fitur laporan digunakan untuk kasus serius seperti penipuan atau pelanggaran. Setelah dikirim, Anda akan diarahkan ke WhatsApp admin EtalaseKu.</p>
+
+                    <div class="flex gap-3 pt-2">
+                        <button
+                            type="button"
+                            @click="closeReportProduct"
+                            class="flex-1 px-4 py-2 rounded-lg border border-outline text-on-surface font-medium hover:bg-surface-container-high transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                        >
+                            Batal
+                        </button>
+                        <button
+                            type="button"
+                            @click="sendProductReport"
+                            :disabled="!reportReason"
+                            class="flex-1 px-4 py-2 rounded-lg bg-red-500 text-white font-bold hover:bg-red-600 active:scale-[0.98] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400/50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            Kirim Laporan
+                        </button>
+                    </div>
+                </div>
             </div>
         </Modal>
     </CatalogLayout>

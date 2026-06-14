@@ -6,9 +6,9 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\StoreController;
 use App\Http\Controllers\Admin\SubscriptionPlanController;
-use App\Http\Controllers\Admin\InclusiveApplicationController as AdminInclusiveApplicationController;
+use App\Http\Controllers\Admin\InclusiveProgramController as AdminInclusiveProgramController;
 use App\Http\Controllers\Admin\WithdrawalController;
-use App\Http\Controllers\InclusiveApplicationController;
+use App\Http\Controllers\InclusiveProgramController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\MerchantController;
@@ -66,11 +66,9 @@ Route::middleware(['auth', 'role:merchant'])->group(function () {
     Route::get('/upgrade-pro', [PlanController::class, 'upgradePage'])->name('upgrade-pro.page');
     Route::post('/upgrade-pro', [PlanController::class, 'upgrade'])->name('upgrade-pro.upgrade');
 
-    Route::prefix('/inclusive-applications')->name('inclusive-applications.')->group(function () {
-        Route::get('/', [InclusiveApplicationController::class, 'index'])->name('index');
-        Route::get('/create', [InclusiveApplicationController::class, 'create'])->name('create');
-        Route::post('/', [InclusiveApplicationController::class, 'store'])->name('store');
-        Route::get('/{inclusive_application}', [InclusiveApplicationController::class, 'show'])->name('show');
+    Route::prefix('/inclusive-program')->name('inclusive-program.')->group(function () {
+        Route::get('/', [InclusiveProgramController::class, 'index'])->name('index');
+        Route::post('/', [InclusiveProgramController::class, 'store'])->name('store');
     });
 });
 
@@ -143,11 +141,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::delete('/{withdrawal}/force', [WithdrawalController::class, 'forceDelete'])->name('force-delete');
     });
 
-    Route::prefix('/inclusive-applications')->name('inclusive-applications.')->group(function () {
-        Route::get('/', [AdminInclusiveApplicationController::class, 'index'])->name('index');
-        Route::get('/{inclusive_application}', [AdminInclusiveApplicationController::class, 'show'])->name('show');
-        Route::post('/{inclusive_application}/approve', [AdminInclusiveApplicationController::class, 'approve'])->name('approve');
-        Route::post('/{inclusive_application}/reject', [AdminInclusiveApplicationController::class, 'reject'])->name('reject');
+    Route::prefix('/inclusive-program')->name('inclusive-program.')->group(function () {
+        Route::get('/', [AdminInclusiveProgramController::class, 'index'])->name('index');
+        Route::get('/{inclusive_program_application}', [AdminInclusiveProgramController::class, 'show'])->name('show');
+        Route::post('/{inclusive_program_application}/approve', [AdminInclusiveProgramController::class, 'approve'])->name('approve');
+        Route::post('/{inclusive_program_application}/reject', [AdminInclusiveProgramController::class, 'reject'])->name('reject');
     });
 });
 

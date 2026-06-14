@@ -517,7 +517,7 @@
                     ['route' => 'admin.orders', 'label' => 'Pesanan', 'icon' => 'bi-cart-check-fill'],
                     ['route' => 'admin.withdrawals', 'label' => 'Penarikan', 'icon' => 'bi-wallet2'],
                     ['route' => 'admin.subscriptions.plans', 'label' => 'Langganan', 'icon' => 'bi-gem'],
-                    ['route' => 'admin.inclusive-applications', 'label' => 'Program Inklusif', 'icon' => 'bi-people-fill'],
+                    ['route' => 'admin.inclusive-program', 'label' => 'Program Inklusif', 'icon' => 'bi-people-fill'],
                 ];
             @endphp
 

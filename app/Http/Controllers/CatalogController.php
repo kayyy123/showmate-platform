@@ -35,6 +35,10 @@ class CatalogController extends Controller
             ->get()
             ->map(fn ($link) => [...$link->toArray()]);
 
+        $isInclusive = $user->inclusiveProgramApplications()
+            ->where('status', 'approved')
+            ->exists();
+
         return Inertia::render('Catalog/Show', [
             'merchant' => [
                 'id' => $user->id,
@@ -47,9 +51,11 @@ class CatalogController extends Controller
                 'tokopedia_url' => $user->tokopedia_url,
                 'store_logo' => $user->store_logo,
                 'store_logo_url' => $user->store_logo ? Storage::url($user->store_logo) : null,
+                'is_inclusive' => $isInclusive,
             ],
             'products' => $products,
             'links' => $links,
+            'adminWhatsapp' => config('etalaseku.admin_whatsapp'),
         ]);
     }
 }
